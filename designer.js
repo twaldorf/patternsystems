@@ -23,11 +23,28 @@ function splotch(xcenter, ycenter, rows, scale, color) {
   let rowcount = 0; //count index
   let rowkey = []; //2d array of row parameters explained below
   let yrowcenter = ycenter + d * rowcount;
-  for (let i = 0; i < rows; i++) {
-    rowkey[i] = [random(1, 100), random(-50, 50)];
-  }
-  console.log("Finished key initialization. Rowkey is:")
-  console.log(rowkey)
+  let index = 0;
+  
+  generateKey();
+
+  function generateKey() {
+    if (rowkey.length == rows) {
+      return;
+    } else {
+      rowkey[index] = [round(random(1, 100)), round(random(-50, 50))];
+      if (uniqueRow()) {
+        index++;
+        generateKey();
+      } else {
+        generateKey();
+      }
+    }
+    function uniqueRow() {
+      for (let i = 0; i < rowkey.length; i++) {
+        return rowkey[index] == rowkey[i];
+      }
+    }
+  } 
   //rowkey[[width coefficient, xoffset value]] where rowkey.length = number of rows (such as this.rows)
   //this could be improved by checking the last row and ensuring that the next row is not disconnected, using a bounding box dif coef perhaps
   drawRows();
@@ -42,31 +59,36 @@ function splotch(xcenter, ycenter, rows, scale, color) {
     }
 
     function superGlue() {
-      if (lastRowEclipses()) {
-        glueUpToBiggerRow();
-      } else if (lastRowBigger() && rowEndsFurtherLeftThanCurrentRow(rowcount-1)) {
-        glueUpLeft();
-      } else if (lastRowBigger() && rowEndsFurtherRightThanCurrentRow(rowcount-1)) {
-        glueUpRight();
-      }
-      if (nextRowEclipses()) {
-        glueDownToBiggerRow();
-      } else if (nextRowBigger() && rowEndsFurtherRightThanCurrentRow(rowcount+1)) {
-        glueDownRight();
-      } else if (nextRowBigger() && rowEndsFurtherLeftThanCurrentRow(rowcount+1)) {
+      if (rowEndsFurtherLeftThanCurrentRow(rowcount+1)) {
         glueDownLeft();
-      }
+      } 
+
+      if (rowEndsFurtherRightThanCurrentRow(rowcount+1)) {
+        glueDownRight();
+      } 
+
+      if (rowEndsFurtherLeftThanCurrentRow(rowcount-1)) {
+        glueUpLeft();
+      } 
+
+      if (rowEndsFurtherRightThanCurrentRow(rowcount-1)) {
+        glueUpRight();
+      } 
     }
 
     function rowEndsFurtherLeftThanCurrentRow(n) {
-      if ((getRowLeftX(n)) < getRowLeftX(rowcount) ) {
+      if (n < 0) {
+        return false;
+      } else if ((getRowLeftX(n)) < getRowLeftX(rowcount) ) {
         return true;
       } else {
         return false;
       }
     }
     function rowEndsFurtherRightThanCurrentRow(n) {
-      if ((getRowRightX(n)) > getRowRightX(rowcount) ) {
+      if (n < 0) {
+        return false;
+      } else if ((getRowRightX(n)) > getRowRightX(rowcount) ) {
         return true;
       } else {
         return false;
@@ -86,7 +108,6 @@ function splotch(xcenter, ycenter, rows, scale, color) {
     }
 
     function glueUpLeft() {
-      fill(100,250,0);  
       glue(
         getRowLeftX(rowcount),
         yrowcenter - r,
@@ -96,7 +117,6 @@ function splotch(xcenter, ycenter, rows, scale, color) {
     }
 
     function glueUpRight() {
-      fill(100,250,0);  
       glue(
         getRowRightX(rowcount),
         yrowcenter - r,
@@ -106,7 +126,6 @@ function splotch(xcenter, ycenter, rows, scale, color) {
     }
 
     function glueDownRight() {
-      fill(100,0,250);  
       glue(
         getRowRightX(rowcount),
         yrowcenter + r,
@@ -116,7 +135,6 @@ function splotch(xcenter, ycenter, rows, scale, color) {
     }
 
     function glueDownLeft() {
-      fill(100,0,250);  
       glue(
         getRowLeftX(rowcount),
         yrowcenter + r,
@@ -126,7 +144,6 @@ function splotch(xcenter, ycenter, rows, scale, color) {
     }
 
     function glueUpToBiggerRow() {
-      fill(255, 0, 0)
       glue(
         getRowLeftX(rowcount),
         yrowcenter - r,
@@ -143,7 +160,6 @@ function splotch(xcenter, ycenter, rows, scale, color) {
     }
 
     function glueDownToBiggerRow() {
-      fill(100, 250, 250)
       glue(
         getRowLeftX(rowcount),
         yrowcenter + r,
@@ -192,10 +208,10 @@ function splotch(xcenter, ycenter, rows, scale, color) {
   }
 
   function nextRowBigger() {
-    if (rowcount == rows) {
+    console.log('nextRowBigger() says: rowcount = ' + rowcount + ' and rows = ' + rows)
+    if (rowcount == rows || rowcount > rows) {
       return false;
-    }
-    if (getRowWidth(rowcount + 1) > getRowWidth(rowcount)) {
+    } else if (getRowWidth(rowcount + 1) > getRowWidth(rowcount)) {
       return true;
     } else {
       return false;
