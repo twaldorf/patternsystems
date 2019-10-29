@@ -5,23 +5,23 @@ function setup() {
 }
 
 function draw() {
-  background(color(250,250,0));
-  for(let i = 0; i < 200; i++) {
+  background(color(250,250,250));
+  for(let i = 0; i < 100; i++) {
     push();
     translate(round(random(-5,5))*60,round(random(-5,5))*60);
-    splotch(width/2 - 10, height/2 - 10, round(random(0,15)), .80, color(255,random(0,200),random(0,255)));
+    splotch(width/2 - 10, height/2 - 10, round(random(0,10)),2,color(100,100,200));
     pop();
   }
-  for(let i = 0; i < 10; i++) {
+  for(let i = 0; i < 800; i++) {
     push();
     translate(round(random(-5,5))*60,round(random(-5,5))*60);
-    splotch(width/2 - 10, height/2 - 10, round(random(0,1)),.80,255);
+    splotch(width/2 - 10, height/2 - 10, round(random(0,15)), .3, color(150,random(0,250),random(200,250)));
     pop();
   }
-  for(let i = 0; i < 10; i++) {
+  for(let i = 0; i < 50; i++) {
     push();
     translate(round(random(-5,5))*60,round(random(-5,5))*60);
-    splotch(width/2 - 10, height/2 - 10, round(random(0,1)),.80,color(50,120,250));
+    splotch(width/2 - 10, height/2 - 10, round(random(0,5)),.3,255);
     pop();
   }
   
