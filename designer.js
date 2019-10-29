@@ -1,18 +1,32 @@
 function setup() {
   createCanvas(500, 500);
-  noLoop()
+  noLoop();
+  noStroke();
 }
 
 function draw() {
-  background(0);
-  // for(let i = 0; i < 200; i++) {
-  //   push();
-  //   translate(random(-200,400),random(-200,400))
-  //   splotch(0,0,12,5,0.25,random(0,255))
-  //   pop();
-  // }
-  splotch(250, 150, 10, 1, 255)
+  background(color(250,250,0));
+  for(let i = 0; i < 200; i++) {
+    push();
+    translate(round(random(-5,5))*60,round(random(-5,5))*60);
+    splotch(width/2, height/2, round(random(0,15)), .5, color(255,random(0,200),random(0,255)));
+    pop();
+  }
+  for(let i = 0; i < 10; i++) {
+    push();
+    translate(round(random(-5,5))*60,round(random(-5,5))*60);
+    splotch(width/2, height/2, round(random(0,1)),.5,255);
+    pop();
+  }
+  for(let i = 0; i < 10; i++) {
+    push();
+    translate(round(random(-5,5))*60,round(random(-5,5))*60);
+    splotch(width/2, height/2, round(random(0,1)),.5,color(50,50,250));
+    pop();
+  }
+  
 }
+
 
 
 function splotch(xcenter, ycenter, rows, scale, color) {
@@ -26,7 +40,7 @@ function splotch(xcenter, ycenter, rows, scale, color) {
   let yrowcenter = ycenter + d * rowcount;
 
   rowkey = generateKey(rows); //2d array of row parameters explained below
-
+  
   drawRows();
   
   function generateKey(length) {
@@ -35,10 +49,11 @@ function splotch(xcenter, ycenter, rows, scale, color) {
       array[i] = [randomRoundNumber(),randomRoundNumber()];
     }
     return array;
+    
+  }
 
-    function randomRoundNumber() {
-      return round(random(0,4)) * 25 * scale;
-    }
+  function randomRoundNumber() {
+    return round(random(0,3)) * 25 * scale;
   }
   
   function drawRows() {
