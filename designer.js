@@ -9,19 +9,19 @@ function draw() {
   for(let i = 0; i < 200; i++) {
     push();
     translate(round(random(-5,5))*60,round(random(-5,5))*60);
-    splotch(width/2, height/2, round(random(0,15)), .5, color(255,random(0,200),random(0,255)));
+    splotch(width/2 - 10, height/2 - 10, round(random(0,15)), .80, color(255,random(0,200),random(0,255)));
     pop();
   }
   for(let i = 0; i < 10; i++) {
     push();
     translate(round(random(-5,5))*60,round(random(-5,5))*60);
-    splotch(width/2, height/2, round(random(0,1)),.5,255);
+    splotch(width/2 - 10, height/2 - 10, round(random(0,1)),.80,255);
     pop();
   }
   for(let i = 0; i < 10; i++) {
     push();
     translate(round(random(-5,5))*60,round(random(-5,5))*60);
-    splotch(width/2, height/2, round(random(0,1)),.5,color(50,50,250));
+    splotch(width/2 - 10, height/2 - 10, round(random(0,1)),.80,color(50,120,250));
     pop();
   }
   
