@@ -1,5 +1,9 @@
 function setup() {
-  createCanvas(innerWidth,500)
+  if (innerWidth < 500) {
+    createCanvas(500,500)
+  } else {
+    createCanvas(innerWidth,500)
+  }
   noLoop()
 }
 
