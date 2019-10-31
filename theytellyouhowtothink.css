@@ -8,6 +8,18 @@ body {
     overflow-x: hidden;
 }
 
+.mobile-header {
+    display: none;
+    color: white;
+    padding: 0 5%;
+    text-transform: uppercase;
+}
+
+.mobile-header p {
+    font-weight: 300;
+    font-size: 14px;
+}
+
 header {
     background-color: black;
     color: white;
@@ -117,10 +129,28 @@ figure div div:first-child {
         width:85%;
         margin: 12px 5%;
     }
+    header {
+        display: none;
+    }
+    figure {
+        margin: 12px 0 0 0;
+    }
+    section {
+        margin: 0;
+    }
+    .mobile-header {
+        display: block;
+    }
 }
 
 a {
     color:white;
     mix-blend-mode: difference;
     text-decoration: none;
+}
+
+footer {
+    text-align: right;
+    color: white;
+    margin-left: 15vw;
 }
