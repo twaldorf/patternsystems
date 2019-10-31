@@ -1,33 +1,47 @@
 function setup() {
-  createCanvas(500, 500);
+  createCanvas(innerWidth,500);
   noLoop();
   noStroke();
 }
 
 function draw() {
-  background(color(250,250,250));
-  for(let i = 0; i < 100; i++) {
+  drawScuba();
+  // drawSparseDark();
+}
+
+function drawSparseDark() {
+  background(25);
+  for(let i = 0; i < 50; i++) {
     push();
-    translate(round(random(-5,5))*60,round(random(-5,5))*60);
-    splotch(width/2 - 10, height/2 - 10, round(random(0,10)),2,color(100,100,200));
+    translate(round(random(-i,i))*2,round(random(-i,i))*2);
+    splotch(width/2, height/2, round(random(0,50 - i)),.4,color(20 + (i*5)));
     pop();
   }
+}
+
+function drawScuba() {
+  background(color(250,250,250));
+  let scaledScale = (round(innerWidth / 100) / 10)
+  console.log(scaledScale)
+  // for(let i = 0; i < 100; i++) {
+  //   push();
+  //   translate(round(random(-50,50))*60,round(random(-50,50))*60);
+  //   splotch(width/2 - 10, height/2 - 10, round(random(0,10)),2,color(100,100,200));
+  //   pop();
+  // }
   for(let i = 0; i < 800; i++) {
     push();
-    translate(round(random(-5,5))*60,round(random(-5,5))*60);
-    splotch(width/2 - 10, height/2 - 10, round(random(0,15)), .3, color(150,random(0,250),random(200,250)));
+    translate(round(random(-50 * scaledScale,50 * scaledScale))*60,round(random(-5,5))*60);
+    splotch(width/2 - 10, height/2 - 10, round(random(0,15)), scaledScale, color(150,random(0,250),random(200,250)));
     pop();
   }
   for(let i = 0; i < 50; i++) {
     push();
-    translate(round(random(-5,5))*60,round(random(-5,5))*60);
-    splotch(width/2 - 10, height/2 - 10, round(random(0,5)),.3,255);
+    translate(round(random(-50 * scaledScale,50 * scaledScale))*60,round(random(-5,5))*60);
+    splotch(width/2 - 10, height/2 - 10, round(random(0,5)), scaledScale,255);
     pop();
   }
-  
 }
-
-
 
 function splotch(xcenter, ycenter, rows, scale, color) {
   rectMode(RADIUS);
@@ -173,7 +187,6 @@ function splotch(xcenter, ycenter, rows, scale, color) {
 
   function fillRow() {
     fill(color)
-    console.log(rowcount);
     rect(xcenter + rowkey[rowcount][1], yrowcenter, getRowWidth(rowcount), r)
     circle(getRowLeftX(rowcount), yrowcenter, d)
     circle(getRowRightX(rowcount), yrowcenter, d)

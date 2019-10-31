@@ -1,11 +1,11 @@
 function setup() {
-  createCanvas(500, 500)
+  createCanvas(innerWidth,500)
   noLoop()
 }
 
 function draw() {
-  background(0)
-  stroke(random(1,255),random(1,255),random(1,255))
+  background(random(100,150),random(100,150),random(100,150))
+  stroke(random(0,100),random(0,100),0)
   strokeWeight(4)
   let interval = 140;
   for (let y = 0; y + 1.2 < height/interval; y++) {
