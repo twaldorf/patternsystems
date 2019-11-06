@@ -1,3 +1,10 @@
+var index = 0;
+let pointRadius = 10;
+let points = [];
+
+var $shape = points;
+var colorwayGreen = [[0,0,255],[120,220,255],5];
+
 function setup() {
     createCanvas(innerWidth,500);
     noLoop();
@@ -5,230 +12,164 @@ function setup() {
   }
   
   function draw() {
-      drawPattern();
+    background(0);
+    drawButton(50,50);
+    makeShape();
+  }
+
+  function drawButton(x,y) {
+    fill(150);
+    rect(x-8,y-14,100,20);
+    fill(255);
+    text('pitter patternize',x ,y);
   }
   
-  function drawPattern() {
-    background(25);
-    for(let i = 0; i < 50; i++) {
-      push();
-      translate(round(random(-i,i))*2,round(random(-i,i))*2);
-      splotch(width/2, height/2, round(random(0,50 - i)),.4,color(20 + (i*5)));
-      pop();
-    }
+function drawPattern($shape,gridUnit,colorway) {
+  gridUnit = validateGridUnit(gridUnit);
+
+  for(let i = 0; i < 50; i++) {
+    push();
+    translate(gridUnit,gridUnit);
+    placeShape(0,0,$shape);
+    pop();
   }
+}
+
+function validateGridUnit(gridUnit) {
+  if (gridUnit == 0) {
+    gridUnit = getShapeHeight() / 2;
+  } else {
+    return gridUnit;
+  };
+}
   
-  function splotch(xcenter, ycenter, rows, scale, color) {
-    rectMode(RADIUS);
-    noStroke();
-    fill(color);
-    let r = 15 * scale;
-    let d = 2 * r;
-    let rowcount = 0; //count index
-    let rowkey;
-    let yrowcenter = ycenter + d * rowcount;
-  
-    rowkey = generateKey(rows);
-    
-    drawRows();
-    
-    function generateKey(length) {
-      let array = [];
-      for (let i = 0; i <= length; i++) {
-        array[i] = [randomRoundNumber(),randomRoundNumber()];
-      }
-      return array;
-      
+function placeShape(xcenter, ycenter, shape) {
+  fill(getColor(colorwayGreen));
+}
+
+function getColor(colorway) {
+  return lerp(colorway[0],colorway[1],
+    round(
+      10 / random(0,colorway[3]) 
+    )
+  );
+}
+
+function drawCursor() {
+  circle(mouseX,mouseY,pointRadius * 0.5);
+};
+
+function makeShape() {
+    drawCursor();
+    drawInnerShape();
+    drawVertices();
+
+    function drawVertices(color) {
+        for (let i = 0; i < points.length; i++) {
+            fill(color);
+            points[i].render();
+            feed.update();
+            drawBorders();
+
+            function drawBorders(color) {
+                if (i > 0) {
+                    stroke(color);
+                    strokeWeight(1);
+                    line(points[i].x,points[i].y,points[i-1].x,points[i-1].y);
+                }
+                if (points.length > 2) {
+                    line(points[points.length-1].x,points[points.length-1].y,points[0].x,points[0].y);
+                }
+            }
+        };
     }
-  
-    function randomRoundNumber() {
-      return round(random(0,3)) * 25 * scale;
-    }
-    
-    function drawRows() {
-      yrowcenter = ycenter + d * rowcount;
-      fillRow();
-      superGlue();
-      rowcount++;
-      if (rowcount < rows) {
-        drawRows();
-      }
-  
-      function superGlue() {
-        if (rowEndsFurtherLeftThanCurrentRow(rowcount+1)) {
-          glueDownLeft();
-        } 
-  
-        if (rowEndsFurtherRightThanCurrentRow(rowcount+1)) {
-          glueDownRight();
-        } 
-  
-        if (rowEndsFurtherLeftThanCurrentRow(rowcount-1)) {
-          glueUpLeft();
-        } 
-  
-        if (rowEndsFurtherRightThanCurrentRow(rowcount-1)) {
-          glueUpRight();
-        } 
-  
-        if (rowLeftAlignsWithCurrentRow(rowcount-1)) {
-          verticalGlueLeftDown(rowcount);
+
+    function drawInnerShape() {
+        if (points.length > 2) {
+            fill(120);
+            beginShape();
+            for (let i = 0; i < points.length; i++) {
+                vertex(points[i].x,points[i].y);
+            }
+            endShape();
         }
-  
-        if (rowRightAlignsWithCurrentRow(rowcount-1)) {
-          verticalGlueRightDown(rowcount);
+    }
+}
+
+function mousePressed() {
+    if (dist(mouseX,mouseY,50,50) < 80) {
+      drawPattern($shape,15,colorwayGreen);
+    }
+    feed = new Feedback(mouseX,mouseY,pointRadius);
+    if (clickingOnExistingPoint(mouseX,mouseY,points) ) {
+    } else {
+        addPoint();
+    }
+
+    function clickingOnExistingPoint(x,y,points) {
+        for (let i = 0; i < points.length; i++) {
+            if (dist(x,y,points[i].x,points[i].y) < 40) {
+                points[i].select();
+                return true;
+            };
+        };
+    };
+
+    function addPoint() {
+        points[points.length] = new Vertex(mouseX,mouseY,pointRadius);
+    }
+    function undoAddPoint() {
+        points.pop();
+    }
+    loop();
+}
+
+function mouseDragged() {
+    for (let i = 0; i < points.length; i++) {
+        if (points[i].selected == true) {
+            points[i].x = mouseX;
+            points[i].y = mouseY;
         }
-      }
-  
-      function rowLeftAlignsWithCurrentRow(n) {
-        if (n < 0 || n > rows) {
-          return false;
-        } else if (getRowLeftX(n) == getRowLeftX(rowcount)) {
-          return true;
+    }
+}
+
+function mouseReleased() {
+    for (let i = 0; i < points.length; i++) {
+        points[i].selected = false;
+    }
+    noLoop();
+}
+
+class Feedback {
+    constructor(x,y,r) {
+        this.r = r;
+        this.x = x;
+        this.y = y;
+        this.r = 0;
+    }
+    update() {
+        console.log('feedback update call at '+ this.x + this.y + this.r);
+        if (this.r < pointRadius*10) {
+            this.r+=20;
+            fill(255);
+            circle(this.x,this.y,this.r);
         }
-      }
-  
-      function rowRightAlignsWithCurrentRow(n) {
-        if (n < 0 || n > rows) {
-          return false;
-        } else if (getRowRightX(n) == getRowRightX(rowcount)) {
-          return true;
-        }
-      }
-  
-      function rowEndsFurtherLeftThanCurrentRow(n) {
-        if (n < 0 || n > rows - 1) {
-          return false;
-        } else if ((getRowLeftX(n)) < getRowLeftX(rowcount) ) {
-          return true;
-        } else {
-          return false;
-        }
-      }
-      function rowEndsFurtherRightThanCurrentRow(n) {
-        if (n < 0 || n > rows - 1) {
-          return false;
-        } else if ((getRowRightX(n))> getRowRightX(rowcount) ) {
-          return true;
-        } else {
-          return false;
-        }
-      }
-  
-      function glueUpLeft() {
-        glue(
-          getRowLeftX(rowcount),
-          yrowcenter - r,
-          getRowLeftX(rowcount) - d,
-          yrowcenter
-        )
-      }
-  
-      function glueUpRight() {
-        glue(
-          getRowRightX(rowcount),
-          yrowcenter - r,
-          getRowRightX(rowcount) + d,
-          yrowcenter
-        )
-      }
-  
-      function glueDownRight() {
-        glue(
-          getRowRightX(rowcount),
-          yrowcenter + r,
-          getRowRightX(rowcount) + d,
-          yrowcenter
-        )
-      }
-  
-      function glueDownLeft() {
-        glue(
-          getRowLeftX(rowcount),
-          yrowcenter + r,
-          getRowLeftX(rowcount) - d,
-          yrowcenter
-        )
-      }
-  
-      function verticalGlueLeftDown(rowcount) {
-        verticalGlue(getRowLeftX(rowcount),yrowcenter-r,r,r);
-      }
-  
-      function verticalGlueRightDown(rowcount) {
-        verticalGlue(getRowRightX(rowcount),yrowcenter-r,r,r);
-      }
     }
-  
-    function fillRow() {
-      fill(color)
-      rect(xcenter + rowkey[rowcount][1], yrowcenter, getRowWidth(rowcount), r)
-      circle(getRowLeftX(rowcount), yrowcenter, d)
-      circle(getRowRightX(rowcount), yrowcenter, d)
+}
+class Vertex {
+    constructor(x,y,r,selected) {
+        this.x = x;
+        this.y = y;
+        this.r = r;
+        this.selected = false;
+}
+    render() {circle(this.x,this.y,this.r)}
+    select() {
+        this.x = mouseX;
+        this.y = mouseY;
+        this.render();
+        this.selected = true;
     }
-  
-    function getRowLeftX(n) {
-      return xcenter - getRowWidth(n) + rowkey[n][1];
-    }
-  
-    function getRowRightX(n) {
-      return xcenter + getRowWidth(n) + rowkey[n][1];
-    }
-  
-    function getRowWidth(n) {
-      return rowkey[n][0];
-    }
-  
-    function verticalGlue(x,y,r,d) {
-      fill(color);
-      rect(x,y,r,d);
-    }
-  
-    function glue(xorigin, yorigin, xdiag, ydiag) {
-      beginShape()
-  
-      let width = abs(xorigin - xdiag)
-      let height = abs(yorigin - ydiag)
-      let o = [xorigin, yorigin]
-      let e = [xorigin, findTexE()]
-      let c = midpoint(e[0], e[1], xdiag, ydiag)
-      let a = [xdiag, yorigin]
-      let b = midpoint(a[0], a[1], o[0], o[1])
-  
-      strokeWeight(5)
-      point(o[0], o[1])
-      point(e[0], e[1])
-      point(c[0], c[1])
-      point(a[0], a[1])
-      point(b[0], b[1])
-  
-      vertex(e[0], e[1])
-      vertex(o[0], o[1])
-      vertex(b[0], b[1])
-      vertex(a[0], a[1])
-      vertex(c[0], c[1])
-  
-      beginContour()
-      vertex(a[0], a[1])
-      bezierVertex(
-        a[0], a[1],
-        b[0], b[1],
-        c[0], c[1]
-      )
-      endContour()
-      endShape()
-  
-      function findTexE() {
-        if (yorigin < ydiag) {
-          return yorigin + r;
-        }
-        else { return yorigin - r; }
-      }
-    }
-  }
-  
-  function midpoint(x, y, x2, y2) {
-    let midx = (x + x2) / 2;
-    let midy = (y + y2) / 2;
-    return [midx, midy];
-  }
+    x() {return this.x}
+    y() {return this.y}
+}
