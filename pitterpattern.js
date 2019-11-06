@@ -1,14 +1,12 @@
 var index = 0;
-let pointRadius = 10;
-let points = [];
+var pointRadius = 10;
+var points = [];
 
 var $shape = points;
 var colorwayGreen = [[0,0,255],[120,220,255],5];
 
 function setup() {
     createCanvas(innerWidth,500);
-    noLoop();
-    noStroke();
   }
   
   function draw() {
@@ -50,7 +48,7 @@ function placeShape(xcenter, ycenter, shape) {
 function getColor(colorway) {
   return lerp(colorway[0],colorway[1],
     round(
-      10 / random(0,colorway[3]) 
+      10 / random(0,colorway[2]) 
     )
   );
 }
@@ -62,14 +60,14 @@ function drawCursor() {
 function makeShape() {
     drawCursor();
     drawInnerShape();
-    drawVertices();
+    drawVertices(255);
 
     function drawVertices(color) {
         for (let i = 0; i < points.length; i++) {
             fill(color);
             points[i].render();
             feed.update();
-            drawBorders();
+            drawBorders(255);
 
             function drawBorders(color) {
                 if (i > 0) {
@@ -87,6 +85,7 @@ function makeShape() {
     function drawInnerShape() {
         if (points.length > 2) {
             fill(120);
+            noStroke();
             beginShape();
             for (let i = 0; i < points.length; i++) {
                 vertex(points[i].x,points[i].y);
@@ -163,7 +162,7 @@ class Vertex {
         this.r = r;
         this.selected = false;
 }
-    render() {circle(this.x,this.y,this.r)}
+    render() {noStroke();circle(this.x,this.y,this.r);}
     select() {
         this.x = mouseX;
         this.y = mouseY;
