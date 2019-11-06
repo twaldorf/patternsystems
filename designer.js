@@ -53,7 +53,7 @@ function splotch(xcenter, ycenter, rows, scale, color) {
   let rowkey;
   let yrowcenter = ycenter + d * rowcount;
 
-  rowkey = generateKey(rows); //2d array of row parameters explained below
+  rowkey = generateKey(rows);
   
   drawRows();
   
