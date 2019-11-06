@@ -3,34 +3,42 @@ var pointRadius = 10;
 var points = [];
 
 var $shape = points;
-var colorwayGreen = [[0,0,255],[120,220,255],5];
 
 function setup() {
     createCanvas(innerWidth,500);
-  }
-  
-  function draw() {
+}
+
+var colorway_temp = [0,255,255];
+var $colorway = colorway_temp;
+
+function draw() {
     background(0);
     drawButton(50,50);
     makeShape();
-  }
+}
 
-  function drawButton(x,y) {
+function drawButton(x,y) {
+    noStroke();
     fill(150);
     rect(x-8,y-14,100,20);
     fill(255);
     text('pitter patternize',x ,y);
-  }
+}
   
 function drawPattern($shape,gridUnit,colorway) {
   gridUnit = validateGridUnit(gridUnit);
-
-  for(let i = 0; i < 50; i++) {
+  for(let i = 0; i < 500; i++) {
     push();
-    translate(gridUnit,gridUnit);
+    translate(random(width / gridUnit) * gridUnit,random(0,width / gridUnit) * gridUnit);
+    rotate(round(random(0,2))*180);
     placeShape(0,0,$shape);
     pop();
   }
+}
+
+function placeShape(xcenter, ycenter, shape) {
+  fill(getColor($colorway));
+  drawInnerShape();
 }
 
 function validateGridUnit(gridUnit) {
@@ -41,16 +49,9 @@ function validateGridUnit(gridUnit) {
   };
 }
   
-function placeShape(xcenter, ycenter, shape) {
-  fill(getColor(colorwayGreen));
-}
 
 function getColor(colorway) {
-  return lerp(colorway[0],colorway[1],
-    round(
-      10 / random(0,colorway[2]) 
-    )
-  );
+  return lerp($colorway[0],$colorway[1],random(0,1));
 }
 
 function drawCursor() {
@@ -82,45 +83,47 @@ function makeShape() {
         };
     }
 
-    function drawInnerShape() {
-        if (points.length > 2) {
-            fill(120);
-            noStroke();
-            beginShape();
-            for (let i = 0; i < points.length; i++) {
-                vertex(points[i].x,points[i].y);
-            }
-            endShape();
+}
+
+function drawInnerShape() {
+    if (points.length > 2) {
+        fill(getColor($colorway));
+        noStroke();
+        beginShape();
+        for (let i = 0; i < points.length; i++) {
+            vertex(points[i].x,points[i].y);
         }
+        endShape();
     }
 }
 
 function mousePressed() {
     if (dist(mouseX,mouseY,50,50) < 80) {
-      drawPattern($shape,15,colorwayGreen);
-    }
-    feed = new Feedback(mouseX,mouseY,pointRadius);
-    if (clickingOnExistingPoint(mouseX,mouseY,points) ) {
+      drawPattern($shape,15,$colorway);
     } else {
-        addPoint();
-    }
-
-    function clickingOnExistingPoint(x,y,points) {
-        for (let i = 0; i < points.length; i++) {
-            if (dist(x,y,points[i].x,points[i].y) < 40) {
-                points[i].select();
-                return true;
+        feed = new Feedback(mouseX,mouseY,pointRadius);
+        if (clickingOnExistingPoint(mouseX,mouseY,points) ) {
+        } else {
+            addPoint();
+        }
+    
+        function clickingOnExistingPoint(x,y,points) {
+            for (let i = 0; i < points.length; i++) {
+                if (dist(x,y,points[i].x,points[i].y) < 40) {
+                    points[i].select();
+                    return true;
+                };
             };
         };
-    };
-
-    function addPoint() {
-        points[points.length] = new Vertex(mouseX,mouseY,pointRadius);
+    
+        function addPoint() {
+            points[points.length] = new Vertex(mouseX,mouseY,pointRadius);
+        }
+        function undoAddPoint() {
+            points.pop();
+        }
+        loop();
     }
-    function undoAddPoint() {
-        points.pop();
-    }
-    loop();
 }
 
 function mouseDragged() {
