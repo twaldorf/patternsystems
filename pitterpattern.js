@@ -27,19 +27,20 @@ function drawButton(x,y) {
     fill(255);
     text('pitter patternize',x,y);
 }
-  
+
 function drawPattern($shape,gridUnit,colorway) {
-  gridUnit = validateGridUnit(gridUnit);
-  for(let i = 0; i < 5000; i++) {
-    push();
-    console.log(gridUnit);
-    translate(
-        random(-width,width),
-        random(-height,height))
-    ;
-    rotate(round((random()%2)) * PI);
-    placeShape(0,0,$shape);
-    pop();
+    gridUnit = validateGridUnit(gridUnit);
+    for(let i = 0; i < 1000; i++) {
+        push();
+        console.log(gridUnit);
+        getShapeWidth($shape);
+        translate(
+            random(-width,width),
+            random(-height,height))
+            ;
+            rotate(round((random()%2)) * PI);
+            placeShape(0,0,$shape);
+            pop();
   }
 }
 
@@ -70,6 +71,26 @@ function getShapeHeight(shape) {
         }
     }
     return maxx - minx;
+}
+
+function getShapeWidth(shape) {
+    let miny = shape[0].y;
+    let maxy = shape[0].y;
+    for (let i = 0; i < shape.length; i++) {
+        if (shape[i].y < miny) {
+            miny = shape[i].y;
+        }
+    }
+    for (let i = 0; i < shape.length; i++) {
+        if (shape[i].x > maxy) {
+            maxy = shape[i].y;
+        }
+    }
+    return maxy - miny;
+}
+
+function getShapeOrigin(shape) {
+    
 }
 
 function getColor(colorway) {
@@ -172,7 +193,6 @@ class Feedback {
         this.r = 0;
     }
     update() {
-        console.log('feedback update call at '+ this.x + this.y + this.r);
         if (this.r < pointRadius*10) {
             this.r+=20;
             fill(255);
