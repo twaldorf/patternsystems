@@ -4,6 +4,7 @@
 var index = 0;
 var pointRadius = 10;
 var points = [];
+var mode = 'curved';
 
 var $shape = points;
 
@@ -134,7 +135,11 @@ function drawInnerShape() {
         noStroke();
         beginShape();
         for (let i = 0; i < points.length; i++) {
-            vertex(points[i].x,points[i].y);
+            if (mode == 'curved') {
+                curveVertex(points[i].x,points[i].y);
+            } else {
+                vertex(points[i].x,points[i].y);
+            }
         }
         endShape();
     }
