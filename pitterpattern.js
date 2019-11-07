@@ -5,7 +5,7 @@ var index = 0;
 var pointRadius = 10;
 var points = [];
 var mode = 'curved';
-var scale = 1;
+var scale = .1;
 
 var $shape = points;
 
@@ -156,38 +156,48 @@ function onButton(x,y) {
 function mousePressed() {
     if (onButton(50,50)) {
       drawPattern($shape,15,$colorway);
+    } else if (clickingOnExistingPoint(mouseX,mouseY,$shape)) {
+        let closest = getClosestPoint(mouseX,mouseY,$shape);
+        $shape[closest].select();
     } else {
         feed = new Feedback(mouseX,mouseY,pointRadius);
-        if (clickingOnExistingPoint(mouseX,mouseY,points) ) {
-            
-        } else {
-            addPoint();
-        }
-    
-        function clickingOnExistingPoint(x,y,points) {
-            for (let i = 0; i < points.length; i++) {
-                if (dist(x,y,points[i].x,points[i].y) < pointRadius) {
-                    points[i].select();
-                    return true;
-                };
-            };
-        };
-    
-        function addPoint() {
-            points[points.length] = new Vertex(mouseX,mouseY,pointRadius);
-        }
-        function undoAddPoint() {
-            points.pop();
-        }
-        loop();
+        addPoint();
+    };
+    function addPoint() {
+        points[points.length] = new Vertex(mouseX,mouseY,pointRadius);
     }
+    function undoAddPoint() {
+        points.pop();
+    }
+    loop();
 }
+
+function getClosestPoint(x,y,shape) {
+    for (let i = 0; i < shape.length; i++) {
+        if (dist(x,y,shape[i].x,shape[i].y) < pointRadius) {
+            return i;
+        };
+    };
+}
+
+function clickingOnExistingPoint(x,y,shape) {
+    for (let i = 0; i < shape.length; i++) {
+        if (dist(x,y,shape[i].x,shape[i].y) < pointRadius) {
+            return true;
+        };
+    };
+};
 
 function mouseDragged() {
     for (let i = 0; i < points.length; i++) {
         if (points[i].selected == true) {
             points[i].x = mouseX;
             points[i].y = mouseY;
+        }
+    }
+    if (clickingOnExistingPoint(mouseX,mouseY,$shape) == false) {
+        if (dist(mouseX,mouseY,points[points.length-1].x,points[points.length-1].y) > 30) {
+            addPoint();
         }
     }
 }
