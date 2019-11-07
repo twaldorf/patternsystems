@@ -1,3 +1,6 @@
+//check if placed point is outside the canvas area and stop those points
+//fix color flash bug when first drawing
+
 var index = 0;
 var pointRadius = 10;
 var points = [];
@@ -8,7 +11,7 @@ function setup() {
     createCanvas(innerWidth,500);
 }
 
-var colorway_temp = [0,255,255];
+var colorway_temp = [50,255,255];
 var $colorway = colorway_temp;
 
 function draw() {
@@ -22,15 +25,19 @@ function drawButton(x,y) {
     fill(150);
     rect(x-8,y-14,100,20);
     fill(255);
-    text('pitter patternize',x ,y);
+    text('pitter patternize',x,y);
 }
   
 function drawPattern($shape,gridUnit,colorway) {
   gridUnit = validateGridUnit(gridUnit);
-  for(let i = 0; i < 500; i++) {
+  for(let i = 0; i < 5000; i++) {
     push();
-    translate(random(width / gridUnit) * gridUnit,random(0,width / gridUnit) * gridUnit);
-    rotate(round(random(0,2))*180);
+    console.log(gridUnit);
+    translate(
+        random(-width,width),
+        random(-height,height))
+    ;
+    rotate(round((random()%2)) * PI);
     placeShape(0,0,$shape);
     pop();
   }
@@ -43,15 +50,30 @@ function placeShape(xcenter, ycenter, shape) {
 
 function validateGridUnit(gridUnit) {
   if (gridUnit == 0) {
-    gridUnit = getShapeHeight() / 2;
+    gridUnit = getShapeHeight($shape);
   } else {
     return gridUnit;
   };
 }
   
+function getShapeHeight(shape) {
+    let minx = shape[0].x;
+    let maxx = shape[0].x;
+    for (let i = 0; i < shape.length; i++) {
+        if (shape[i].x < minx) {
+            minx = shape[i].x;
+        }
+    }
+    for (let i = 0; i < shape.length; i++) {
+        if (shape[i].x > maxx) {
+            maxx = shape[i].x;
+        }
+    }
+    return maxx - minx;
+}
 
 function getColor(colorway) {
-  return lerp($colorway[0],$colorway[1],random(0,1));
+  return lerp($colorway[0],$colorway[1],round(random(0,4))*0.25);
 }
 
 function drawCursor() {
@@ -109,7 +131,7 @@ function mousePressed() {
     
         function clickingOnExistingPoint(x,y,points) {
             for (let i = 0; i < points.length; i++) {
-                if (dist(x,y,points[i].x,points[i].y) < 40) {
+                if (dist(x,y,points[i].x,points[i].y) < pointRadius) {
                     points[i].select();
                     return true;
                 };
