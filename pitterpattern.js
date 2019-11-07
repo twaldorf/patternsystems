@@ -5,6 +5,7 @@ var index = 0;
 var pointRadius = 10;
 var points = [];
 var mode = 'curved';
+var scale = 1;
 
 var $shape = points;
 
@@ -12,7 +13,7 @@ function setup() {
     createCanvas(innerWidth,500);
 }
 
-var colorway_temp = [50,255,255];
+var colorway_temp = [50,255,1];
 var $colorway = colorway_temp;
 
 function draw() {
@@ -95,7 +96,7 @@ function getShapeOrigin(shape) {
 }
 
 function getColor(colorway) {
-  return lerp($colorway[0],$colorway[1],round(random(0,4))*0.25);
+  return lerp($colorway[0],$colorway[1],round(random(0,$colorway[2]))*(1/$colorway[2]));
 }
 
 function drawCursor() {
@@ -141,12 +142,20 @@ function drawInnerShape() {
                 vertex(points[i].x,points[i].y);
             }
         }
-        endShape();
+        endShape(CLOSE);
+    }
+}
+
+function onButton(x,y) {
+    if (dist(mouseX,mouseY,x,y) < 80) {
+        return true;
+    } else {
+        return false;
     }
 }
 
 function mousePressed() {
-    if (dist(mouseX,mouseY,50,50) < 80) {
+    if (onButton(50,50)) {
       drawPattern($shape,15,$colorway);
     } else {
         feed = new Feedback(mouseX,mouseY,pointRadius);
