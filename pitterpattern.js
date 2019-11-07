@@ -159,6 +159,7 @@ function mousePressed() {
     } else {
         feed = new Feedback(mouseX,mouseY,pointRadius);
         if (clickingOnExistingPoint(mouseX,mouseY,points) ) {
+            
         } else {
             addPoint();
         }
