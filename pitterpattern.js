@@ -32,21 +32,20 @@ function drawPattern($shape,gridUnit,colorway) {
     gridUnit = validateGridUnit(gridUnit);
     for(let i = 0; i < 1000; i++) {
         push();
-        console.log(gridUnit);
-        getShapeWidth($shape);
+        let randomWidth = random(0 - getShapeWidth($shape), canvas.width);
+        let randomHeight = random(0 - getShapeHeight($shape), canvas.height);
         translate(
-            random(-width,width),
-            random(-height,height))
-            ;
-            rotate(round((random()%2)) * PI);
-            placeShape(0,0,$shape);
-            pop();
+            randomWidth,
+            randomHeight);
+        rotate(round((random()%2)) * PI);
+        placeShape(0,0,$shape);
+        pop();
   }
 }
 
 function placeShape(xcenter, ycenter, shape) {
-  fill(getColor($colorway));
-  drawInnerShape();
+    fill(getColor($colorway));
+    drawInnerShape();
 }
 
 function validateGridUnit(gridUnit) {
@@ -90,7 +89,8 @@ function getShapeWidth(shape) {
 }
 
 function getShapeOrigin(shape) {
-    
+    let origin = [getShapeWidth(shape),getShapeHeight(shape)];
+    return origin;
 }
 
 function getColor(colorway) {
