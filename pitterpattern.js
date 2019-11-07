@@ -127,7 +127,6 @@ function makeShape() {
             }
         };
     }
-
 }
 
 function drawInnerShape() {
@@ -197,6 +196,14 @@ function mouseReleased() {
         points[i].selected = false;
     }
     noLoop();
+}
+
+function scaleShape(shape,scale) {
+    for (let i = 0; i < shape.length; i++) {
+        shape[i].x = shape[i].x * scale;
+        shape[i].y = shape[i].y * scale;
+    }
+    return shape;
 }
 
 class Feedback {
