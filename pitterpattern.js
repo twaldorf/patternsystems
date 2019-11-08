@@ -191,7 +191,7 @@ function findClosestPoint(x,y,shape) {
     }
     distances = sortByFirstColumn(distances,0);
     function sortByFirstColumn(array) {
-        for (let i = 0; i < 4; i++) {
+        for (let i = 0; i < array.length; i++) {
             for (let i = 0; i < array.length-1; i++) {
                 if (array[i][0] > array[i+1][0]) {
                     let temp = array[i];
