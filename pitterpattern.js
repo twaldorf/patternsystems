@@ -153,26 +153,6 @@ function onButton(x,y) {
     }
 }
 
-function mousePressed() {
-    if (onButton(50,50)) {
-      drawPattern($shape,15,$colorway);
-    } else if (clickingOnExistingPoint(mouseX,mouseY,$shape)) {
-        let indexOfClosestPoint = findClosestPoint(mouseX,mouseY,$shape);
-        console.log(indexOfClosestPoint);
-        $shape[indexOfClosestPoint].select();
-    } else {
-        feed = new Feedback(mouseX,mouseY,pointRadius);
-        addPoint($shape);
-    };
-    function addPoint(points) {
-        points[points.length] = new Vertex(mouseX,mouseY,pointRadius);
-    }
-    function undoAddPoint() {
-        points.pop();
-    }
-    loop();
-}
-
 // function getClosestPoint(x,y,shape) {
 //     let lastDist;
 //     let newDist;
@@ -213,6 +193,27 @@ function clickingOnExistingPoint(x,y,shape) {
     };
 };
 
+function mousePressed() {
+    if (onButton(50,50)) {
+      drawPattern($shape,15,$colorway);
+    } else if (clickingOnExistingPoint(mouseX,mouseY,$shape)) {
+        let indexOfClosestPoint = findClosestPoint(mouseX,mouseY,$shape);
+        console.log(indexOfClosestPoint);
+        $shape[indexOfClosestPoint].select();
+    } else {
+        feed = new Feedback(mouseX,mouseY,pointRadius);
+        addPoint($shape);
+    };
+    function undoAddPoint() {
+        points.pop();
+    }
+    loop();
+}
+
+function addPoint(points) {
+    points[points.length] = new Vertex(mouseX,mouseY,pointRadius);
+}
+
 function mouseDragged() {
     for (let i = 0; i < $shape.length; i++) {
         if ($shape[i].selected == true) {
@@ -220,11 +221,11 @@ function mouseDragged() {
             $shape[i].y = mouseY;
         }
     }
-    // if (clickingOnExistingPoint(mouseX,mouseY,$shape) == false) {
-    //     if (dist(mouseX,mouseY,points[points.length-1].x,points[points.length-1].y) > 30) {
-    //         addPoint();
-    //     }
-    // }
+    if (!clickingOnExistingPoint(mouseX,mouseY,$shape)) {
+        if (dist(mouseX,mouseY,$shape[$shape.length-1].x,$shape[$shape.length-1].y) > 30) {
+            addPoint($shape);
+        }
+    }
 }
 
 function mouseReleased() {
