@@ -158,6 +158,7 @@ function mousePressed() {
       drawPattern($shape,15,$colorway);
     } else if (clickingOnExistingPoint(mouseX,mouseY,$shape)) {
         let indexOfClosestPoint = findClosestPoint(mouseX,mouseY,$shape);
+        console.log(indexOfClosestPoint);
         $shape[indexOfClosestPoint].select();
     } else {
         feed = new Feedback(mouseX,mouseY,pointRadius);
@@ -183,17 +184,25 @@ function mousePressed() {
 //     };
 // }
 
-function findClosestPoint(x,y,shape,lowestDist=innerWidth,index=0) {
-    let challenger = dist(x,y,shape[index].x,shape[index].y);
-    if (challenger < lowestDist) {
-        lowestDist = challenger;
-        index++;
-        findClosestPoint(x,y,shape,lowestDist,index);
-    } else {
-        console.log('returning ' + index);
-        return index;
+function findClosestPoint(x,y,shape) {
+    let distances = [];
+    for (let i = 0; i < shape.length; i++) {
+        distances.push([dist(x,y,shape[i].x,shape[i].y),i]);
     }
-    return index;
+    distances = sortByFirstColumn(distances,0);
+    function sortByFirstColumn(array) {
+        for (let i = 0; i < 4; i++) {
+            for (let i = 0; i < array.length-1; i++) {
+                if (array[i][0] > array[i+1][0]) {
+                    let temp = array[i];
+                    array[i] = array[i+1];
+                    array[i+1] = temp;
+                }
+            }
+        }
+        return array;
+    }
+    return distances[0][1];
 }
 
 function clickingOnExistingPoint(x,y,shape) {
@@ -251,7 +260,7 @@ class Feedback {
     }
 }
 class Vertex {
-    constructor(x,y,r,selected) {
+    constructor(x,y,r) {
         this.x = x;
         this.y = y;
         this.r = r;
