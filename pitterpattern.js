@@ -157,8 +157,11 @@ function mousePressed() {
     if (onButton(50,50)) {
       drawPattern($shape,15,$colorway);
     } else if (clickingOnExistingPoint(mouseX,mouseY,$shape)) {
-        let closest = getClosestPoint(mouseX,mouseY,$shape);
-        $shape[closest].select();
+        let indexOfClosestPoint = findClosestPoint(mouseX,mouseY,$shape);
+        console.log(indexOfClosestPoint);
+        console.log($shape);
+        console.log($shape[indexOfClosestPoint])
+        $shape[indexOfClosestPoint].select();
     } else {
         feed = new Feedback(mouseX,mouseY,pointRadius);
         addPoint();
@@ -172,12 +175,29 @@ function mousePressed() {
     loop();
 }
 
-function getClosestPoint(x,y,shape) {
-    for (let i = 0; i < shape.length; i++) {
-        if (dist(x,y,shape[i].x,shape[i].y) < pointRadius) {
-            return i;
-        };
-    };
+// function getClosestPoint(x,y,shape) {
+//     let lastDist;
+//     let newDist;
+//     for (let i = 0; i < shape.length; i++) {
+//         if (dist(x,y,shape[i].x,shape[i].y) < dist(x,y,shape[i].x,shape[i].y)) {
+//             return i;
+//             newDist = dist(x,y,shape[i].x,shape[i].y);
+//         };
+//     };
+// }
+
+function findClosestPoint(x,y,shape,lowestDist=1000,index=0) {
+    let challenger = dist(x,y,shape[index].x,shape[index].y);
+    if (challenger < lowestDist) {
+        lowestDist = challenger;
+        console.log(index);
+        index++;
+        findClosestPoint(x,y,shape,lowestDist,index);
+    } else {
+        console.log('returning ' + index);
+        // return index;
+    }
+    return index;
 }
 
 function clickingOnExistingPoint(x,y,shape) {
@@ -195,16 +215,18 @@ function mouseDragged() {
             points[i].y = mouseY;
         }
     }
-    if (clickingOnExistingPoint(mouseX,mouseY,$shape) == false) {
-        if (dist(mouseX,mouseY,points[points.length-1].x,points[points.length-1].y) > 30) {
-            addPoint();
-        }
-    }
+    // if (clickingOnExistingPoint(mouseX,mouseY,$shape) == false) {
+    //     if (dist(mouseX,mouseY,points[points.length-1].x,points[points.length-1].y) > 30) {
+    //         addPoint();
+    //     }
+    // }
 }
 
 function mouseReleased() {
     for (let i = 0; i < points.length; i++) {
-        points[i].selected = false;
+        if ($shape[i].selected == true) {
+            $shape[i].selected = false;
+        }
     }
     noLoop();
 }
@@ -241,9 +263,6 @@ class Vertex {
 }
     render() {noStroke();circle(this.x,this.y,this.r);}
     select() {
-        this.x = mouseX;
-        this.y = mouseY;
-        this.render();
         this.selected = true;
     }
     x() {return this.x}
