@@ -3,14 +3,14 @@
 
 var index = 0;
 var pointRadius = 10;
-// var points = [];
 var mode = 'curved';
-var scale = .1;
-
 var $shape = [];
+// var scale = .1;
+
 
 function setup() {
     createCanvas(innerWidth,500);
+    noLoop();
 }
 
 var colorway_temp = [50,255,1];
@@ -22,6 +22,83 @@ function draw() {
     makeShape($shape);
 }
 
+// function patternize(shape) {
+//     for (let i = 0; i < 1000; i++) {
+//         let offsetX = random(0, canvas.width);
+//         let offsetY = (0, canvas.height);
+//         let rotation = round((random()%2)) * PI;
+//         let camoShape = patternizeShapeArray(shape,offsetX,offsetY,rotation);
+//         drawInnerShape(camoShape);
+//     }
+// }
+
+// function patternizeShapeArray(shape,offsetX,offsetY,rotation) {
+//     for (let i = 0; i < shape.length; i++) {
+//         shape[i][0] = shape[i][0] + offsetX;
+//         shape[i][1] = shape[i][1] + offsetY;
+//     }
+//     return shape;
+// }
+
+function drawPattern(shape,gridUnit,colorway) {
+    gridUnit = validateGridUnit(gridUnit);
+    for(let i = 0; i < 1000; i++) {
+        push();
+        let randomWidth = random(0, canvas.width);
+        let randomHeight = random(0, canvas.height);
+        translate(
+            randomWidth,
+            randomHeight);
+        rotate(round((random()%2)) * PI);
+        placeShape(shape);
+        pop();
+  }
+}
+
+function mousePressed() {
+    if (onButton(50,50)) {
+      drawPattern($shape,15,$colorway);
+    // patternize($shape);
+    } else if (clickingOnExistingPoint(mouseX,mouseY,$shape)) {
+        let indexOfClosestPoint = findClosestPoint(mouseX,mouseY,$shape);
+        $shape[indexOfClosestPoint].select();
+    } else {
+        feed = new Feedback(mouseX,mouseY,pointRadius);
+        addPoint($shape);
+    };
+    loop();
+}
+
+function addPoint(points) {
+    points[points.length] = new Vertex(mouseX,mouseY,pointRadius);
+}
+function undoAddPoint(array) {
+    array.pop();
+}
+
+function mouseDragged() {
+    for (let i = 0; i < $shape.length; i++) {
+        if ($shape[i].selected == true) {
+            $shape[i].x = mouseX;
+            $shape[i].y = mouseY;
+        }
+    }
+    if (!clickingOnExistingPoint(mouseX,mouseY,$shape) && !onButton(50,50)) {
+        if (dist(mouseX,mouseY,$shape[$shape.length-1].x,$shape[$shape.length-1].y) > 30) {
+            addPoint($shape);
+        }
+    }
+}
+
+function mouseReleased() {
+    for (let i = 0; i < $shape.length; i++) {
+        if ($shape[i].selected == true) {
+            $shape[i].selected = false;
+        }
+    }
+    noLoop();
+}
+
 function drawButton(x,y) {
     noStroke();
     fill(150);
@@ -30,22 +107,7 @@ function drawButton(x,y) {
     text('pitter patternize',x,y);
 }
 
-function drawPattern(shape,gridUnit,colorway) {
-    gridUnit = validateGridUnit(gridUnit);
-    for(let i = 0; i < 1000; i++) {
-        push();
-        let randomWidth = random(0 - getShapeWidth($shape), canvas.width);
-        let randomHeight = random(0 - getShapeHeight($shape), canvas.height);
-        translate(
-            randomWidth,
-            randomHeight);
-        rotate(round((random()%2)) * PI);
-        placeShape(0,0,shape);
-        pop();
-  }
-}
-
-function placeShape(xcenter, ycenter, shape) {
+function placeShape(shape) {
     fill(getColor($colorway));
     drawInnerShape(shape);
 }
@@ -107,25 +169,25 @@ function makeShape(shape) {
     drawCursor();
     drawInnerShape(shape);
     drawVertices(shape,255);
+}
 
-    function drawVertices(shape,color) {
-        for (let i = 0; i < shape.length; i++) {
-            fill(color);
-            shape[i].render();
-            feed.update();
-            drawBorders(shape,255);
+function drawVertices(shape,color) {
+    for (let i = 0; i < shape.length; i++) {
+        fill(color);
+        shape[i].render();
+        feed.update();
+        drawBorders(shape,255,i);
+    };
+}
 
-            function drawBorders(points,color) {
-                if (i > 0) {
-                    stroke(color);
-                    strokeWeight(1);
-                    line(points[i].x,points[i].y,points[i-1].x,points[i-1].y);
-                }
-                if (points.length > 2) {
-                    line(points[points.length-1].x,points[points.length-1].y,points[0].x,points[0].y);
-                }
-            }
-        };
+function drawBorders(points,color,i) {
+    if (i > 0) {
+        stroke(color);
+        strokeWeight(1);
+        line(points[i].x,points[i].y,points[i-1].x,points[i-1].y);
+    }
+    if (points.length > 2) {
+        line(points[points.length-1].x,points[points.length-1].y,points[0].x,points[0].y);
     }
 }
 
@@ -153,36 +215,27 @@ function onButton(x,y) {
     }
 }
 
-// function getClosestPoint(x,y,shape) {
-//     let lastDist;
-//     let newDist;
-//     for (let i = 0; i < shape.length; i++) {
-//         if (dist(x,y,shape[i].x,shape[i].y) < dist(x,y,shape[i].x,shape[i].y)) {
-//             return i;
-//             newDist = dist(x,y,shape[i].x,shape[i].y);
-//         };
-//     };
-// }
-
 function findClosestPoint(x,y,shape) {
     let distances = [];
     for (let i = 0; i < shape.length; i++) {
         distances.push([dist(x,y,shape[i].x,shape[i].y),i]);
     }
     distances = sortByFirstColumn(distances,0);
-    function sortByFirstColumn(array) {
-        for (let i = 0; i < array.length; i++) {
-            for (let i = 0; i < array.length-1; i++) {
-                if (array[i][0] > array[i+1][0]) {
-                    let temp = array[i];
-                    array[i] = array[i+1];
-                    array[i+1] = temp;
-                }
+    return distances[0][1];
+}
+
+function sortByFirstColumn(array) {
+    for (let i = 0; i < array.length; i++) {
+        for (let i = 0; i < array.length-1; i++) {
+            //DIY SORT
+            if (array[i][0] > array[i+1][0]) {
+                let temp = array[i];
+                array[i] = array[i+1];
+                array[i+1] = temp;
             }
         }
-        return array;
     }
-    return distances[0][1];
+    return array;
 }
 
 function clickingOnExistingPoint(x,y,shape) {
@@ -192,50 +245,6 @@ function clickingOnExistingPoint(x,y,shape) {
         };
     };
 };
-
-function mousePressed() {
-    if (onButton(50,50)) {
-      drawPattern($shape,15,$colorway);
-    } else if (clickingOnExistingPoint(mouseX,mouseY,$shape)) {
-        let indexOfClosestPoint = findClosestPoint(mouseX,mouseY,$shape);
-        console.log(indexOfClosestPoint);
-        $shape[indexOfClosestPoint].select();
-    } else {
-        feed = new Feedback(mouseX,mouseY,pointRadius);
-        addPoint($shape);
-    };
-    function undoAddPoint() {
-        points.pop();
-    }
-    loop();
-}
-
-function addPoint(points) {
-    points[points.length] = new Vertex(mouseX,mouseY,pointRadius);
-}
-
-function mouseDragged() {
-    for (let i = 0; i < $shape.length; i++) {
-        if ($shape[i].selected == true) {
-            $shape[i].x = mouseX;
-            $shape[i].y = mouseY;
-        }
-    }
-    if (!clickingOnExistingPoint(mouseX,mouseY,$shape)) {
-        if (dist(mouseX,mouseY,$shape[$shape.length-1].x,$shape[$shape.length-1].y) > 30) {
-            addPoint($shape);
-        }
-    }
-}
-
-function mouseReleased() {
-    for (let i = 0; i < $shape.length; i++) {
-        if ($shape[i].selected == true) {
-            $shape[i].selected = false;
-        }
-    }
-    noLoop();
-}
 
 function scaleShape(shape,scale) {
     for (let i = 0; i < shape.length; i++) {
@@ -253,7 +262,7 @@ class Feedback {
         this.r = 0;
     }
     update() {
-        if (this.r < pointRadius*10) {
+        if (this.r < pointRadius*5) {
             this.r+=20;
             fill(255);
             circle(this.x,this.y,this.r);
@@ -274,3 +283,4 @@ class Vertex {
     x() {return this.x}
     y() {return this.y}
 }
+
