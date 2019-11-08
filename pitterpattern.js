@@ -3,11 +3,11 @@
 
 var index = 0;
 var pointRadius = 10;
-var points = [];
+// var points = [];
 var mode = 'curved';
 var scale = .1;
 
-var $shape = points;
+var $shape = [];
 
 function setup() {
     createCanvas(innerWidth,500);
@@ -19,7 +19,7 @@ var $colorway = colorway_temp;
 function draw() {
     background(0);
     drawButton(50,50);
-    makeShape();
+    makeShape($shape);
 }
 
 function drawButton(x,y) {
@@ -30,7 +30,7 @@ function drawButton(x,y) {
     text('pitter patternize',x,y);
 }
 
-function drawPattern($shape,gridUnit,colorway) {
+function drawPattern(shape,gridUnit,colorway) {
     gridUnit = validateGridUnit(gridUnit);
     for(let i = 0; i < 1000; i++) {
         push();
@@ -40,14 +40,14 @@ function drawPattern($shape,gridUnit,colorway) {
             randomWidth,
             randomHeight);
         rotate(round((random()%2)) * PI);
-        placeShape(0,0,$shape);
+        placeShape(0,0,shape);
         pop();
   }
 }
 
 function placeShape(xcenter, ycenter, shape) {
     fill(getColor($colorway));
-    drawInnerShape();
+    drawInnerShape(shape);
 }
 
 function validateGridUnit(gridUnit) {
@@ -103,19 +103,19 @@ function drawCursor() {
   circle(mouseX,mouseY,pointRadius * 0.5);
 };
 
-function makeShape() {
+function makeShape(shape) {
     drawCursor();
-    drawInnerShape();
-    drawVertices(255);
+    drawInnerShape(shape);
+    drawVertices(shape,255);
 
-    function drawVertices(color) {
-        for (let i = 0; i < points.length; i++) {
+    function drawVertices(shape,color) {
+        for (let i = 0; i < shape.length; i++) {
             fill(color);
-            points[i].render();
+            shape[i].render();
             feed.update();
-            drawBorders(255);
+            drawBorders(shape,255);
 
-            function drawBorders(color) {
+            function drawBorders(points,color) {
                 if (i > 0) {
                     stroke(color);
                     strokeWeight(1);
@@ -129,7 +129,7 @@ function makeShape() {
     }
 }
 
-function drawInnerShape() {
+function drawInnerShape(points) {
     if (points.length > 2) {
         fill(getColor($colorway));
         noStroke();
@@ -158,15 +158,12 @@ function mousePressed() {
       drawPattern($shape,15,$colorway);
     } else if (clickingOnExistingPoint(mouseX,mouseY,$shape)) {
         let indexOfClosestPoint = findClosestPoint(mouseX,mouseY,$shape);
-        console.log(indexOfClosestPoint);
-        console.log($shape);
-        console.log($shape[indexOfClosestPoint])
         $shape[indexOfClosestPoint].select();
     } else {
         feed = new Feedback(mouseX,mouseY,pointRadius);
-        addPoint();
+        addPoint($shape);
     };
-    function addPoint() {
+    function addPoint(points) {
         points[points.length] = new Vertex(mouseX,mouseY,pointRadius);
     }
     function undoAddPoint() {
@@ -186,16 +183,15 @@ function mousePressed() {
 //     };
 // }
 
-function findClosestPoint(x,y,shape,lowestDist=1000,index=0) {
+function findClosestPoint(x,y,shape,lowestDist=innerWidth,index=0) {
     let challenger = dist(x,y,shape[index].x,shape[index].y);
     if (challenger < lowestDist) {
         lowestDist = challenger;
-        console.log(index);
         index++;
         findClosestPoint(x,y,shape,lowestDist,index);
     } else {
         console.log('returning ' + index);
-        // return index;
+        return index;
     }
     return index;
 }
@@ -209,10 +205,10 @@ function clickingOnExistingPoint(x,y,shape) {
 };
 
 function mouseDragged() {
-    for (let i = 0; i < points.length; i++) {
-        if (points[i].selected == true) {
-            points[i].x = mouseX;
-            points[i].y = mouseY;
+    for (let i = 0; i < $shape.length; i++) {
+        if ($shape[i].selected == true) {
+            $shape[i].x = mouseX;
+            $shape[i].y = mouseY;
         }
     }
     // if (clickingOnExistingPoint(mouseX,mouseY,$shape) == false) {
@@ -223,7 +219,7 @@ function mouseDragged() {
 }
 
 function mouseReleased() {
-    for (let i = 0; i < points.length; i++) {
+    for (let i = 0; i < $shape.length; i++) {
         if ($shape[i].selected == true) {
             $shape[i].selected = false;
         }
