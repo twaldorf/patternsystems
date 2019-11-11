@@ -6,11 +6,13 @@ var pointRadius = 10;
 var mode = 'curved';
 var $shape = [];
 // var scale = .1;
+var primaryQueue = [];
+var form;
 
 
 function setup() {
     createCanvas(innerWidth,500);
-    noLoop();
+    form = new Form;
 }
 
 var colorway_temp = [50,255,1];
@@ -19,7 +21,13 @@ var $colorway = colorway_temp;
 function draw() {
     background(0);
     drawButton(50,50);
-    makeShape($shape);
+    renderQueue(primaryQueue);
+}
+
+function renderQueue(queue=[]) {
+    queue.forEach(element => {
+        element.render();
+    });
 }
 
 // function patternize(shape) {
@@ -40,31 +48,33 @@ function draw() {
 //     return shape;
 // }
 
-function drawPattern(shape,gridUnit,colorway) {
-    gridUnit = validateGridUnit(gridUnit);
-    for(let i = 0; i < 1000; i++) {
-        push();
-        let randomWidth = random(0, canvas.width);
-        let randomHeight = random(0, canvas.height);
-        translate(
-            randomWidth,
-            randomHeight);
-        rotate(round((random()%2)) * PI);
-        placeShape(shape);
-        pop();
-  }
-}
+// function drawPattern(shape,gridUnit,colorway) {
+//     gridUnit = validateGridUnit(gridUnit);
+//     for(let i = 0; i < 1000; i++) {
+//         push();
+//         let randomWidth = random(0, canvas.width);
+//         let randomHeight = random(0, canvas.height);
+//         translate(
+//             randomWidth,
+//             randomHeight);
+//         rotate(round((random()%2)) * PI);
+//         placeShape(shape);
+//         pop();
+//   }
+// }
 
 function mousePressed() {
     if (onButton(50,50)) {
-      drawPattern($shape,15,$colorway);
+      drawPattern(form.shape,15,$colorway);
     // patternize($shape);
-    } else if (clickingOnExistingPoint(mouseX,mouseY,$shape)) {
-        let indexOfClosestPoint = findClosestPoint(mouseX,mouseY,$shape);
-        $shape[indexOfClosestPoint].select();
+    } else if (clickingOnExistingPoint(mouseX,mouseY,form.shape)) {
+        let indexOfClosestPoint = findClosestPoint(mouseX,mouseY,form.shape);
+        form.shape[indexOfClosestPoint].select();
     } else {
         feed = new Feedback(mouseX,mouseY,pointRadius);
-        addPoint($shape);
+        form.addPoint(mouseX,mouseY);
+        console.log(form);
+        primaryQueue.push(form);
     };
     loop();
 }
@@ -77,23 +87,23 @@ function undoAddPoint(array) {
 }
 
 function mouseDragged() {
-    for (let i = 0; i < $shape.length; i++) {
-        if ($shape[i].selected == true) {
-            $shape[i].x = mouseX;
-            $shape[i].y = mouseY;
+    for (let i = 0; i < form.shape.length; i++) {
+        if (form.shape[i].selected == true) {
+            form.shape[i].x = mouseX;
+            form.shape[i].y = mouseY;
         }
     }
-    if (!clickingOnExistingPoint(mouseX,mouseY,$shape) && !onButton(50,50)) {
-        if (dist(mouseX,mouseY,$shape[$shape.length-1].x,$shape[$shape.length-1].y) > 30) {
-            addPoint($shape);
+    if (!clickingOnExistingPoint(mouseX,mouseY,form.shape) && !onButton(50,50)) {
+        if (dist(mouseX,mouseY,form.shape[form.shape.length-1].x,form.shape[form.shape.length-1].y) > 30) {
+            form.addPoint(mouseX,mouseY);
         }
     }
 }
 
 function mouseReleased() {
-    for (let i = 0; i < $shape.length; i++) {
-        if ($shape[i].selected == true) {
-            $shape[i].selected = false;
+    for (let i = 0; i < form.shape.length; i++) {
+        if (form.shape[i].selected == true) {
+            form.shape[i].selected = false;
         }
     }
     noLoop();
@@ -107,10 +117,10 @@ function drawButton(x,y) {
     text('pitter patternize',x,y);
 }
 
-function placeShape(shape) {
-    fill(getColor($colorway));
-    drawInnerShape(shape);
-}
+// function placeShape(shape) {
+//     fill(getColor($colorway));
+//     drawInnerShape(shape);
+// }
 
 function validateGridUnit(gridUnit) {
   if (gridUnit == 0) {
@@ -227,7 +237,7 @@ function findClosestPoint(x,y,shape) {
 function sortByFirstColumn(array) {
     for (let i = 0; i < array.length; i++) {
         for (let i = 0; i < array.length-1; i++) {
-            //DIY SORT
+            //DIY sort for poor people without means of personal transporation or self expression
             if (array[i][0] > array[i+1][0]) {
                 let temp = array[i];
                 array[i] = array[i+1];
@@ -248,10 +258,38 @@ function clickingOnExistingPoint(x,y,shape) {
 
 function scaleShape(shape,scale) {
     for (let i = 0; i < shape.length; i++) {
-        shape[i].x = shape[i].x * scale;
-        shape[i].y = shape[i].y * scale;
+        shape[i].x *= scale;
+        shape[i].y *= scale;
     }
     return shape;
+}
+
+class Form {
+    constructor() {
+        this.shape=[];
+    }
+    offset(x,y) {
+        for (let i = 0; i < this.shape.length; i++) {
+            this.shape[i][0] += x;
+            this.shape[i][1] += y;
+        }
+    }
+    render() {
+        console.log('rendnering' + this);
+        drawVertices(this.shape,$colorway);
+        drawInnerShape(this.shape);
+    }
+    addPoint(x,y) {
+        this.shape[this.shape.length] = new Vertex(mouseX,mouseY,pointRadius);
+    }
+    rmPoint(x,y) {
+        let point = [x,y];
+        for (let i = 0; i < this.shape.length; i++) {
+            if (point == this.shape[i]) {
+                this.shape.splice(i,1);
+            }
+        }
+    }
 }
 
 class Feedback {
@@ -283,4 +321,3 @@ class Vertex {
     x() {return this.x}
     y() {return this.y}
 }
-
