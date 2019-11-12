@@ -4,15 +4,17 @@
 var index = 0;
 var pointRadius = 10;
 var mode = 'curved';
-var $shape = [];
 // var scale = .1;
 var primaryQueue = [];
 var form;
+var dragInterval = 110;
 
 
 function setup() {
     createCanvas(innerWidth,500);
     form = new Form;
+    primaryQueue.push(form);
+    // noLoop();
 }
 
 var colorway_temp = [50,255,1];
@@ -20,70 +22,45 @@ var $colorway = colorway_temp;
 
 function draw() {
     background(0);
+    drawCursor();
     drawButton(50,50);
-    renderQueue(primaryQueue);
+    // if (primaryQueue.length > 1) {
+    //     loop();
+    // } else {
+    //     noLoop();
+    // }
+    renderAll(primaryQueue);
+    // noLoop();
 }
 
-function renderQueue(queue=[]) {
-    queue.forEach(element => {
-        element.render();
-    });
+function renderAll(queue) {
+    // console.log('queue length: '+primaryQueue.length)
+    console.log('queue: '+ primaryQueue)
+    // queue.forEach(element => {
+    //     element.render();
+    //     console.log('rendering ' + element.shape[0].x)
+    // });
+    // queue.forEach(function(element) {
+    //     element.render();
+    //     console.log('rendering ' + element.shape[0].x)
+
+    // });
+    for (let i = 0; i < queue.length; i++) {
+        queue[i].render();
+    }
 }
-
-// function patternize(shape) {
-//     for (let i = 0; i < 1000; i++) {
-//         let offsetX = random(0, canvas.width);
-//         let offsetY = (0, canvas.height);
-//         let rotation = round((random()%2)) * PI;
-//         let camoShape = patternizeShapeArray(shape,offsetX,offsetY,rotation);
-//         drawInnerShape(camoShape);
-//     }
-// }
-
-// function patternizeShapeArray(shape,offsetX,offsetY,rotation) {
-//     for (let i = 0; i < shape.length; i++) {
-//         shape[i][0] = shape[i][0] + offsetX;
-//         shape[i][1] = shape[i][1] + offsetY;
-//     }
-//     return shape;
-// }
-
-// function drawPattern(shape,gridUnit,colorway) {
-//     gridUnit = validateGridUnit(gridUnit);
-//     for(let i = 0; i < 1000; i++) {
-//         push();
-//         let randomWidth = random(0, canvas.width);
-//         let randomHeight = random(0, canvas.height);
-//         translate(
-//             randomWidth,
-//             randomHeight);
-//         rotate(round((random()%2)) * PI);
-//         placeShape(shape);
-//         pop();
-//   }
-// }
 
 function mousePressed() {
     if (onButton(50,50)) {
       drawPattern(form.shape,15,$colorway);
-    // patternize($shape);
     } else if (clickingOnExistingPoint(mouseX,mouseY,form.shape)) {
         let indexOfClosestPoint = findClosestPoint(mouseX,mouseY,form.shape);
         form.shape[indexOfClosestPoint].select();
     } else {
-        feed = new Feedback(mouseX,mouseY,pointRadius);
+        // feed = new Feedback(mouseX,mouseY,pointRadius);
         form.addPoint(mouseX,mouseY);
-        console.log(form);
-        primaryQueue.push(form);
     };
     loop();
-}
-
-function addPoint(points) {
-    points[points.length] = new Vertex(mouseX,mouseY,pointRadius);
-}
-function undoAddPoint(array) {
-    array.pop();
 }
 
 function mouseDragged() {
@@ -94,7 +71,7 @@ function mouseDragged() {
         }
     }
     if (!clickingOnExistingPoint(mouseX,mouseY,form.shape) && !onButton(50,50)) {
-        if (dist(mouseX,mouseY,form.shape[form.shape.length-1].x,form.shape[form.shape.length-1].y) > 30) {
+        if (dist(mouseX,mouseY,form.shape[form.shape.length-1].x,form.shape[form.shape.length-1].y) > dragInterval) {
             form.addPoint(mouseX,mouseY);
         }
     }
@@ -117,14 +94,9 @@ function drawButton(x,y) {
     text('pitter patternize',x,y);
 }
 
-// function placeShape(shape) {
-//     fill(getColor($colorway));
-//     drawInnerShape(shape);
-// }
-
 function validateGridUnit(gridUnit) {
   if (gridUnit == 0) {
-    gridUnit = getShapeHeight($shape);
+    gridUnit = getShapeHeight(form.shape);
   } else {
     return gridUnit;
   };
@@ -171,21 +143,45 @@ function getColor(colorway) {
   return lerp($colorway[0],$colorway[1],round(random(0,$colorway[2]))*(1/$colorway[2]));
 }
 
+function drawPattern(template,gridUnit,colorway) {
+    if (form.shape.length > 1) {
+        let copies=[];
+        for (let i = 0; i < 2; i++) {
+            copies[i] = copyOf(form);
+            copies[i].offset(random(0,200),random(0,10));
+            primaryQueue.push(copies[i]);
+        }
+    } else {
+        console.log('not enough vertices to draw a pattern!')
+    }
+    // let secondForm = Object.assign( Object.create( Object.getPrototypeOf(form)), form)
+    // let secondForm = new Form;
+    // secondForm.addPoint(300,300);
+    // secondForm.addPoint(350,250);
+    // secondForm.addPoint(370,200);
+    // // secondForm.shape = JSON.parse(JSON.stringify(form.shape));
+    // // secondForm.offset(200,200);
+    // primaryQueue.push(secondForm);
+}
+
+function copyOf(formObj) {
+    let temporaryCopy = new Form;
+    for (let i = 0; i < formObj.shape.length; i++) {
+        temporaryCopy.shape[i] = formObj.shape[i];
+    }
+    console.log(temporaryCopy.shape[1].x)
+    return temporaryCopy;
+}
+
 function drawCursor() {
   circle(mouseX,mouseY,pointRadius * 0.5);
 };
-
-function makeShape(shape) {
-    drawCursor();
-    drawInnerShape(shape);
-    drawVertices(shape,255);
-}
 
 function drawVertices(shape,color) {
     for (let i = 0; i < shape.length; i++) {
         fill(color);
         shape[i].render();
-        feed.update();
+        // feed.update();
         drawBorders(shape,255,i);
     };
 }
@@ -203,8 +199,9 @@ function drawBorders(points,color,i) {
 
 function drawInnerShape(points) {
     if (points.length > 2) {
-        fill(getColor($colorway));
-        noStroke();
+        fill(220);
+        stroke(255);
+        strokeWeight(1);
         beginShape();
         for (let i = 0; i < points.length; i++) {
             if (mode == 'curved') {
@@ -218,7 +215,7 @@ function drawInnerShape(points) {
 }
 
 function onButton(x,y) {
-    if (dist(mouseX,mouseY,x,y) < 80) {
+    if (dist(mouseX,mouseY,x,y) < 120) {
         return true;
     } else {
         return false;
@@ -266,22 +263,20 @@ function scaleShape(shape,scale) {
 
 class Form {
     constructor() {
-        this.shape=[];
-    }
-    offset(x,y) {
+        this.shape = [];
+    };
+    offset(xoffset,yoffset) {
         for (let i = 0; i < this.shape.length; i++) {
-            this.shape[i][0] += x;
-            this.shape[i][1] += y;
+            this.shape[i].transform(xoffset,yoffset);
         }
-    }
+    };
     render() {
-        console.log('rendnering' + this);
-        drawVertices(this.shape,$colorway);
+        drawVertices(this.shape,255);
         drawInnerShape(this.shape);
-    }
+    };
     addPoint(x,y) {
-        this.shape[this.shape.length] = new Vertex(mouseX,mouseY,pointRadius);
-    }
+        this.shape[this.shape.length] = new Vertex(x,y,pointRadius);
+    };
     rmPoint(x,y) {
         let point = [x,y];
         for (let i = 0; i < this.shape.length; i++) {
@@ -320,4 +315,8 @@ class Vertex {
     }
     x() {return this.x}
     y() {return this.y}
+    transform(xoffset,yoffset) {
+        this.x += xoffset;
+        this.y += yoffset;
+    }
 }
