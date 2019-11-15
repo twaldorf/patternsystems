@@ -14,7 +14,7 @@ function setup() {
     createCanvas(innerWidth,500);
     form = new Form;
     primaryQueue.push(form);
-    // noLoop();
+    noLoop();
 }
 
 var colorway_temp = [50,255,1];
@@ -57,7 +57,7 @@ function mousePressed() {
         let indexOfClosestPoint = findClosestPoint(mouseX,mouseY,form.shape);
         form.shape[indexOfClosestPoint].select();
     } else {
-        // feed = new Feedback(mouseX,mouseY,pointRadius);
+        feed = new Feedback(mouseX,mouseY,pointRadius);
         form.addPoint(mouseX,mouseY);
     };
     loop();
@@ -146,7 +146,7 @@ function getColor(colorway) {
 function drawPattern(template,gridUnit,colorway) {
     if (form.shape.length > 1) {
         let copies=[];
-        for (let i = 0; i < 100; i++) {
+        for (let i = 0; i < 500; i++) {
             copies[i] = copyOf(form);
             copies[i].offset(random(-width,width),random(-height,height));
             primaryQueue.push(copies[i]);
@@ -184,7 +184,7 @@ function drawVertices(shape,color) {
     for (let i = 0; i < shape.length; i++) {
         fill(color);
         shape[i].render();
-        // feed.update();
+        feed.update();
         drawBorders(shape,255,i);
     };
 }
