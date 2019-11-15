@@ -24,31 +24,20 @@ function draw() {
     background(0);
     drawCursor();
     drawButton(50,50);
-    // if (primaryQueue.length > 1) {
-    //     loop();
-    // } else {
-    //     noLoop();
-    // }
     renderAll(primaryQueue);
-    // noLoop();
 }
 
 function renderAll(queue) {
-    // console.log('queue length: '+primaryQueue.length)
-    console.log('queue: '+ primaryQueue)
-    // queue.forEach(element => {
-    //     element.render();
-    //     console.log('rendering ' + element.shape[0].x)
-    // });
-    // queue.forEach(function(element) {
-    //     element.render();
-    //     console.log('rendering ' + element.shape[0].x)
-
-    // });
-    for (let i = 0; i < queue.length; i++) {
-        queue[i].render();
-    }
+    queue.forEach(function(element) {
+        element.render();
+    });
 }
+
+// function newQueue(queue) {
+//     for (let i = 0; i < queue.length; i++) {
+        
+//     }
+// }
 
 function mousePressed() {
     if (onButton(50,50)) {
@@ -135,8 +124,23 @@ function getShapeWidth(shape) {
 }
 
 function getShapeOrigin(shape) {
-    let origin = [getShapeWidth(shape),getShapeHeight(shape)];
-    return origin;
+    let firstMidpoint = getMidpointFromVertices(shape[0],shape[1]);
+    let secondMidpoint = getMidpointFromVertices(shape[2],shape[3]);
+    let thirdMidpoint = getMidpointFromVertices(firstMidpoint,secondMidpoint);
+    return thirdMidpoint;
+}
+
+function getMidpointFromVertices(vertex1,vertex2) {
+    let x1 = vertex1.x;
+    let x2 = vertex2.x;
+    let y1 = vertex1.y;
+    let y2 = vertex2.y;
+    let midx = (x1 + x2) / 2;
+    let midy = (y1 + y2) / 2;
+    let midpoint = new Vertex;
+    midpoint.x = midx;
+    midpoint.y = midy;
+    return midpoint;
 }
 
 function getColor(colorway) {
@@ -146,9 +150,12 @@ function getColor(colorway) {
 function drawPattern(template,gridUnit,colorway) {
     if (form.shape.length > 1) {
         let copies=[];
-        for (let i = 0; i < 500; i++) {
+        for (let i = 0; i < 1000; i++) {
             copies[i] = copyOf(form);
-            copies[i].offset(random(-width,width),random(-height,height));
+            copies[i].offset(
+                random(- getShapeOrigin(form.shape).x, width - getShapeOrigin(form.shape).x) + 100,
+                random(- getShapeOrigin(form.shape).y, width - getShapeOrigin(form.shape).y) - getShapeHeight(form.shape)
+            );
             primaryQueue.push(copies[i]);
         }
         noLoop();
