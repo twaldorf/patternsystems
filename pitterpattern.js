@@ -146,11 +146,12 @@ function getColor(colorway) {
 function drawPattern(template,gridUnit,colorway) {
     if (form.shape.length > 1) {
         let copies=[];
-        for (let i = 0; i < 2; i++) {
+        for (let i = 0; i < 100; i++) {
             copies[i] = copyOf(form);
-            copies[i].offset(random(0,200),random(0,10));
+            copies[i].offset(random(-width,width),random(-height,height));
             primaryQueue.push(copies[i]);
         }
+        noLoop();
     } else {
         console.log('not enough vertices to draw a pattern!')
     }
@@ -167,7 +168,9 @@ function drawPattern(template,gridUnit,colorway) {
 function copyOf(formObj) {
     let temporaryCopy = new Form;
     for (let i = 0; i < formObj.shape.length; i++) {
-        temporaryCopy.shape[i] = formObj.shape[i];
+        temporaryCopy.shape[i] = new Vertex;
+        temporaryCopy.shape[i].x = formObj.shape[i].x;
+        temporaryCopy.shape[i].y = formObj.shape[i].y;
     }
     console.log(temporaryCopy.shape[1].x)
     return temporaryCopy;
