@@ -1,5 +1,4 @@
 //check if placed point is outside the canvas area and stop those points
-//fix color flash bug when first drawing
 
 var index = 0;
 var pointRadius = 10;
@@ -7,8 +6,9 @@ var mode = 'curved';
 // var scale = .1;
 var primaryQueue = [];
 var form;
-var dragInterval = 110;
-
+var dragInterval = 50;
+var gridUnit = 20;
+var borderMode = 'none';
 
 function setup() {
     createCanvas(innerWidth,500);
@@ -33,15 +33,10 @@ function renderAll(queue) {
     });
 }
 
-// function newQueue(queue) {
-//     for (let i = 0; i < queue.length; i++) {
-        
-//     }
-// }
-
 function mousePressed() {
     if (onButton(50,50)) {
-      drawPattern(form.shape,15,$colorway);
+        gridUnit = validateGridUnit(gridUnit);
+        drawPattern(form.shape,gridUnit,$colorway);
     } else if (clickingOnExistingPoint(mouseX,mouseY,form.shape)) {
         let indexOfClosestPoint = findClosestPoint(mouseX,mouseY,form.shape);
         form.shape[indexOfClosestPoint].select();
@@ -83,12 +78,15 @@ function drawButton(x,y) {
     text('pitter patternize',x,y);
 }
 
-function validateGridUnit(gridUnit) {
-  if (gridUnit == 0) {
-    gridUnit = getShapeHeight(form.shape);
-  } else {
-    return gridUnit;
-  };
+function validateGridUnit(unit) {
+    if (unit < getShapeHeight / 2 || unit < getShapeWidth/2 ) {
+        return getShapeHeight / 2;
+    }
+    else if (unit == 0) {
+        return getShapeHeight(form.shape);
+    } else {
+        return gridUnit;
+    };
 }
   
 function getShapeHeight(shape) {
@@ -147,14 +145,14 @@ function getColor(colorway) {
   return lerp($colorway[0],$colorway[1],round(random(0,$colorway[2]))*(1/$colorway[2]));
 }
 
-function drawPattern(template,gridUnit,colorway) {
+function drawPattern(template,unit,colorway) {
     if (form.shape.length > 1) {
         let copies=[];
         for (let i = 0; i < 1000; i++) {
             copies[i] = copyOf(form);
             copies[i].offset(
-                random(- getShapeOrigin(form.shape).x, width - getShapeOrigin(form.shape).x) + 100,
-                random(- getShapeOrigin(form.shape).y, width - getShapeOrigin(form.shape).y) - getShapeHeight(form.shape)
+                getPatternXOffset(unit),
+                getPatternYOffset(unit)
             );
             primaryQueue.push(copies[i]);
         }
@@ -162,15 +160,19 @@ function drawPattern(template,gridUnit,colorway) {
     } else {
         console.log('not enough vertices to draw a pattern!')
     }
-    // let secondForm = Object.assign( Object.create( Object.getPrototypeOf(form)), form)
-    // let secondForm = new Form;
-    // secondForm.addPoint(300,300);
-    // secondForm.addPoint(350,250);
-    // secondForm.addPoint(370,200);
-    // // secondForm.shape = JSON.parse(JSON.stringify(form.shape));
-    // // secondForm.offset(200,200);
-    // primaryQueue.push(secondForm);
 }
+
+function getPatternXOffset(gridsize) {
+    return roundToGridUnit(random(- getShapeOrigin(form.shape).x, width - getShapeOrigin(form.shape).x), gridsize);
+};
+
+function getPatternYOffset(gridsize) {
+    return roundToGridUnit(random(- getShapeOrigin(form.shape).y, width - getShapeOrigin(form.shape).y) - getShapeHeight(form.shape), gridsize);
+};
+
+function roundToGridUnit(x, gridsize) {
+    return Math.ceil(x / gridsize) * gridsize;
+};
 
 function copyOf(formObj) {
     let temporaryCopy = new Form;
@@ -187,12 +189,14 @@ function drawCursor() {
   circle(mouseX,mouseY,pointRadius * 0.5);
 };
 
-function drawVertices(shape,color) {
+function drawVertices(shape,color,mode) {
     for (let i = 0; i < shape.length; i++) {
         fill(color);
         shape[i].render();
         feed.update();
-        drawBorders(shape,255,i);
+        if (mode == 'borders') {
+            drawBorders(shape,255,i);
+        }
     };
 }
 
@@ -209,9 +213,10 @@ function drawBorders(points,color,i) {
 
 function drawInnerShape(points) {
     if (points.length > 2) {
-        fill(220);
-        stroke(255);
-        strokeWeight(1);
+        fill(getColor($colorway));
+        // stroke(255);
+        // strokeWeight(1);
+        noStroke();
         beginShape();
         for (let i = 0; i < points.length; i++) {
             if (mode == 'curved') {
@@ -244,7 +249,6 @@ function findClosestPoint(x,y,shape) {
 function sortByFirstColumn(array) {
     for (let i = 0; i < array.length; i++) {
         for (let i = 0; i < array.length-1; i++) {
-            //DIY sort for poor people without means of personal transporation or self expression
             if (array[i][0] > array[i+1][0]) {
                 let temp = array[i];
                 array[i] = array[i+1];
@@ -281,7 +285,7 @@ class Form {
         }
     };
     render() {
-        drawVertices(this.shape,255);
+        drawVertices(this.shape,255,borderMode);
         drawInnerShape(this.shape);
     };
     addPoint(x,y) {
