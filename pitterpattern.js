@@ -9,14 +9,14 @@ var form;
 var dragInterval = 50;
 var gridUnit = 20;
 var borderMode = 'none';
+var cnv;
+var over;
 
 function setup() {
-    createCanvas(500,500);
+    cnv = createCanvas(500,500);
     form = new Form;
     primaryQueue.push(form);
-    slider = createSlider(0,255,100);
-    slider.position(10, 10);
-    slider.style('width', '80px');
+    slider = createSlider(0,50,10,1);
     noLoop();
 }
 
@@ -27,8 +27,25 @@ function draw() {
     background(0);
     drawCursor();
     drawButton(50,50);
+    gridUnit = slider.value;
+
+    cnv.mouseOver(() => {over = true});
+    cnv.mouseOut(() => {over = false});
+
     renderAll(primaryQueue);
 }
+
+// function pointInCanvas(x,y,canvas) {
+//     let canvasXStart = canvas.clientLeft;
+//     console.log(canvasXStart);
+//     let canvasXEnd = width + canvasXStart;
+//     let canvasYStart = canvas.offsetTop;
+//     let canvasYEnd = height + canvasYStart;
+//     console.log(canvasXStart);
+//     if (x > canvasXStart && x < canvasXEnd && y > canvasYStart && y < canvasYEnd) {
+//         return true;
+//     }
+// };
 
 function renderAll(queue) {
     queue.forEach(function(element) {
@@ -43,7 +60,7 @@ function mousePressed() {
     } else if (clickingOnExistingPoint(mouseX,mouseY,form.shape)) {
         let indexOfClosestPoint = findClosestPoint(mouseX,mouseY,form.shape);
         form.shape[indexOfClosestPoint].select();
-    } else {
+    } else if (over) {
         feed = new Feedback(mouseX,mouseY,pointRadius);
         form.addPoint(mouseX,mouseY);
     };
@@ -57,7 +74,7 @@ function mouseDragged() {
             form.shape[i].y = mouseY;
         }
     }
-    if (!clickingOnExistingPoint(mouseX,mouseY,form.shape) && !onButton(50,50)) {
+    if (!clickingOnExistingPoint(mouseX,mouseY,form.shape) && !onButton(50,50) && over == true) {
         if (dist(mouseX,mouseY,form.shape[form.shape.length-1].x,form.shape[form.shape.length-1].y) > dragInterval) {
             form.addPoint(mouseX,mouseY);
         }
@@ -339,11 +356,11 @@ class Vertex {
 }
 
 //dom werk
-document.addEventListener('readystatechange', function(element) {
-    element.emit('ready');
-})
+// document.addEventListener('readystatechange', function(element) {
+//     element.emit('ready');
+// })
 
-let slider = document.getElementById('slider1');
-slider.addEventListener('input', function(element) {
-    dragInterval = parseInt(element.value);
-});
+// let slider = document.getElementById('slider1');
+// slider.addEventListener('input', function(element) {
+//     dragInterval = parseInt(element.value);
+// });
