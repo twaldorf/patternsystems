@@ -35,18 +35,6 @@ function draw() {
     renderAll(primaryQueue);
 }
 
-// function pointInCanvas(x,y,canvas) {
-//     let canvasXStart = canvas.clientLeft;
-//     console.log(canvasXStart);
-//     let canvasXEnd = width + canvasXStart;
-//     let canvasYStart = canvas.offsetTop;
-//     let canvasYEnd = height + canvasYStart;
-//     console.log(canvasXStart);
-//     if (x > canvasXStart && x < canvasXEnd && y > canvasYStart && y < canvasYEnd) {
-//         return true;
-//     }
-// };
-
 function renderAll(queue) {
     queue.forEach(function(element) {
         element.render();
