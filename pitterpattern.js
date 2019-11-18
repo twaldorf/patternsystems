@@ -11,9 +11,12 @@ var gridUnit = 20;
 var borderMode = 'none';
 
 function setup() {
-    createCanvas(innerWidth,500);
+    createCanvas(500,500);
     form = new Form;
     primaryQueue.push(form);
+    slider = createSlider(0,255,100);
+    slider.position(10, 10);
+    slider.style('width', '80px');
     noLoop();
 }
 
@@ -163,11 +166,11 @@ function drawPattern(template,unit,colorway) {
 }
 
 function getPatternXOffset(gridsize) {
-    return roundToGridUnit(random(- getShapeOrigin(form.shape).x, width - getShapeOrigin(form.shape).x), gridsize);
+    return roundToGridUnit(random(- getShapeOrigin(form.shape).x, canvas.width - getShapeOrigin(form.shape).x), gridsize);
 };
 
 function getPatternYOffset(gridsize) {
-    return roundToGridUnit(random(- getShapeOrigin(form.shape).y, width - getShapeOrigin(form.shape).y) - getShapeHeight(form.shape), gridsize);
+    return roundToGridUnit(random(- getShapeOrigin(form.shape).y, canvas.height - getShapeOrigin(form.shape).y) - getShapeHeight(form.shape), gridsize);
 };
 
 function roundToGridUnit(x, gridsize) {
@@ -334,3 +337,13 @@ class Vertex {
         this.y += yoffset;
     }
 }
+
+//dom werk
+document.addEventListener('readystatechange', function(element) {
+    element.emit('ready');
+})
+
+let slider = document.getElementById('slider1');
+slider.addEventListener('input', function(element) {
+    dragInterval = parseInt(element.value);
+});
