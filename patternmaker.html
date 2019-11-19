@@ -8,17 +8,18 @@
     <script type="text/javascript" src="pitterpattern.js"></script>
     <link rel="stylesheet" href="theytellyouhowtothink.css">
     <link rel="stylesheet" href="pitterpattern.css">
+    <link rel="stylesheet" href="sliders.css">
 </head>
 <body>
     <div class="mobile-header">
         <h1>Camo pattern systems</h1>
-        <p>Ready to transmit Grid mapped to the freenode Construct the rhythm Stand by to decode
+        <p>Ready to transmit Grid mapped to the freenode Stand by to decode
         </p>
     </div>
     <header>
         <h1>Camo pattern systems</h1>
         <div>
-            <p>Ready to transmit Grid mapped to the freenode Construct the rhythm Stand by to decode</p>
+            <p>Ready to transmit Grid mapped to the freenode Stand by to decode</p>
         </div>
     </header>
     <section id="main">
@@ -51,10 +52,17 @@
                         <label for="gridUnit slider">
                             Modulate grid unit
                         </label>
+                        <label for="pattern grid toggle">Grid mode</label>
+                        <button>RANDOM/GRID</button>
                     </div>
                 </div>
                 <div class="control-panel">
                     <h3>Color</h3>
+                    <p>Define two hex colors to interpolate between.</p>
+                    <div>
+                        <li>Color1</li>
+                        <li>Color2</li>
+                    </div>
                 </div>
             </div>
             <div id="sketch-holder" class="control-panel">
@@ -65,6 +73,15 @@
             <div id="right-console">
                 <div class="control-panel">
                     <h3>Form parameters</h3>
+                    <div class="parameters">
+                        <li id="stroke-slider">
+                            <label for="stroke slider">Edge stroke</label></li>
+                        <li id="fill-toggle">Fill shape</li>
+                        <li id="border-toggle">Polygon border</li>
+                        <li id="curve-toggle">Round corners
+                            <span>Catmull-Rom Splination</span>
+                        </li>
+                    </div>
                 </div>
                 <div class="control-panel">
                     <h3>Export</h3>

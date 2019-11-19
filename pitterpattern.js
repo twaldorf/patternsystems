@@ -21,22 +21,37 @@ var currenttime;
 var inittime;
 
 function setup() {
-    cnv = createCanvas(document.getElementById('console-label').offsetWidth,600);
+    cnv = createCanvas(document.getElementById('console-label').offsetWidth - 36,innerHeight*.665);
     form = new Form;
     primaryQueue.push(form);
 
     slider = createSlider(1,100,10,1);
-    buttonPattern = createButton('Generate pattern');
+    sliderStroke = createSlider(1,100,10,1);
+    buttonPattern = createButton('Patternize');
     buttonReset = createButton('Reset pattern');
     buttonResetForm = createButton('Reset form');
 
+    sliderStroke.elt.classList.add('slider-input');
+    slider.elt.classList.add('slider-input');
+
+    buttonFillToggle = createButton('Active / Disable');
+    buttonFillToggle.elt.classList.add('toggle');
+    buttonBorderToggle = createButton('Active / Disable');
+    buttonBorderToggle.elt.classList.add('toggle');
+    buttonCurveToggle = createButton('Active / Disable');
+    buttonCurveToggle.elt.classList.add('toggle');
+
     slider.parent('console-layout');
+    sliderStroke.parent('stroke-slider');
     buttonPattern.parent('main-control-bar');
     buttonReset.parent('main-control-bar');
     buttonResetForm.parent('main-control-bar');
+    buttonFillToggle.parent('fill-toggle')
+    buttonBorderToggle.parent('border-toggle')
+    buttonCurveToggle.parent('curve-toggle')
 
     cnv.parent('sketch-holder');
-    noLoop();
+    // noLoop();
 }
 
 var colorway_temp = [20,200];
@@ -71,8 +86,8 @@ function renderAll(queue) {
     });
     vertexcounter.innerHTML = form.shape.length;
     if (form.shape.length > 0) {
-        formheight.innerHTML = getShapeHeight(form.shape);
-        formwidth.innerHTML = getShapeWidth(form.shape);
+        formheight.innerHTML = round(getShapeHeight(form.shape));
+        formwidth.innerHTML = round(getShapeWidth(form.shape));
     }
     if (form.shape.length > 3) {
         formXorigin.innerHTML = round(form.shape[0].x);
@@ -81,9 +96,7 @@ function renderAll(queue) {
 }
 
 function mousePressed() {
-    if (onButton(50,50)) {
-        
-    } else if (clickingOnExistingPoint(mouseX,mouseY,form.shape)) {
+    if (clickingOnExistingPoint(mouseX,mouseY,form.shape)) {
         let indexOfClosestPoint = findClosestPoint(mouseX,mouseY,form.shape);
         form.shape[indexOfClosestPoint].select();
     } else if (over == true) {
@@ -251,7 +264,7 @@ function drawBorders(points,color,i) {
 
 function drawInnerShape(points) {
     if (points.length > 2) {
-        noStroke();
+        // noStroke();
         beginShape();
         for (let i = 0; i < points.length; i++) {
             if (curvemode) {
