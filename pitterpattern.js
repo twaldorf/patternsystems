@@ -59,6 +59,8 @@ function renderAll(queue) {
     if (form.shape.length > 0) {
         formheight.innerHTML = getShapeHeight(form.shape);
         formwidth.innerHTML = getShapeWidth(form.shape);
+    }
+    if (form.shape.length > 3) {
         formorigin.innerHTML = getShapeOrigin(form.shape);
     }
 }
@@ -77,10 +79,12 @@ function mousePressed() {
 }
 
 function mouseDragged() {
-    for (let i = 0; i < form.shape.length; i++) {
-        if (form.shape[i].selected == true) {
-            form.shape[i].x = mouseX;
-            form.shape[i].y = mouseY;
+    if (form.shape.length > 1) {
+        for (let i = 0; i < form.shape.length; i++) {
+            if (form.shape[i].selected == true) {
+                form.shape[i].x = mouseX;
+                form.shape[i].y = mouseY;
+            }
         }
     }
     if (!clickingOnExistingPoint(mouseX,mouseY,form.shape) && !onButton(50,50) && over == true) {
