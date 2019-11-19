@@ -1,13 +1,13 @@
 var index = 0;
 var pointRadius = 10;
-var mode = 'curved';
+var curvemode = true;
 // var scale = .1; not used yet
 var primaryQueue = [];
 var form;
 var dragInterval = 50;
 var gridUnit = 5;
-var borderMode = 'none';
-var vertexMode = true;
+var borderMode = true;
+var vertexMode = false;
 
 var cnv;
 var over;
@@ -15,7 +15,8 @@ var over;
 var vertexcounter;
 var formheight;
 var formwidth;
-var formorigin;
+var formXorigin;
+var formYorigin;
 var currenttime;
 var inittime;
 
@@ -25,10 +26,12 @@ function setup() {
     primaryQueue.push(form);
 
     slider = createSlider(1,100,10,1);
-    patternize = createButton('Patternize!');
+    buttonPattern = createButton('Generate pattern');
+    buttonReset = createButton('Reset form');
 
     slider.parent('console-layout');
-    patternize.parent('right-console');
+    buttonPattern.parent('main-control-bar');
+    buttonReset.parent('main-control-bar');
 
     cnv.parent('sketch-holder');
     noLoop();
@@ -40,14 +43,17 @@ var $colorway = colorway_temp;
 function draw() {
     background('#181818');
     drawCursor();
-    gridUnit = slider.elt.value;
+    gridUnit = slider.elt.value; //perf => send to event-based
     renderAll(primaryQueue);
     cnv.mouseOver(() => {over = true});
     cnv.mouseOut(() => {over = false});
-    patternize.mousePressed(() => {
+    buttonPattern.mousePressed(() => {
         gridUnit = validateGridUnit(gridUnit);
         drawPattern(form.shape,gridUnit);
     });
+    buttonReset.mousePressed(() => {
+        primaryQueue = [];
+    })
 }
 
 function renderAll(queue) {
@@ -61,7 +67,8 @@ function renderAll(queue) {
         formwidth.innerHTML = getShapeWidth(form.shape);
     }
     if (form.shape.length > 3) {
-        formorigin.innerHTML = getShapeOrigin(form.shape);
+        formXorigin.innerHTML = round(form.shape[0].x);
+        formYorigin.innerHTML = round(form.shape[0].y);
     }
 }
 
@@ -210,14 +217,14 @@ function drawCursor() {
   circle(mouseX,mouseY,pointRadius * 0.5);
 };
 
-function drawVertices(shape,color,mode) {
+function drawVertices(shape,color,bordermode) {
     for (let i = 0; i < shape.length; i++) {
         fill(color);
         if (!vertexMode) {
             shape[i].render();
         }
         feed.update();
-        if (mode == 'borders') {
+        if (bordermode) {
             drawBorders(shape,255,i);
         }
     };
@@ -239,7 +246,7 @@ function drawInnerShape(points) {
         noStroke();
         beginShape();
         for (let i = 0; i < points.length; i++) {
-            if (mode == 'curved') {
+            if (curvemode) {
                 curveVertex(points[i].x,points[i].y);
             } else {
                 vertex(points[i].x,points[i].y);
@@ -366,7 +373,8 @@ document.addEventListener("DOMContentLoaded", function() {
     vertexcounter = document.getElementById('vertex-counter');
     formheight = document.getElementById('form-height');
     formwidth = document.getElementById('form-width');
-    formorigin = document.getElementById('form-origin');
+    formXorigin = document.getElementById('form-X-origin');
+    formYorigin = document.getElementById('form-Y-origin');
     currenttime = document.getElementById('form-height');
     inittime = document.getElementById('form-height');
 });
