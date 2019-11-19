@@ -7,10 +7,17 @@ var form;
 var dragInterval = 50;
 var gridUnit = 5;
 var borderMode = 'none';
+var vertexMode = true;
+
 var cnv;
 var over;
 
-// var vertexcounter = document.getElementById('vertex-counter');
+var vertexcounter;
+var formheight;
+var formwidth;
+var formorigin;
+var currenttime;
+var inittime;
 
 function setup() {
     cnv = createCanvas(document.getElementById('console-label').offsetWidth,600);
@@ -41,7 +48,6 @@ function draw() {
         gridUnit = validateGridUnit(gridUnit);
         drawPattern(form.shape,gridUnit);
     });
-    // vertexcounter.setAttribute(value,form.shape.length);
 }
 
 function renderAll(queue) {
@@ -49,6 +55,12 @@ function renderAll(queue) {
         fill(element.updateColor($colorway));
         element.render();
     });
+    vertexcounter.innerHTML = form.shape.length;
+    if (form.shape.length > 0) {
+        formheight.innerHTML = getShapeHeight(form.shape);
+        formwidth.innerHTML = getShapeWidth(form.shape);
+        formorigin.innerHTML = getShapeOrigin(form.shape);
+    }
 }
 
 function mousePressed() {
@@ -88,8 +100,8 @@ function mouseReleased() {
 }
 
 function validateGridUnit(unit) {
-    if (unit < getShapeHeight / 2 || unit < getShapeWidth/2 ) {
-        return getShapeHeight / 2;
+    if (unit < getShapeHeight(form.shape) / 2 || unit < getShapeWidth(form.shape)/2 ) {
+        return getShapeHeight(form.shape) / 2;
     }
     else if (unit == 0) {
         return getShapeHeight(form.shape);
@@ -98,7 +110,7 @@ function validateGridUnit(unit) {
     };
 }
   
-function getShapeHeight(shape) {
+function getShapeWidth(shape) {
     let minx = shape[0].x;
     let maxx = shape[0].x;
     for (let i = 0; i < shape.length; i++) {
@@ -114,7 +126,7 @@ function getShapeHeight(shape) {
     return maxx - minx;
 }
 
-function getShapeWidth(shape) {
+function getShapeHeight(shape) {
     let miny = shape[0].y;
     let maxy = shape[0].y;
     for (let i = 0; i < shape.length; i++) {
@@ -197,7 +209,9 @@ function drawCursor() {
 function drawVertices(shape,color,mode) {
     for (let i = 0; i < shape.length; i++) {
         fill(color);
-        shape[i].render();
+        if (!vertexMode) {
+            shape[i].render();
+        }
         feed.update();
         if (mode == 'borders') {
             drawBorders(shape,255,i);
@@ -330,7 +344,8 @@ class Vertex {
         this.r = r;
         this.selected = false;
 }
-    render() {noStroke();circle(this.x,this.y,this.r);}
+    render() {
+        noStroke();circle(this.x,this.y,this.r);}
     select() {
         this.selected = true;
     }
@@ -341,6 +356,16 @@ class Vertex {
         this.y += yoffset;
     }
 }
+
+
+document.addEventListener("DOMContentLoaded", function() {
+    vertexcounter = document.getElementById('vertex-counter');
+    formheight = document.getElementById('form-height');
+    formwidth = document.getElementById('form-width');
+    formorigin = document.getElementById('form-origin');
+    currenttime = document.getElementById('form-height');
+    inittime = document.getElementById('form-height');
+});
 
 //dom werk
 // document.addEventListener('readystatechange', function(element) {
