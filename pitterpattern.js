@@ -1,13 +1,11 @@
-//check if placed point is outside the canvas area and stop those points
-
 var index = 0;
 var pointRadius = 10;
 var mode = 'curved';
-// var scale = .1;
+// var scale = .1; not used yet
 var primaryQueue = [];
 var form;
 var dragInterval = 50;
-var gridUnit = 20;
+var gridUnit = 5;
 var borderMode = 'none';
 var cnv;
 var over;
@@ -16,39 +14,43 @@ function setup() {
     cnv = createCanvas(500,500);
     form = new Form;
     primaryQueue.push(form);
-    slider = createSlider(0,50,10,1);
+
+    slider = createSlider(1,50,10,1);
+    patternize = createButton('Patternize!');
+
     noLoop();
 }
 
-var colorway_temp = [50,255,1];
+var colorway_temp = [20,200];
 var $colorway = colorway_temp;
 
 function draw() {
     background(0);
     drawCursor();
-    drawButton(50,50);
-    gridUnit = slider.value;
-
+    gridUnit = slider.elt.value;
+    renderAll(primaryQueue);
     cnv.mouseOver(() => {over = true});
     cnv.mouseOut(() => {over = false});
-
-    renderAll(primaryQueue);
+    patternize.mousePressed(() => {
+        gridUnit = validateGridUnit(gridUnit);
+        drawPattern(form.shape,gridUnit);
+    });
 }
 
 function renderAll(queue) {
     queue.forEach(function(element) {
+        fill(element.updateColor($colorway));
         element.render();
     });
 }
 
 function mousePressed() {
     if (onButton(50,50)) {
-        gridUnit = validateGridUnit(gridUnit);
-        drawPattern(form.shape,gridUnit,$colorway);
+        
     } else if (clickingOnExistingPoint(mouseX,mouseY,form.shape)) {
         let indexOfClosestPoint = findClosestPoint(mouseX,mouseY,form.shape);
         form.shape[indexOfClosestPoint].select();
-    } else if (over) {
+    } else if (over == true) {
         feed = new Feedback(mouseX,mouseY,pointRadius);
         form.addPoint(mouseX,mouseY);
     };
@@ -76,14 +78,6 @@ function mouseReleased() {
         }
     }
     noLoop();
-}
-
-function drawButton(x,y) {
-    noStroke();
-    fill(150);
-    rect(x-8,y-14,100,20);
-    fill(255);
-    text('pitter patternize',x,y);
 }
 
 function validateGridUnit(unit) {
@@ -149,12 +143,9 @@ function getMidpointFromVertices(vertex1,vertex2) {
     return midpoint;
 }
 
-function getColor(colorway) {
-  return lerp($colorway[0],$colorway[1],round(random(0,$colorway[2]))*(1/$colorway[2]));
-}
-
-function drawPattern(template,unit,colorway) {
-    if (form.shape.length > 1) {
+function drawPattern(template,unit) {
+    console.log('drawing!');
+    if (template.length > 3) {
         let copies=[];
         for (let i = 0; i < 1000; i++) {
             copies[i] = copyOf(form);
@@ -189,7 +180,6 @@ function copyOf(formObj) {
         temporaryCopy.shape[i].x = formObj.shape[i].x;
         temporaryCopy.shape[i].y = formObj.shape[i].y;
     }
-    console.log(temporaryCopy.shape[1].x)
     return temporaryCopy;
 }
 
@@ -221,9 +211,6 @@ function drawBorders(points,color,i) {
 
 function drawInnerShape(points) {
     if (points.length > 2) {
-        fill(getColor($colorway));
-        // stroke(255);
-        // strokeWeight(1);
         noStroke();
         beginShape();
         for (let i = 0; i < points.length; i++) {
@@ -286,12 +273,17 @@ function scaleShape(shape,scale) {
 class Form {
     constructor() {
         this.shape = [];
+        this.color = color;
     };
     offset(xoffset,yoffset) {
         for (let i = 0; i < this.shape.length; i++) {
             this.shape[i].transform(xoffset,yoffset);
         }
     };
+    updateColor(colorway) {
+        this.color = colorway[round(100%random())];
+        return this.color;
+    }
     render() {
         drawVertices(this.shape,255,borderMode);
         drawInnerShape(this.shape);
