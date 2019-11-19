@@ -8,6 +8,7 @@ var dragInterval = 50;
 var gridUnit = 5;
 var borderMode = true;
 var vertexMode = false;
+var fillmode = false;
 
 var cnv;
 var over;
@@ -51,7 +52,7 @@ function setup() {
     buttonCurveToggle.parent('curve-toggle')
 
     cnv.parent('sketch-holder');
-    // noLoop();
+    noLoop();
 }
 
 var colorway_temp = [20,200];
@@ -76,6 +77,15 @@ function draw() {
         primaryQueue = [];
         form.shape = [];
         primaryQueue.push(form);
+    })
+    buttonFillToggle.mousePressed(() => {
+        if (fillmode) {fillmode = false} else {fillmode=true};
+    })
+    buttonBorderToggle.mousePressed(() => {
+        if (borderMode) {borderMode = false} else {borderMode=true};
+    })
+    buttonCurveToggle.mousePressed(() => {
+        if (curvemode) {curvemode = false} else {curvemode=true};
     })
 }
 
@@ -265,6 +275,9 @@ function drawBorders(points,color,i) {
 function drawInnerShape(points) {
     if (points.length > 2) {
         // noStroke();
+        if (!fillmode) {
+            noFill();
+        }
         beginShape();
         for (let i = 0; i < points.length; i++) {
             if (curvemode) {
@@ -399,6 +412,8 @@ document.addEventListener("DOMContentLoaded", function() {
     currenttime = document.getElementById('form-height');
     inittime = document.getElementById('form-height');
 });
+
+
 
 //dom werk
 // document.addEventListener('readystatechange', function(element) {
