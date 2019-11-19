@@ -27,11 +27,13 @@ function setup() {
 
     slider = createSlider(1,100,10,1);
     buttonPattern = createButton('Generate pattern');
-    buttonReset = createButton('Reset form');
+    buttonReset = createButton('Reset pattern');
+    buttonResetForm = createButton('Reset form');
 
     slider.parent('console-layout');
     buttonPattern.parent('main-control-bar');
     buttonReset.parent('main-control-bar');
+    buttonResetForm.parent('main-control-bar');
 
     cnv.parent('sketch-holder');
     noLoop();
@@ -53,6 +55,12 @@ function draw() {
     });
     buttonReset.mousePressed(() => {
         primaryQueue = [];
+        primaryQueue.push(form);
+    })
+    buttonResetForm.mousePressed(() => {
+        primaryQueue = [];
+        form.shape = [];
+        primaryQueue.push(form);
     })
 }
 
