@@ -10,14 +10,20 @@ var borderMode = 'none';
 var cnv;
 var over;
 
+// var vertexcounter = document.getElementById('vertex-counter');
+
 function setup() {
-    cnv = createCanvas(500,500);
+    cnv = createCanvas(document.getElementById('console-label').offsetWidth,600);
     form = new Form;
     primaryQueue.push(form);
 
-    slider = createSlider(1,50,10,1);
+    slider = createSlider(1,100,10,1);
     patternize = createButton('Patternize!');
 
+    slider.parent('console-layout');
+    patternize.parent('right-console');
+
+    cnv.parent('sketch-holder');
     noLoop();
 }
 
@@ -25,7 +31,7 @@ var colorway_temp = [20,200];
 var $colorway = colorway_temp;
 
 function draw() {
-    background(0);
+    background('#181818');
     drawCursor();
     gridUnit = slider.elt.value;
     renderAll(primaryQueue);
@@ -35,6 +41,7 @@ function draw() {
         gridUnit = validateGridUnit(gridUnit);
         drawPattern(form.shape,gridUnit);
     });
+    // vertexcounter.setAttribute(value,form.shape.length);
 }
 
 function renderAll(queue) {
