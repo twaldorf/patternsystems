@@ -21,6 +21,16 @@ var formYorigin;
 var currenttime;
 var inittime;
 
+var fullDate = new Date();
+var minutesDate;
+var secondsDate;
+var hoursDate;
+var dateCurrent;
+var newHoursDate;
+var newMinutesDate;
+var newSecondsDate;
+
+
 function setup() {
     cnv = createCanvas(document.getElementById('console-label').offsetWidth - 36,innerHeight*.665);
     form = new Form;
@@ -52,6 +62,10 @@ function setup() {
     buttonCurveToggle.parent('curve-toggle')
 
     cnv.parent('sketch-holder');
+    minutesDate = fullDate.getMinutes();
+    secondsDate = fullDate.getSeconds();
+    hoursDate = fullDate.getHours();
+    date.innerHTML = hoursDate + 'HR ' + minutesDate + 'M ' + secondsDate + 'S';
     noLoop();
 }
 
@@ -61,7 +75,7 @@ var $colorway = colorway_temp;
 function draw() {
     background('#181818');
     drawCursor();
-    gridUnit = slider.elt.value; //perf => send to event-based
+    gridUnit = slider.elt.value; //perfnote: send to event-based
     renderAll(primaryQueue);
     cnv.mouseOver(() => {over = true});
     cnv.mouseOut(() => {over = false});
@@ -87,6 +101,11 @@ function draw() {
     buttonCurveToggle.mousePressed(() => {
         if (curvemode) {curvemode = false} else {curvemode=true};
     })
+    let tempdate = new Date();
+    newHoursDate = tempdate.getHours();
+    newMinutesDate = tempdate.getMinutes();
+    newSecondsDate = tempdate.getSeconds();
+    currenttime.innerHTML = newHoursDate + 'HR ' + newMinutesDate + 'M ' + newSecondsDate + 'S';
 }
 
 function renderAll(queue) {
@@ -95,6 +114,13 @@ function renderAll(queue) {
         element.render();
     });
     vertexcounter.innerHTML = form.shape.length;
+    if (form.shape.length > 10) {
+        vertexcounter.innerHTML = form.shape.length + ' (WARN) ';
+        vertexcounter.classList.add('warn');
+    }
+    if (form.shape.length < 10) {
+        vertexcounter.classList.remove('warn');
+    }
     if (form.shape.length > 0) {
         formheight.innerHTML = round(getShapeHeight(form.shape));
         formwidth.innerHTML = round(getShapeWidth(form.shape));
@@ -409,11 +435,19 @@ document.addEventListener("DOMContentLoaded", function() {
     formwidth = document.getElementById('form-width');
     formXorigin = document.getElementById('form-X-origin');
     formYorigin = document.getElementById('form-Y-origin');
-    currenttime = document.getElementById('form-height');
-    inittime = document.getElementById('form-height');
+    currenttime = document.getElementById('current-date');
+    date = document.getElementById('date');
 });
 
-
+var localStorageSpace = function(){
+    var allStrings = '';
+    for(var key in window.localStorage){
+        if(window.localStorage.hasOwnProperty(key)){
+            allStrings += window.localStorage[key];
+        }
+    }
+    return allStrings ? 3 + ((allStrings.length*16)/(8*1024)) + ' KB' : 'Empty (0 KB)';
+};
 
 //dom werk
 // document.addEventListener('readystatechange', function(element) {
