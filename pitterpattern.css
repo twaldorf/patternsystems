@@ -1,0 +1,170 @@
+body {
+    color: white;
+    background-color:black;
+    text-transform: uppercase;
+    list-style: none;
+}
+
+button {
+    color:black;
+    background-color:white;
+    height: 20px;
+    border-radius: 0px;
+    border: none;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+button:hover {
+    cursor: pointer;
+}
+
+button:focus {
+    outline: none;
+}
+
+button:active {
+    color: white;
+    background-color: black;
+}
+
+section {
+    flex-direction: column;
+    width: 100%;
+    margin: 0;
+    margin-left:50px;
+}
+
+.pane {
+    background-color: #181818;
+    margin: 10px 10px 0 10px;
+    padding: 0rem 1.2rem;
+}
+
+.top-console {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    font-weight: bold;
+    align-content: center;
+}
+
+.console-label {
+    border: 1px solid white;
+    width: 52%;
+    padding: 1rem 1rem .2rem 1rem;
+    line-height: 0;
+    height: 50%;
+    margin: auto;
+}
+
+.stats {
+    font-size: 10px;
+    margin: auto 0;
+    line-height: 14px;
+    min-width: 20%;
+    display: block;
+}
+
+.slider-input {
+    margin-top: 14px;
+}
+
+#main-control-bar {
+    background-color: black;
+    justify-content: space-between;
+    display: flex;
+    width: 100%;
+    margin: auto;
+}
+
+#banner {
+    background-color: white;
+    color: black;
+    width: 100%;
+    margin: 0;
+    letter-spacing: 2vw;
+    text-transform: uppercase;
+    padding: .1rem 1.8rem;
+    font-size: 12px;
+}
+
+#main-pane {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+#sketch-holder {
+    margin-bottom: 2rem;
+}
+
+canvas {
+    margin: auto;
+}
+
+#left-console {
+    display: flex;
+    flex-direction: column;
+    width: 20%;
+}
+
+#right-console {
+    width: 20%;
+}
+
+.control-panel {
+    border: 1px solid white;
+    border-bottom: none;
+    padding: .1rem 1rem;
+    text-align: center;
+    margin-top: 36px;
+    font-size: 12px;
+}
+
+.control-panel h3 {
+    margin-top: -14px;
+    font-size: 16px;
+    background-color: #181818;
+    margin-bottom: 24px;
+}
+.control-panel button {
+    display: block;
+    font-size: 16px;
+    /* mix-blend-mode: difference; */
+}
+.control-bar button{
+    font-size: 12px;
+}
+button.toggle {
+    color: white;
+    /* mix-blend-mode: difference; */
+    background: rgba(0,0,0,1);
+    background: -moz-linear-gradient(left, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 45%, rgba(255,255,255,1) 45%, rgba(255,255,255,1) 100%);
+    background: -webkit-gradient(left top, right top, color-stop(0%, rgba(0,0,0,1)), color-stop(45%, rgba(0,0,0,1)), color-stop(45%, rgba(255,255,255,1)), color-stop(100%, rgba(255,255,255,1)));
+    background: -webkit-linear-gradient(left, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 45%, rgba(255,255,255,1) 45%, rgba(255,255,255,1) 100%);
+    background: -o-linear-gradient(left, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 45%, rgba(255,255,255,1) 45%, rgba(255,255,255,1) 100%);
+    background: -ms-linear-gradient(left, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 45%, rgba(255,255,255,1) 45%, rgba(255,255,255,1) 100%);
+    background: linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 45%, rgba(255,255,255,1) 45%, rgba(255,255,255,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#000000', endColorstr='#ffffff', GradientType=1 );
+}
+.parameters {
+    text-align: left;
+    line-height: 2rem;
+    font-weight: bold;
+}
+
+.parameters li {
+    margin: 1.2rem 0;
+}
+
+.parameters span {
+    font-size: 10px;
+    display: block;
+    margin-top: -12px;
+    font-weight: normal;
+}
+
+.warn {
+    background-color: red;
+}

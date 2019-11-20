@@ -1,0 +1,93 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>System designer</title>
+    <script type="text/javascript" src="p5.min.js"></script>
+    <script type="text/javascript" src="pitterpattern.js"></script>
+    <link rel="stylesheet" href="theytellyouhowtothink.css">
+    <link rel="stylesheet" href="pitterpattern.css">
+    <link rel="stylesheet" href="sliders.css">
+</head>
+<body>
+    <div class="mobile-header">
+        <h1>Camo pattern systems</h1>
+        <p>Ready to transmit // Grid mapped to the freenode // Standing by to decode
+        </p>
+    </div>
+    <header>
+        <h1>Camo pattern systems</h1>
+        <div>
+            <p>Ready to transmit // Grid mapped to the freenode // Standing by to decode</p>
+        </div>
+    </header>
+    <section id="main">
+        <div>
+            <h4 id="banner">System designer</h4>
+        </div>
+        <div class="pane top-console">
+            <div class="stats">
+                <li>LATEST: <span id="current-date">█</span></li>
+                <li>INITIALIZED: <span id="date">█</span></li>
+                <li>PATTERN SYSTEM: PITTER-PATTERN.JS</li>
+                <li>SIZE IN LOCAL STORAGE: 29 KILOBYTES</li>
+            </div>
+            <div id="console-label" class="console-label">
+                <label for="header">System title</label>
+                <h1 id="header">Untitled Pattern</h1>
+            </div>
+            <div class="stats">
+                    <li>PRIMARY FORM: <span id="vertex-counter">0</span> VERTICES</li>
+                    <li>FORM HEIGHT: <span id="form-height">█</span> UNITS</li>
+                    <li>FORM WIDTH: <span id="form-width">█</span> UNITS</li>
+                    <li>APPX. FORM ORIGIN: <span id="form-X-origin">█</span>, <span id="form-Y-origin">█</span></li>
+                </div>
+        </div>
+        <div id="main-pane" class="pane">
+            <div id="left-console">
+                <div id="console-layout" class="control-panel">
+                    <h3>Layout</h3>
+                    <div class="parameters">
+                        <label for="gridUnit slider">
+                            Modulate grid unit
+                        </label>
+                        <label for="pattern grid toggle">Grid mode</label>
+                        <button>RANDOM/GRID</button>
+                    </div>
+                </div>
+                <div class="control-panel">
+                    <h3>Color</h3>
+                    <p>Define two hex colors to interpolate between.</p>
+                    <div>
+                        <li>Color1</li>
+                        <li>Color2</li>
+                    </div>
+                </div>
+            </div>
+            <div id="sketch-holder" class="control-panel">
+                <h3>Vertex editor</h3>
+                <div id="main-control-bar" class="control-bar">
+                </div>
+            </div>
+            <div id="right-console">
+                <div class="control-panel">
+                    <h3>Form parameters</h3>
+                    <div class="parameters">
+                        <li id="stroke-slider">
+                            <label for="stroke slider">Edge stroke</label></li>
+                        <li id="fill-toggle">Fill shape</li>
+                        <li id="border-toggle">Border</li>
+                        <li id="curve-toggle">Round corners
+                            <span>Catmull-Rom Splination</span>
+                        </li>
+                    </div>
+                </div>
+                <div class="control-panel">
+                    <h3>Export</h3>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+</html>
