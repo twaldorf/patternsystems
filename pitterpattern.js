@@ -122,7 +122,7 @@ function renderAll(queue) {
         vertexcounter.classList.remove('warn');
     }
     if (form.shape.length > 0) {
-        formheight.innerHTML = round(getShapeHeight(form.shape));
+        // formheight.innerHTML = round(getShapeHeight(form.shape));
         formwidth.innerHTML = round(getShapeWidth(form.shape));
     }
     if (form.shape.length > 3) {
