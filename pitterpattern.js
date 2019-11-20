@@ -9,6 +9,7 @@ var gridUnit = 5;
 var borderMode = true;
 var vertexMode = false;
 var fillmode = false;
+var lock = false;
 
 var cnv;
 var over;
@@ -29,6 +30,7 @@ var dateCurrent;
 var newHoursDate;
 var newMinutesDate;
 var newSecondsDate;
+var colorway;
 
 
 function setup() {
@@ -37,7 +39,7 @@ function setup() {
     primaryQueue.push(form);
 
     slider = createSlider(1,100,10,1);
-    sliderStroke = createSlider(1,100,10,1);
+    sliderStroke = createSlider(0,100,0,1);
     buttonPattern = createButton('Patternize');
     buttonReset = createButton('Reset pattern');
     buttonResetForm = createButton('Reset form');
@@ -66,11 +68,9 @@ function setup() {
     secondsDate = fullDate.getSeconds();
     hoursDate = fullDate.getHours();
     date.innerHTML = hoursDate + 'HR ' + minutesDate + 'M ' + secondsDate + 'S';
+    colorway = [0,210];
     noLoop();
 }
-
-var colorway_temp = [20,200];
-var $colorway = colorway_temp;
 
 function draw() {
     background('#181818');
@@ -81,7 +81,9 @@ function draw() {
     cnv.mouseOut(() => {over = false});
     buttonPattern.mousePressed(() => {
         gridUnit = validateGridUnit(gridUnit);
-        drawPattern(form.shape,gridUnit);
+        if (!lock) {
+            drawPattern(form.shape,gridUnit);
+        }
     });
     buttonReset.mousePressed(() => {
         primaryQueue = [];
@@ -109,8 +111,9 @@ function draw() {
 }
 
 function renderAll(queue) {
+    lock = true;
     queue.forEach(function(element) {
-        fill(element.updateColor($colorway));
+        element.updateColor(colorway);
         element.render();
     });
     vertexcounter.innerHTML = form.shape.length;
@@ -129,6 +132,7 @@ function renderAll(queue) {
         formXorigin.innerHTML = round(form.shape[0].x);
         formYorigin.innerHTML = round(form.shape[0].y);
     }
+    lock = false;
 }
 
 function mousePressed() {
@@ -290,7 +294,7 @@ function drawVertices(shape,color,bordermode) {
 function drawBorders(points,color,i) {
     if (i > 0) {
         stroke(color);
-        strokeWeight(1);
+        strokeWeight(sliderStroke.elt.value);
         line(points[i].x,points[i].y,points[i-1].x,points[i-1].y);
     }
     if (points.length > 2) {
@@ -298,9 +302,9 @@ function drawBorders(points,color,i) {
     }
 }
 
-function drawInnerShape(points) {
+function drawInnerShape(points,colorVal) {
     if (points.length > 2) {
-        // noStroke();
+        fill(colorVal);
         if (!fillmode) {
             noFill();
         }
@@ -373,12 +377,12 @@ class Form {
         }
     };
     updateColor(colorway) {
-        this.color = colorway[round(100%random())];
-        return this.color;
+        let oneOrZero = round(100%random());
+        this.color = colorway[oneOrZero];
     }
     render() {
         drawVertices(this.shape,255,borderMode);
-        drawInnerShape(this.shape);
+        drawInnerShape(this.shape,this.color);
     };
     addPoint(x,y) {
         this.shape[this.shape.length] = new Vertex(x,y,pointRadius);
