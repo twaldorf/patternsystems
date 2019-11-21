@@ -68,7 +68,7 @@ function setup() {
     secondsDate = fullDate.getSeconds();
     hoursDate = fullDate.getHours();
     date.innerHTML = hoursDate + 'HR ' + minutesDate + 'M ' + secondsDate + 'S';
-    colorway = [0,210];
+    colorway = [90,210];
     noLoop();
 }
 
@@ -253,7 +253,7 @@ function drawPattern(template,unit) {
 }
 
 function getPatternXOffset(gridsize) {
-    return roundToGridUnit(random(- getShapeOrigin(form.shape).x, canvas.width - getShapeOrigin(form.shape).x), gridsize);
+    return roundToGridUnit(random(- getShapeOrigin(form.shape).x, canvas.width - getShapeWidth(form.shape) * 4), gridsize);
 };
 
 function getPatternYOffset(gridsize) {
