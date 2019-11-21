@@ -136,21 +136,24 @@ canvas {
 .control-bar button{
     font-size: 12px;
 }
-button span {
+button.on span {
+    color: white;
+}
+button.off span {
     color: black;
 }
 button.toggle.on {
-    color: white;
+    color: black;
     /* mix-blend-mode: difference; */
-    background: rgba(0,0,0,1);
-    background: -moz-linear-gradient(left, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 47.5%, rgba(255,255,255,1) 47.5%, rgba(255,255,255,1) 100%);
-    background: -webkit-gradient(left top, right top, color-stop(0%, rgba(0,0,0,1)), color-stop(47.5%, rgba(0,0,0,1)), color-stop(47.5%, rgba(255,255,255,1)), color-stop(100%, rgba(255,255,255,1)));
-    background: -webkit-linear-gradient(left, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 47.5%, rgba(255,255,255,1) 47.5%, rgba(255,255,255,1) 100%);
-    background: -o-linear-gradient(left, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 47.5%, rgba(255,255,255,1) 47.5%, rgba(255,255,255,1) 100%);
-    background: -ms-linear-gradient(left, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 47.5%, rgba(255,255,255,1) 47.5%, rgba(255,255,255,1) 100%);
-    background: linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 47.5%, rgba(255,255,255,1) 47.5%, rgba(255,255,255,1) 100%);
+    background: rgba(255,255,255,1);
+    background: -moz-linear-gradient(left, rgba(255,255,255,1) 0%, rgba(255,255,255,1) 47.5%, rgba(0,0,0,1) 47.5%, rgba(0,0,0,1) 100%);
+    background: -webkit-gradient(left top, right top, color-stop(0%, rgba(255,255,255,1)), color-stop(47.5%, rgba(255,255,255,1)), color-stop(47.5%, rgba(0,0,0,1)), color-stop(100%, rgba(0,0,0,1)));
+    background: -webkit-linear-gradient(left, rgba(255,255,255,1) 0%, rgba(255,255,255,1) 47.5%, rgba(0,0,0,1) 47.5%, rgba(0,0,0,1) 100%);
+    background: -o-linear-gradient(left, rgba(255,255,255,1) 0%, rgba(255,255,255,1) 47.5%, rgba(0,0,0,1) 47.5%, rgba(0,0,0,1) 100%);
+    background: -ms-linear-gradient(left, rgba(255,255,255,1) 0%, rgba(255,255,255,1) 47.5%, rgba(0,0,0,1) 47.5%, rgba(0,0,0,1) 100%);
+    background: linear-gradient(to right, rgba(255,255,255,1) 0%, rgba(255,255,255,1) 47.5%, rgba(0,0,0,1) 47.5%, rgba(0,0,0,1) 100%);
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#000000', endColorstr='#ffffff', GradientType=1 );
-    transition: all .1s;
+    transition: all .23s;
 }
 button.toggle.off {
     color: white;
@@ -163,7 +166,7 @@ button.toggle.off {
     background: -ms-linear-gradient(left, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 54.5%, rgba(255,255,255,1) 54.5%, rgba(255,255,255,1) 100%);
     background: linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 54.5%, rgba(255,255,255,1) 54.5%, rgba(255,255,255,1) 100%);
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#000000', endColorstr='#ffffff', GradientType=1 );
-    transition: all .1s;
+    transition: all .23s;
 }
 .parameters {
     text-align: left;
