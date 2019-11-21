@@ -49,20 +49,24 @@
                 <div id="console-layout" class="control-panel">
                     <h3>Layout</h3>
                     <div class="parameters">
-                        <label for="gridUnit slider">
-                            Modulate grid unit
-                        </label>
-                        <label for="pattern grid toggle">Grid mode</label>
-                        <button class="toggle on">ACTIVE <span>DISABLE</span></button>
-                        <button class="toggle off">INACTIVE <span>ENABLE</span></button>
+                        <li>
+                            <label for="gridUnit slider">
+                                Grid size
+                            </label>
+                            <input id="grid-slider" type="range" min="1" max="100" step="1" class="slider-input">
+                        </li>
+                        <li>
+                            <label for="pattern grid toggle">Grid mode</label>
+                            <button class="toggle on">ACTIVE <span>DISABLE</span></button>
+                        </li>
                     </div>
                 </div>
                 <div class="control-panel">
                     <h3>Color</h3>
                     <p>Define two hex colors to interpolate between.</p>
-                    <div>
-                        <li>Color1</li>
-                        <li>Color2</li>
+                    <div class="flex-row">
+                        <li><input type="text"></li>
+                        <li><input type="text"></li>
                     </div>
                 </div>
             </div>
@@ -76,7 +80,7 @@
                     <h3>Form parameters</h3>
                     <div class="parameters">
                         <li id="stroke-slider">
-                            <label for="stroke slider">Edge stroke</label></li>
+                            <label for="stroke slider">Edge stroke diameter</label></li>
                         <li id="fill-toggle">Fill shape
                             <button id="button-fill" class="toggle off">INACTIVE <span>ENABLE</span></button>
                         </li>

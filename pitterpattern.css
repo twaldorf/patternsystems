@@ -70,6 +70,16 @@ section {
     margin-top: 14px;
 }
 
+input[type=text] {
+    max-width: 40%;
+    display: inline;
+
+}
+
+.flex-row {
+    display: flex; flex-direction: row;
+}
+
 #main-control-bar {
     background-color: black;
     justify-content: space-between;
@@ -131,6 +141,7 @@ canvas {
 .control-panel button {
     display: block;
     font-size: 16px;
+    padding: 0 2px;
     /* mix-blend-mode: difference; */
 }
 .control-bar button{

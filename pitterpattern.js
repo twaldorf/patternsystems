@@ -355,7 +355,7 @@ class Vertex {
 
 
 function pullInputValues() {
-    gridUnit = slider.elt.value;
+    gridUnit = slider.value;
 }
 
 function checkButtons() {
@@ -390,16 +390,13 @@ function checkMouseOverCanvas(canvas) {
 }
 
 function initializeNewInterfaceElements() {
-    slider = createSlider(1,100,10,1);
     sliderStroke = createSlider(0,100,0,1);
     buttonPattern = createButton('Patternize');
     buttonReset = createButton('Reset pattern');
     buttonResetForm = createButton('Reset form');
 
     sliderStroke.elt.classList.add('slider-input');
-    slider.elt.classList.add('slider-input');
 
-    slider.parent('console-layout');
     sliderStroke.parent('stroke-slider');
     buttonPattern.parent('main-control-bar');
     buttonReset.parent('main-control-bar');
@@ -412,6 +409,7 @@ function initializeNewInterfaceElements() {
 }
 
 document.addEventListener("DOMContentLoaded", function() {
+    slider = document.getElementById('grid-slider')
     vertexcounter = document.getElementById('vertex-counter');
     formheight = document.getElementById('form-height');
     formwidth = document.getElementById('form-width');
