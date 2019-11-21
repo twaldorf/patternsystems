@@ -70,10 +70,28 @@ section {
     margin-top: 14px;
 }
 
-input[type=text] {
-    max-width: 40%;
-    display: inline;
+input[type=text]::-webkit-inner-spin-button, 
+input[type=text]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+}
 
+input[type=text] {
+    max-width: 50%;
+    display: inline;
+    background-color: black;
+    color: white;
+    border: none;
+    border-bottom: 1px solid white;
+    mix-blend-mode: difference;
+    -moz-appearance: textfield;
+}
+
+input[type=text]:focus {
+    outline: none;
+}
+
+.hash {
+    blen
 }
 
 .flex-row {

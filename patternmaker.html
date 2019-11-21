@@ -63,10 +63,10 @@
                 </div>
                 <div class="control-panel">
                     <h3>Color</h3>
-                    <p>Define two hex colors to interpolate between.</p>
+                    <p>Hexadecimal values for interpolation</p>
                     <div class="flex-row">
-                        <li><input type="text"></li>
-                        <li><input type="text"></li>
+                        <li>#<input type="text"></li>
+                        <li>#<input type="text"></li>
                     </div>
                 </div>
             </div>
@@ -79,18 +79,18 @@
                 <div class="control-panel">
                     <h3>Form parameters</h3>
                     <div class="parameters">
-                        <li id="stroke-slider">
-                            <label for="stroke slider">Edge stroke diameter</label></li>
                         <li id="fill-toggle">Fill shape
                             <button id="button-fill" class="toggle off">INACTIVE <span>ENABLE</span></button>
                         </li>
-                        <li id="border-toggle">Border
-                            <button id="button-border" class="toggle off">INACTIVE <span>ENABLE</span></button>
-                        </li>
                         <li id="curve-toggle">Round corners
-                            <span class="descriptor">Catmull-Rom Splination</span>
-                            <button id="button-corners" class="toggle off">INACTIVE <span>ENABLE</span></button>
+                            <span class="descriptor">(Catmull-Rom Splination)</span>
+                            <button id="button-corners" class="toggle on">ACTIVE <span>DISABLE</span></button>
                         </li>
+                        <li id="border-toggle">Border
+                            <button id="button-border" class="toggle on">ACTIVE <span>DISABLE</span></button>
+                        </li>
+                        <li id="stroke-slider">
+                            <label for="stroke slider">Border diameter</label></li>
                     </div>
                 </div>
                 <div class="control-panel">

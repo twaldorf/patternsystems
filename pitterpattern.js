@@ -390,10 +390,10 @@ function checkMouseOverCanvas(canvas) {
 }
 
 function initializeNewInterfaceElements() {
-    sliderStroke = createSlider(0,100,0,1);
-    buttonPattern = createButton('Patternize');
-    buttonReset = createButton('Reset pattern');
-    buttonResetForm = createButton('Reset form');
+    sliderStroke = createSlider(-1,10,0,1);
+    buttonPattern = createButton('Autolayout');
+    buttonReset = createButton('Reset layout');
+    buttonResetForm = createButton('Reset shape');
 
     sliderStroke.elt.classList.add('slider-input');
 
