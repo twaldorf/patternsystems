@@ -60,22 +60,7 @@ function renderAll(queue) {
         element.updateColor(colorway);
         element.render();
     });
-    vertexcounter.innerHTML = form.shape.length;
-    if (form.shape.length > 10) {
-        vertexcounter.innerHTML = form.shape.length + ' (WARN) ';
-        vertexcounter.classList.add('warn');
-    }
-    if (form.shape.length < 10) {
-        vertexcounter.classList.remove('warn');
-    }
-    if (form.shape.length > 0) {
-        // formheight.innerHTML = round(getShapeHeight(form.shape));
-        formwidth.innerHTML = round(getShapeWidth(form.shape));
-    }
-    if (form.shape.length > 3) {
-        formXorigin.innerHTML = round(form.shape[0].x);
-        formYorigin.innerHTML = round(form.shape[0].y);
-    }
+    updateShapeStatistics();
     lock = false;
 }
 
@@ -99,7 +84,7 @@ function mouseDragged() {
             }
         }
     }
-    if (!clickingOnExistingPoint(mouseX,mouseY,form.shape) && !onButton(50,50) && over == true) {
+    if (!clickingOnExistingPoint(mouseX,mouseY,form.shape) && over == true) {
         if (dist(mouseX,mouseY,form.shape[form.shape.length-1].x,form.shape[form.shape.length-1].y) > dragInterval) {
             form.addPoint(mouseX,mouseY);
         }
@@ -264,14 +249,6 @@ function drawInnerShape(points,colorVal) {
     }
 }
 
-function onButton(x,y) {
-    if (dist(mouseX,mouseY,x,y) < 120) {
-        return true;
-    } else {
-        return false;
-    }
-}
-
 function findClosestPoint(x,y,shape) {
     let distances = [];
     for (let i = 0; i < shape.length; i++) {
@@ -397,15 +374,6 @@ function checkButtons() {
         form.shape = [];
         primaryQueue.push(form);
     })
-    buttonFillToggle.mousePressed(() => {
-        if (fillmode) {fillmode = false} else {fillmode=true};
-    })
-    buttonBorderToggle.mousePressed(() => {
-        if (borderMode) {borderMode = false} else {borderMode=true};
-    })
-    buttonCurveToggle.mousePressed(() => {
-        if (curvemode) {curvemode = false} else {curvemode=true};
-    })
 }
 
 function updateTimePanel() {
@@ -431,21 +399,11 @@ function initializeNewInterfaceElements() {
     sliderStroke.elt.classList.add('slider-input');
     slider.elt.classList.add('slider-input');
 
-    buttonFillToggle = createButton('Active Disable');
-    buttonFillToggle.elt.classList.add('toggle','on');
-    buttonBorderToggle = createButton('Active Disable');
-    buttonBorderToggle.elt.classList.add('toggle','on');
-    buttonCurveToggle = createButton('Active Disable');
-    buttonCurveToggle.elt.classList.add('toggle','on');
-
     slider.parent('console-layout');
     sliderStroke.parent('stroke-slider');
     buttonPattern.parent('main-control-bar');
     buttonReset.parent('main-control-bar');
     buttonResetForm.parent('main-control-bar');
-    buttonFillToggle.parent('fill-toggle')
-    buttonBorderToggle.parent('border-toggle')
-    buttonCurveToggle.parent('curve-toggle')
 
     minutesDate = fullDate.getMinutes();
     secondsDate = fullDate.getSeconds();
@@ -461,13 +419,37 @@ document.addEventListener("DOMContentLoaded", function() {
     formYorigin = document.getElementById('form-Y-origin');
     currenttime = document.getElementById('current-date');
     date = document.getElementById('date');
+    buttonFillToggle = document.getElementById('button-fill');
+    buttonBorderToggle = document.getElementById('button-border');
+    buttonCurveToggle = document.getElementById('button-corners');
     buttons = document.querySelectorAll('button');
     buttons.forEach(function(e) {
         e.addEventListener('click', () => {
             updateButtonState(e)
         });
-    })
+    });
+    buttonFillToggle.addEventListener('click', () => {
+        toggleFill();
+    });
+    buttonBorderToggle.addEventListener('click', () => {
+        toggleBorder();
+    });
+    buttonCurveToggle.addEventListener('click', () => {
+        toggleCurve();
+    });
 });
+
+function toggleFill() {
+    if (fillmode) {fillmode = false} else {fillmode=true};
+}
+
+function toggleBorder() {
+    if (borderMode) {borderMode = false} else {borderMode=true};
+}
+
+function toggleCurve() {
+    if (curvemode) {curvemode = false} else {curvemode=true};
+}
 
 function updateButtonState(e) {
     if (e.className.includes('on')) {
@@ -482,6 +464,25 @@ function updateButtonState(e) {
         e.classList.add('on');
         e.innerHTML = 'ACTIVE <span>DISABLE</span>';
     };
+}
+
+function updateShapeStatistics() {
+    vertexcounter.innerHTML = form.shape.length;
+    if (form.shape.length > 10) {
+        vertexcounter.innerHTML = form.shape.length + ' (WARN) ';
+        vertexcounter.classList.add('warn');
+    }
+    if (form.shape.length < 10) {
+        vertexcounter.classList.remove('warn');
+    }
+    if (form.shape.length > 0) {
+        // formheight.innerHTML = round(getShapeHeight(form.shape));
+        formwidth.innerHTML = round(getShapeWidth(form.shape));
+    }
+    if (form.shape.length > 3) {
+        formXorigin.innerHTML = round(form.shape[0].x);
+        formYorigin.innerHTML = round(form.shape[0].y);
+    }
 }
 
 var localStorageSpace = function(){
