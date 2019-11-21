@@ -22,6 +22,8 @@ var formYorigin;
 var currenttime;
 var inittime;
 
+var buttons;
+
 var fullDate = new Date();
 var minutesDate;
 var secondsDate;
@@ -32,82 +34,24 @@ var newMinutesDate;
 var newSecondsDate;
 var colorway;
 
-
 function setup() {
+    noLoop();
     cnv = createCanvas(document.getElementById('console-label').offsetWidth - 36,innerHeight*.665);
+    cnv.parent('sketch-holder');
     form = new Form;
     primaryQueue.push(form);
-
-    slider = createSlider(1,100,10,1);
-    sliderStroke = createSlider(0,100,0,1);
-    buttonPattern = createButton('Patternize');
-    buttonReset = createButton('Reset pattern');
-    buttonResetForm = createButton('Reset form');
-
-    sliderStroke.elt.classList.add('slider-input');
-    slider.elt.classList.add('slider-input');
-
-    buttonFillToggle = createButton('Active / Disable');
-    buttonFillToggle.elt.classList.add('toggle');
-    buttonBorderToggle = createButton('Active / Disable');
-    buttonBorderToggle.elt.classList.add('toggle');
-    buttonCurveToggle = createButton('Active / Disable');
-    buttonCurveToggle.elt.classList.add('toggle');
-
-    slider.parent('console-layout');
-    sliderStroke.parent('stroke-slider');
-    buttonPattern.parent('main-control-bar');
-    buttonReset.parent('main-control-bar');
-    buttonResetForm.parent('main-control-bar');
-    buttonFillToggle.parent('fill-toggle')
-    buttonBorderToggle.parent('border-toggle')
-    buttonCurveToggle.parent('curve-toggle')
-
-    cnv.parent('sketch-holder');
-    minutesDate = fullDate.getMinutes();
-    secondsDate = fullDate.getSeconds();
-    hoursDate = fullDate.getHours();
-    date.innerHTML = hoursDate + 'HR ' + minutesDate + 'M ' + secondsDate + 'S';
+    initializeNewInterfaceElements();
     colorway = [90,210];
-    noLoop();
 }
 
 function draw() {
     background('#181818');
     drawCursor();
-    gridUnit = slider.elt.value; //perfnote: send to event-based
+    pullInputValues();
     renderAll(primaryQueue);
-    cnv.mouseOver(() => {over = true});
-    cnv.mouseOut(() => {over = false});
-    buttonPattern.mousePressed(() => {
-        gridUnit = validateGridUnit(gridUnit);
-        if (!lock) {
-            drawPattern(form.shape,gridUnit);
-        }
-    });
-    buttonReset.mousePressed(() => {
-        primaryQueue = [];
-        primaryQueue.push(form);
-    })
-    buttonResetForm.mousePressed(() => {
-        primaryQueue = [];
-        form.shape = [];
-        primaryQueue.push(form);
-    })
-    buttonFillToggle.mousePressed(() => {
-        if (fillmode) {fillmode = false} else {fillmode=true};
-    })
-    buttonBorderToggle.mousePressed(() => {
-        if (borderMode) {borderMode = false} else {borderMode=true};
-    })
-    buttonCurveToggle.mousePressed(() => {
-        if (curvemode) {curvemode = false} else {curvemode=true};
-    })
-    let tempdate = new Date();
-    newHoursDate = tempdate.getHours();
-    newMinutesDate = tempdate.getMinutes();
-    newSecondsDate = tempdate.getSeconds();
-    currenttime.innerHTML = newHoursDate + 'HR ' + newMinutesDate + 'M ' + newSecondsDate + 'S';
+    checkMouseOverCanvas(cnv);
+    checkButtons();
+    updateTimePanel();
 }
 
 function renderAll(queue) {
@@ -433,6 +377,82 @@ class Vertex {
 }
 
 
+function pullInputValues() {
+    gridUnit = slider.elt.value;
+}
+
+function checkButtons() {
+    buttonPattern.mousePressed(() => {
+        gridUnit = validateGridUnit(gridUnit);
+        if (!lock) {
+            drawPattern(form.shape,gridUnit);
+        }
+    });
+    buttonReset.mousePressed(() => {
+        primaryQueue = [];
+        primaryQueue.push(form);
+    })
+    buttonResetForm.mousePressed(() => {
+        primaryQueue = [];
+        form.shape = [];
+        primaryQueue.push(form);
+    })
+    buttonFillToggle.mousePressed(() => {
+        if (fillmode) {fillmode = false} else {fillmode=true};
+    })
+    buttonBorderToggle.mousePressed(() => {
+        if (borderMode) {borderMode = false} else {borderMode=true};
+    })
+    buttonCurveToggle.mousePressed(() => {
+        if (curvemode) {curvemode = false} else {curvemode=true};
+    })
+}
+
+function updateTimePanel() {
+    let tempdate = new Date();
+    newHoursDate = tempdate.getHours();
+    newMinutesDate = tempdate.getMinutes();
+    newSecondsDate = tempdate.getSeconds();
+    currenttime.innerHTML = newHoursDate + 'HR ' + newMinutesDate + 'M ' + newSecondsDate + 'S';
+}
+
+function checkMouseOverCanvas(canvas) {
+    canvas.mouseOver(() => {over = true});
+    canvas.mouseOut(() => {over = false});
+}
+
+function initializeNewInterfaceElements() {
+    slider = createSlider(1,100,10,1);
+    sliderStroke = createSlider(0,100,0,1);
+    buttonPattern = createButton('Patternize');
+    buttonReset = createButton('Reset pattern');
+    buttonResetForm = createButton('Reset form');
+
+    sliderStroke.elt.classList.add('slider-input');
+    slider.elt.classList.add('slider-input');
+
+    buttonFillToggle = createButton('Active Disable');
+    buttonFillToggle.elt.classList.add('toggle','on');
+    buttonBorderToggle = createButton('Active Disable');
+    buttonBorderToggle.elt.classList.add('toggle','on');
+    buttonCurveToggle = createButton('Active Disable');
+    buttonCurveToggle.elt.classList.add('toggle','on');
+
+    slider.parent('console-layout');
+    sliderStroke.parent('stroke-slider');
+    buttonPattern.parent('main-control-bar');
+    buttonReset.parent('main-control-bar');
+    buttonResetForm.parent('main-control-bar');
+    buttonFillToggle.parent('fill-toggle')
+    buttonBorderToggle.parent('border-toggle')
+    buttonCurveToggle.parent('curve-toggle')
+
+    minutesDate = fullDate.getMinutes();
+    secondsDate = fullDate.getSeconds();
+    hoursDate = fullDate.getHours();
+    date.innerHTML = hoursDate + 'HR ' + minutesDate + 'M ' + secondsDate + 'S';
+}
+
 document.addEventListener("DOMContentLoaded", function() {
     vertexcounter = document.getElementById('vertex-counter');
     formheight = document.getElementById('form-height');
@@ -441,7 +461,28 @@ document.addEventListener("DOMContentLoaded", function() {
     formYorigin = document.getElementById('form-Y-origin');
     currenttime = document.getElementById('current-date');
     date = document.getElementById('date');
+    buttons = document.querySelectorAll('button');
+    buttons.forEach(function(e) {
+        e.addEventListener('click', () => {
+            updateButtonState(e)
+        });
+    })
 });
+
+function updateButtonState(e) {
+    if (e.className.includes('on')) {
+        console.log('was active');
+        e.classList.remove('on');
+        e.classList.add('off');
+        e.innerHTML = 'INACTIVE <span>ENABLE</span>';
+    }
+    else {
+        console.log('was inactive');
+        e.classList.remove('off');
+        e.classList.add('on');
+        e.innerHTML = 'ACTIVE <span>DISABLE</span>';
+    };
+}
 
 var localStorageSpace = function(){
     var allStrings = '';
