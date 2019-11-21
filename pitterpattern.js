@@ -21,6 +21,8 @@ var formXorigin;
 var formYorigin;
 var currenttime;
 var inittime;
+var colorInput1;
+var colorInput2;
 
 var buttons;
 
@@ -356,6 +358,10 @@ class Vertex {
 
 function pullInputValues() {
     gridUnit = slider.value;
+    if (colorInput1.value != null && colorInput2.value != null) {
+        colorway[0] = '#' + colorInput1.value;
+        colorway[1] = '#' + colorInput2.value;
+    }
 }
 
 function checkButtons() {
@@ -409,6 +415,8 @@ function initializeNewInterfaceElements() {
 }
 
 document.addEventListener("DOMContentLoaded", function() {
+    colorInput1 = document.getElementById('color-input-1');
+    colorInput2 = document.getElementById('color-input-2');
     slider = document.getElementById('grid-slider')
     vertexcounter = document.getElementById('vertex-counter');
     formheight = document.getElementById('form-height');
