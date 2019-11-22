@@ -175,6 +175,7 @@ function drawPattern(template,unit) {
                 getPatternXOffset(unit),
                 getPatternYOffset(unit)
             );
+            copies[i].regenColorCoinToss();
             primaryQueue.push(copies[i]);
         }
         noLoop();
@@ -293,15 +294,18 @@ class Form {
     constructor() {
         this.shape = [];
         this.color = color;
+        this.oneOrZero = round(100%random());
     };
     offset(xoffset,yoffset) {
         for (let i = 0; i < this.shape.length; i++) {
             this.shape[i].transform(xoffset,yoffset);
         }
     };
+    regenColorCoinToss() {
+        this.oneOrZero = round(100%random());
+    }
     updateColor(colorway) {
-        let oneOrZero = round(100%random());
-        this.color = colorway[oneOrZero];
+        this.color = colorway[this.oneOrZero];
     }
     render() {
         drawVertices(this.shape,255,borderMode);
