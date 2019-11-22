@@ -36,6 +36,13 @@ var newMinutesDate;
 var newSecondsDate;
 var colorway;
 
+var offsetMatrix;
+var offsetXIndex = 0;
+var offsetYIndex = 0;
+
+var avgX;
+var avgY;
+
 function setup() {
     noLoop();
     cnv = createCanvas(document.getElementById('console-label').offsetWidth - 36,innerHeight*.665);
@@ -44,6 +51,7 @@ function setup() {
     primaryQueue.push(form);
     initializeNewInterfaceElements();
     colorway = [90,210];
+    offsetMatrix = populateOffsetTargetMatrix();
 }
 
 function draw() {
@@ -146,6 +154,13 @@ function getShapeHeight(shape) {
 }
 
 function getShapeOrigin(shape) {
+    let leftBound;
+    let rightBound;
+    let topBound;
+    let bottomBound;
+
+
+
     let firstMidpoint = getMidpointFromVertices(shape[0],shape[1]);
     let secondMidpoint = getMidpointFromVertices(shape[2],shape[3]);
     let thirdMidpoint = getMidpointFromVertices(firstMidpoint,secondMidpoint);
@@ -167,13 +182,14 @@ function getMidpointFromVertices(vertex1,vertex2) {
 
 function drawPattern(template,unit) {
     console.log('drawing!');
+    setAveragePoints();
     if (template.length > 3) {
         let copies=[];
         for (let i = 0; i < 1000; i++) {
             copies[i] = copyOf(form);
             copies[i].offset(
-                getPatternXOffset(unit),
-                getPatternYOffset(unit)
+                getPatternXOffset(i),
+                getPatternYOffset(i)
             );
             copies[i].regenColorCoinToss();
             primaryQueue.push(copies[i]);
@@ -184,13 +200,59 @@ function drawPattern(template,unit) {
     }
 }
 
-function getPatternXOffset(gridsize) {
-    return roundToGridUnit(random(- getShapeOrigin(form.shape).x, canvas.width - getShapeWidth(form.shape) * 4), gridsize);
+function populateOffsetTargetMatrix() {
+    let tempoffsetMatrix = [];
+
+    let numberOfRows = width / gridUnit;
+    let numberOfColumns = height / gridUnit;
+
+    for (let row = 1; row < numberOfRows; row++) {
+        tempoffsetMatrix.push(genColumnArray(numberOfColumns,row));
+    }
+    console.log(tempoffsetMatrix[0][0]);
+    return tempoffsetMatrix;
+}
+
+function setAveragePoints() {
+    avgX = getAveragePointFromShape(form.shape)[0];
+    avgY = getAveragePointFromShape(form.shape)[1];
+}
+
+function genColumnArray(numberOfColumns,rowNumber) {
+    let array = [];
+    for (let column = 1; column < numberOfColumns; column++) {
+        array.push([gridUnit * column, gridUnit * rowNumber]);
+    }
+    return array;
+}
+
+function getPatternXOffset(index) {
+    let avgXDistFromTarget;
+    console.log(index);
+    avgXDistFromTarget = avgX - offsetMatrix[index][0][0];
+    return avgXDistFromTarget;
 };
 
-function getPatternYOffset(gridsize) {
-    return roundToGridUnit(random(- getShapeOrigin(form.shape).y, canvas.height - getShapeOrigin(form.shape).y) - getShapeHeight(form.shape), gridsize);
+function getPatternYOffset(index) {
+    let avgYDistFromTarget;
+    console.log(index);
+    avgYDistFromTarget = avgY - offsetMatrix[index][0][1];
+    return avgYDistFromTarget;
 };
+
+function getAveragePointFromShape(shape) {
+    let avgX; let avgY;
+    for (let i = 0; i < shape.length; i++) {
+        avgX += shape[i].x;
+        avgY += shape[i].y;
+    };
+    avgX = avgX/shape.length;
+    avgY = avgY/shape.length;
+    let average = [avgX,avgY];
+    return average;
+}
+
+//end new offset system
 
 function roundToGridUnit(x, gridsize) {
     return Math.ceil(x / gridsize) * gridsize;
@@ -301,6 +363,8 @@ class Form {
             this.shape[i].transform(xoffset,yoffset);
         }
     };
+    rotate(degrees) {
+    }
     regenColorCoinToss() {
         this.oneOrZero = round(100%random());
     }
