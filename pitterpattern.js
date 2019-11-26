@@ -40,9 +40,6 @@ var offsetMatrix;
 var offsetXIndex = 0;
 var offsetYIndex = 0;
 
-var avgX;
-var avgY;
-
 function setup() {
     noLoop();
     cnv = createCanvas(document.getElementById('console-label').offsetWidth - 36,innerHeight*.665);
@@ -180,19 +177,26 @@ function getMidpointFromVertices(vertex1,vertex2) {
     return midpoint;
 }
 
-function drawPattern(template,unit) {
-    console.log('drawing!');
-    setAveragePoints();
-    if (template.length > 3) {
+function drawPattern(shape) {
+    let averageX = getAverageXFromShape(shape);
+    let averageY = getAverageYFromShape(shape);
+    if (shape.length > 3) {
         let copies=[];
-        for (let i = 0; i < 1000; i++) {
-            copies[i] = copyOf(form);
-            copies[i].offset(
-                getPatternXOffset(i),
-                getPatternYOffset(i)
-            );
-            copies[i].regenColorCoinToss();
-            primaryQueue.push(copies[i]);
+        let i = 0;
+        let numberOfRows = round(cnv.width / gridUnit);
+        let numberOfColumns = round(cnv.height / gridUnit);
+        for (let rowIndex = 0; rowIndex < numberOfRows; rowIndex++) {
+            for (let colIndex = 0; colIndex < numberOfColumns; colIndex++) {
+                copies[i] = copyOf(shape);
+                copies[i].offset(
+                    getPatternXOffset(rowIndex,colIndex,averageX),
+                    getPatternYOffset(rowIndex,colIndex,averageY)
+                    );
+                copies[i].regenColorCoinToss();
+                primaryQueue.push(copies[i]);
+                i++;
+                // console.log('shape: ' + copies[i] + ' row index: ' + rowIndex + ' colIndex: ' +colIndex);
+            }
         }
         noLoop();
     } else {
@@ -209,13 +213,7 @@ function populateOffsetTargetMatrix() {
     for (let row = 1; row < numberOfRows; row++) {
         tempoffsetMatrix.push(genColumnArray(numberOfColumns,row));
     }
-    console.log(tempoffsetMatrix[0][0]);
     return tempoffsetMatrix;
-}
-
-function setAveragePoints() {
-    avgX = getAveragePointFromShape(form.shape)[0];
-    avgY = getAveragePointFromShape(form.shape)[1];
 }
 
 function genColumnArray(numberOfColumns,rowNumber) {
@@ -226,30 +224,28 @@ function genColumnArray(numberOfColumns,rowNumber) {
     return array;
 }
 
-function getPatternXOffset(index) {
-    let avgXDistFromTarget;
-    console.log(index);
-    avgXDistFromTarget = avgX - offsetMatrix[index][0][0];
-    return avgXDistFromTarget;
+function getPatternXOffset(rowIndex,colIndex,averageX) {
+    return offsetMatrix[rowIndex][colIndex][0];
 };
 
-function getPatternYOffset(index) {
-    let avgYDistFromTarget;
-    console.log(index);
-    avgYDistFromTarget = avgY - offsetMatrix[index][0][1];
-    return avgYDistFromTarget;
+function getPatternYOffset(rowIndex,colIndex,averageY) {
+    return offsetMatrix[rowIndex][colIndex][1];
 };
 
-function getAveragePointFromShape(shape) {
-    let avgX; let avgY;
+function getAverageXFromShape(shape) {
+    let tempavgX = 0;
     for (let i = 0; i < shape.length; i++) {
-        avgX += shape[i].x;
-        avgY += shape[i].y;
+        tempavgX = tempavgX + shape[i].x;
     };
-    avgX = avgX/shape.length;
-    avgY = avgY/shape.length;
-    let average = [avgX,avgY];
-    return average;
+    return tempavgX / shape.length;
+}
+
+function getAverageYFromShape(shape) {
+    let tempavgY = 0;
+    for (let i = 0; i < shape.length; i++) {
+        tempavgY = tempavgY + shape[i].y;
+    };
+    return tempavgY / shape.length;
 }
 
 //end new offset system
@@ -258,12 +254,12 @@ function roundToGridUnit(x, gridsize) {
     return Math.ceil(x / gridsize) * gridsize;
 };
 
-function copyOf(formObj) {
+function copyOf(shape) {
     let temporaryCopy = new Form;
-    for (let i = 0; i < formObj.shape.length; i++) {
+    for (let i = 0; i < shape.length; i++) {
         temporaryCopy.shape[i] = new Vertex;
-        temporaryCopy.shape[i].x = formObj.shape[i].x;
-        temporaryCopy.shape[i].y = formObj.shape[i].y;
+        temporaryCopy.shape[i].x = shape[i].x;
+        temporaryCopy.shape[i].y = shape[i].y;
     }
     return temporaryCopy;
 }
@@ -436,7 +432,7 @@ function checkButtons() {
     buttonPattern.mousePressed(() => {
         gridUnit = validateGridUnit(gridUnit);
         if (!lock) {
-            drawPattern(form.shape,gridUnit);
+            drawPattern(form.shape);
         }
     });
     buttonReset.mousePressed(() => {
