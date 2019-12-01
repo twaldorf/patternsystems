@@ -51,10 +51,6 @@ function setup() {
     primaryQueue.push(form);
     initializeNewInterfaceElements();
     colorway = [90,210];
-    numberOfRows = round(cnv.height / gridUnit) + 1;
-    numberOfColumns = round(cnv.width / gridUnit) + 1;
-    offsetMatrix = populateOffsetTargetMatrix(numberOfRows,numberOfColumns);
-    console.log(offsetMatrix);
 }
 
 function draw() {
@@ -183,13 +179,16 @@ function getMidpointFromVertices(vertex1,vertex2) {
 }
 
 function drawPattern(shape,numberOfRows,numberOfColumns) {
+    numberOfRows = round(cnv.height / gridUnit) + 1;
+    numberOfColumns = round(cnv.width / gridUnit) + 1;
+    offsetMatrix = populateOffsetTargetMatrix(numberOfRows,numberOfColumns);
     let averageX = getAverageXFromShape(shape);
     let averageY = getAverageYFromShape(shape);
     console.log(averageX,averageY);
-    if (shape.length > 3) {
+    if (shape.length > 2) {
         let copies=[];
         let i = 0;
-        for (let rowIndex = 0; rowIndex < numberOfRows; rowIndex++) {
+        for (let rowIndex = 0; rowIndex < numberOfRows - 1; rowIndex++) {
             for (let colIndex = 0; colIndex < numberOfColumns - 1; colIndex++) {
                 copies[i] = copyOf(shape);
                 copies[i].offset(
