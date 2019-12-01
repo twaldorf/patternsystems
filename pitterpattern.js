@@ -5,7 +5,7 @@ var curvemode = true;
 var primaryQueue = [];
 var form;
 var dragInterval = 50;
-var gridUnit = 5;
+var gridUnit = 50;
 var borderMode = true;
 var vertexMode = false;
 var fillmode = false;
@@ -40,6 +40,9 @@ var offsetMatrix;
 var offsetXIndex = 0;
 var offsetYIndex = 0;
 
+var numberOfRows;
+var numberOfColumns;
+
 function setup() {
     noLoop();
     cnv = createCanvas(document.getElementById('console-label').offsetWidth - 36,innerHeight*.665);
@@ -48,7 +51,10 @@ function setup() {
     primaryQueue.push(form);
     initializeNewInterfaceElements();
     colorway = [90,210];
-    offsetMatrix = populateOffsetTargetMatrix();
+    numberOfRows = round(cnv.height / gridUnit) + 1;
+    numberOfColumns = round(cnv.width / gridUnit) + 1;
+    offsetMatrix = populateOffsetTargetMatrix(numberOfRows,numberOfColumns);
+    console.log(offsetMatrix);
 }
 
 function draw() {
@@ -157,7 +163,6 @@ function getShapeOrigin(shape) {
     let bottomBound;
 
 
-
     let firstMidpoint = getMidpointFromVertices(shape[0],shape[1]);
     let secondMidpoint = getMidpointFromVertices(shape[2],shape[3]);
     let thirdMidpoint = getMidpointFromVertices(firstMidpoint,secondMidpoint);
@@ -177,16 +182,15 @@ function getMidpointFromVertices(vertex1,vertex2) {
     return midpoint;
 }
 
-function drawPattern(shape) {
+function drawPattern(shape,numberOfRows,numberOfColumns) {
     let averageX = getAverageXFromShape(shape);
     let averageY = getAverageYFromShape(shape);
+    console.log(averageX,averageY);
     if (shape.length > 3) {
         let copies=[];
         let i = 0;
-        let numberOfRows = round(cnv.width / gridUnit);
-        let numberOfColumns = round(cnv.height / gridUnit);
         for (let rowIndex = 0; rowIndex < numberOfRows; rowIndex++) {
-            for (let colIndex = 0; colIndex < numberOfColumns; colIndex++) {
+            for (let colIndex = 0; colIndex < numberOfColumns - 1; colIndex++) {
                 copies[i] = copyOf(shape);
                 copies[i].offset(
                     getPatternXOffset(rowIndex,colIndex,averageX),
@@ -195,7 +199,6 @@ function drawPattern(shape) {
                 copies[i].regenColorCoinToss();
                 primaryQueue.push(copies[i]);
                 i++;
-                // console.log('shape: ' + copies[i] + ' row index: ' + rowIndex + ' colIndex: ' +colIndex);
             }
         }
         noLoop();
@@ -204,14 +207,10 @@ function drawPattern(shape) {
     }
 }
 
-function populateOffsetTargetMatrix() {
+function populateOffsetTargetMatrix(numberOfRows,numberOfColumns) {
     let tempoffsetMatrix = [];
-
-    let numberOfRows = width / gridUnit;
-    let numberOfColumns = height / gridUnit;
-
-    for (let row = 1; row < numberOfRows; row++) {
-        tempoffsetMatrix.push(genColumnArray(numberOfColumns,row));
+    for (let rowNumber = 1; rowNumber < numberOfRows; rowNumber++) {
+        tempoffsetMatrix.push(genColumnArray(numberOfColumns,rowNumber));
     }
     return tempoffsetMatrix;
 }
@@ -219,17 +218,19 @@ function populateOffsetTargetMatrix() {
 function genColumnArray(numberOfColumns,rowNumber) {
     let array = [];
     for (let column = 1; column < numberOfColumns; column++) {
-        array.push([gridUnit * column, gridUnit * rowNumber]);
+        array.push(
+            [gridUnit * column, gridUnit * rowNumber]
+            );
     }
     return array;
 }
 
 function getPatternXOffset(rowIndex,colIndex,averageX) {
-    return offsetMatrix[rowIndex][colIndex][0];
+    return offsetMatrix[rowIndex][colIndex][0] - averageX;
 };
 
 function getPatternYOffset(rowIndex,colIndex,averageY) {
-    return offsetMatrix[rowIndex][colIndex][1];
+    return offsetMatrix[rowIndex][colIndex][1] - averageY;
 };
 
 function getAverageXFromShape(shape) {
@@ -247,8 +248,6 @@ function getAverageYFromShape(shape) {
     };
     return tempavgY / shape.length;
 }
-
-//end new offset system
 
 function roundToGridUnit(x, gridsize) {
     return Math.ceil(x / gridsize) * gridsize;
@@ -414,8 +413,8 @@ class Vertex {
     x() {return this.x}
     y() {return this.y}
     transform(xoffset,yoffset) {
-        this.x += xoffset;
-        this.y += yoffset;
+        this.x = this.x + xoffset;
+        this.y = this.y + yoffset;
     }
 }
 
@@ -432,7 +431,7 @@ function checkButtons() {
     buttonPattern.mousePressed(() => {
         gridUnit = validateGridUnit(gridUnit);
         if (!lock) {
-            drawPattern(form.shape);
+            drawPattern(form.shape,numberOfRows,numberOfColumns);
         }
     });
     buttonReset.mousePressed(() => {
