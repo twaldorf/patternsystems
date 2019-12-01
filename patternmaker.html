@@ -8,7 +8,7 @@
     <script type="text/javascript" src="pitterpattern.js"></script>
     <link rel="stylesheet" href="theytellyouhowtothink.css">
     <link rel="stylesheet" href="pitterpattern.css">
-    <link rel="stylesheet" href="sliders.css">
+    <link rel="stylesheet" href="modulators.css">
 </head>
 <body>
     <div class="mobile-header">
@@ -30,8 +30,8 @@
             <div class="stats">
                 <li>LATEST: <span id="current-date">█</span></li>
                 <li>INITIALIZED: <span id="date">█</span></li>
-                <li>PATTERN SYSTEM: PITTER-PATTERN.JS</li>
-                <li>SIZE IN LOCAL STORAGE: 29 KILOBYTES</li>
+                <li>PATTERN SYSTEM: PITTERPATTERN.JS</li>
+                <li>SIZE IN LOCAL STORAGE: ??</li>
             </div>
             <div id="console-label" class="console-label">
                 <label for="header">System title</label>
@@ -49,19 +49,24 @@
                 <div id="console-layout" class="control-panel">
                     <h3>Layout</h3>
                     <div class="parameters">
-                        <label for="gridUnit slider">
-                            Modulate grid unit
-                        </label>
-                        <label for="pattern grid toggle">Grid mode</label>
-                        <button>RANDOM/GRID</button>
+                        <li>
+                            <label for="gridUnit slider">
+                                Grid size: <span id="gridunit-value">50</span>
+                            </label>
+                            <input id="grid-slider" type="range" min="10" max="200" value="50" step="1" class="slider-input">
+                        </li>
+                        <li>
+                            <label for="pattern grid toggle">Grid mode</label>
+                            <button class="toggle on">ACTIVE <span>DISABLE</span></button>
+                        </li>
                     </div>
                 </div>
                 <div class="control-panel">
                     <h3>Color</h3>
-                    <p>Define two hex colors to interpolate between.</p>
-                    <div>
-                        <li>Color1</li>
-                        <li>Color2</li>
+                    <p>Hexadecimal values for interpolation</p>
+                    <div class="flex-row">
+                        <li>#<input type="text" id="color-input-1"></li>
+                        <li>#<input type="text" id="color-input-2"></li>
                     </div>
                 </div>
             </div>
@@ -74,13 +79,18 @@
                 <div class="control-panel">
                     <h3>Form parameters</h3>
                     <div class="parameters">
-                        <li id="stroke-slider">
-                            <label for="stroke slider">Edge stroke</label></li>
-                        <li id="fill-toggle">Fill shape</li>
-                        <li id="border-toggle">Border</li>
-                        <li id="curve-toggle">Round corners
-                            <span>Catmull-Rom Splination</span>
+                        <li id="fill-toggle">Fill shape
+                            <button id="button-fill" class="toggle off">INACTIVE <span>ENABLE</span></button>
                         </li>
+                        <li id="curve-toggle">Round corners
+                            <span class="descriptor">(Catmull-Rom Splination)</span>
+                            <button id="button-corners" class="toggle on">ACTIVE <span>DISABLE</span></button>
+                        </li>
+                        <li id="border-toggle">Border
+                            <button id="button-border" class="toggle on">ACTIVE <span>DISABLE</span></button>
+                        </li>
+                        <li id="stroke-slider">
+                            <label for="stroke slider">Border diameter</label></li>
                     </div>
                 </div>
                 <div class="control-panel">

@@ -15,6 +15,10 @@ button {
     text-transform: uppercase;
 }
 
+header {
+    color: #666;
+}
+
 button:hover {
     cursor: pointer;
 }
@@ -68,6 +72,34 @@ section {
 
 .slider-input {
     margin-top: 14px;
+}
+
+input[type=text]::-webkit-inner-spin-button, 
+input[type=text]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+}
+
+input[type=text] {
+    max-width: 50%;
+    display: inline;
+    background-color: black;
+    color: white;
+    border: none;
+    border-bottom: 1px solid white;
+    mix-blend-mode: difference;
+    -moz-appearance: textfield;
+}
+
+input[type=text]:focus {
+    outline: none;
+}
+
+.hash {
+    blen
+}
+
+.flex-row {
+    display: flex; flex-direction: row;
 }
 
 #main-control-bar {
@@ -131,22 +163,43 @@ canvas {
 .control-panel button {
     display: block;
     font-size: 16px;
+    padding: 0 2px;
     /* mix-blend-mode: difference; */
 }
 .control-bar button{
     font-size: 12px;
 }
-button.toggle {
+button.on span {
+    color: white;
+}
+button.off span {
+    color: black;
+}
+button.toggle.on {
+    color: black;
+    /* mix-blend-mode: difference; */
+    background: rgba(255,255,255,1);
+    background: -moz-linear-gradient(left, rgba(255,255,255,1) 0%, rgba(255,255,255,1) 47.5%, rgba(0,0,0,1) 47.5%, rgba(0,0,0,1) 100%);
+    background: -webkit-gradient(left top, right top, color-stop(0%, rgba(255,255,255,1)), color-stop(47.5%, rgba(255,255,255,1)), color-stop(47.5%, rgba(0,0,0,1)), color-stop(100%, rgba(0,0,0,1)));
+    background: -webkit-linear-gradient(left, rgba(255,255,255,1) 0%, rgba(255,255,255,1) 47.5%, rgba(0,0,0,1) 47.5%, rgba(0,0,0,1) 100%);
+    background: -o-linear-gradient(left, rgba(255,255,255,1) 0%, rgba(255,255,255,1) 47.5%, rgba(0,0,0,1) 47.5%, rgba(0,0,0,1) 100%);
+    background: -ms-linear-gradient(left, rgba(255,255,255,1) 0%, rgba(255,255,255,1) 47.5%, rgba(0,0,0,1) 47.5%, rgba(0,0,0,1) 100%);
+    background: linear-gradient(to right, rgba(255,255,255,1) 0%, rgba(255,255,255,1) 47.5%, rgba(0,0,0,1) 47.5%, rgba(0,0,0,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#000000', endColorstr='#ffffff', GradientType=1 );
+    transition: all .23s;
+}
+button.toggle.off {
     color: white;
     /* mix-blend-mode: difference; */
     background: rgba(0,0,0,1);
-    background: -moz-linear-gradient(left, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 45%, rgba(255,255,255,1) 45%, rgba(255,255,255,1) 100%);
-    background: -webkit-gradient(left top, right top, color-stop(0%, rgba(0,0,0,1)), color-stop(45%, rgba(0,0,0,1)), color-stop(45%, rgba(255,255,255,1)), color-stop(100%, rgba(255,255,255,1)));
-    background: -webkit-linear-gradient(left, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 45%, rgba(255,255,255,1) 45%, rgba(255,255,255,1) 100%);
-    background: -o-linear-gradient(left, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 45%, rgba(255,255,255,1) 45%, rgba(255,255,255,1) 100%);
-    background: -ms-linear-gradient(left, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 45%, rgba(255,255,255,1) 45%, rgba(255,255,255,1) 100%);
-    background: linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 45%, rgba(255,255,255,1) 45%, rgba(255,255,255,1) 100%);
+    background: -moz-linear-gradient(left, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 54.5%, rgba(255,255,255,1) 54.5%, rgba(255,255,255,1) 100%);
+    background: -webkit-gradient(left top, right top, color-stop(0%, rgba(0,0,0,1)), color-stop(54.5%, rgba(0,0,0,1)), color-stop(54.5%, rgba(255,255,255,1)), color-stop(100%, rgba(255,255,255,1)));
+    background: -webkit-linear-gradient(left, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 54.5%, rgba(255,255,255,1) 54.5%, rgba(255,255,255,1) 100%);
+    background: -o-linear-gradient(left, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 54.5%, rgba(255,255,255,1) 54.5%, rgba(255,255,255,1) 100%);
+    background: -ms-linear-gradient(left, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 54.5%, rgba(255,255,255,1) 54.5%, rgba(255,255,255,1) 100%);
+    background: linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 54.5%, rgba(255,255,255,1) 54.5%, rgba(255,255,255,1) 100%);
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#000000', endColorstr='#ffffff', GradientType=1 );
+    transition: all .23s;
 }
 .parameters {
     text-align: left;
@@ -158,7 +211,7 @@ button.toggle {
     margin: 1.2rem 0;
 }
 
-.parameters span {
+.parameters span.descriptor {
     font-size: 10px;
     display: block;
     margin-top: -12px;

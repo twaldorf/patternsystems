@@ -5,7 +5,7 @@ var curvemode = true;
 var primaryQueue = [];
 var form;
 var dragInterval = 50;
-var gridUnit = 5;
+var gridUnit = 50;
 var borderMode = true;
 var vertexMode = false;
 var fillmode = false;
@@ -21,6 +21,10 @@ var formXorigin;
 var formYorigin;
 var currenttime;
 var inittime;
+var colorInput1;
+var colorInput2;
+
+var buttons;
 
 var fullDate = new Date();
 var minutesDate;
@@ -32,82 +36,31 @@ var newMinutesDate;
 var newSecondsDate;
 var colorway;
 
+var offsetMatrix;
+var offsetXIndex = 0;
+var offsetYIndex = 0;
+
+var numberOfRows;
+var numberOfColumns;
 
 function setup() {
+    noLoop();
     cnv = createCanvas(document.getElementById('console-label').offsetWidth - 36,innerHeight*.665);
+    cnv.parent('sketch-holder');
     form = new Form;
     primaryQueue.push(form);
-
-    slider = createSlider(1,100,10,1);
-    sliderStroke = createSlider(0,100,0,1);
-    buttonPattern = createButton('Patternize');
-    buttonReset = createButton('Reset pattern');
-    buttonResetForm = createButton('Reset form');
-
-    sliderStroke.elt.classList.add('slider-input');
-    slider.elt.classList.add('slider-input');
-
-    buttonFillToggle = createButton('Active / Disable');
-    buttonFillToggle.elt.classList.add('toggle');
-    buttonBorderToggle = createButton('Active / Disable');
-    buttonBorderToggle.elt.classList.add('toggle');
-    buttonCurveToggle = createButton('Active / Disable');
-    buttonCurveToggle.elt.classList.add('toggle');
-
-    slider.parent('console-layout');
-    sliderStroke.parent('stroke-slider');
-    buttonPattern.parent('main-control-bar');
-    buttonReset.parent('main-control-bar');
-    buttonResetForm.parent('main-control-bar');
-    buttonFillToggle.parent('fill-toggle')
-    buttonBorderToggle.parent('border-toggle')
-    buttonCurveToggle.parent('curve-toggle')
-
-    cnv.parent('sketch-holder');
-    minutesDate = fullDate.getMinutes();
-    secondsDate = fullDate.getSeconds();
-    hoursDate = fullDate.getHours();
-    date.innerHTML = hoursDate + 'HR ' + minutesDate + 'M ' + secondsDate + 'S';
-    colorway = [0,210];
-    noLoop();
+    initializeNewInterfaceElements();
+    colorway = [90,210];
 }
 
 function draw() {
     background('#181818');
     drawCursor();
-    gridUnit = slider.elt.value; //perfnote: send to event-based
+    pullInputValues();
     renderAll(primaryQueue);
-    cnv.mouseOver(() => {over = true});
-    cnv.mouseOut(() => {over = false});
-    buttonPattern.mousePressed(() => {
-        gridUnit = validateGridUnit(gridUnit);
-        if (!lock) {
-            drawPattern(form.shape,gridUnit);
-        }
-    });
-    buttonReset.mousePressed(() => {
-        primaryQueue = [];
-        primaryQueue.push(form);
-    })
-    buttonResetForm.mousePressed(() => {
-        primaryQueue = [];
-        form.shape = [];
-        primaryQueue.push(form);
-    })
-    buttonFillToggle.mousePressed(() => {
-        if (fillmode) {fillmode = false} else {fillmode=true};
-    })
-    buttonBorderToggle.mousePressed(() => {
-        if (borderMode) {borderMode = false} else {borderMode=true};
-    })
-    buttonCurveToggle.mousePressed(() => {
-        if (curvemode) {curvemode = false} else {curvemode=true};
-    })
-    let tempdate = new Date();
-    newHoursDate = tempdate.getHours();
-    newMinutesDate = tempdate.getMinutes();
-    newSecondsDate = tempdate.getSeconds();
-    currenttime.innerHTML = newHoursDate + 'HR ' + newMinutesDate + 'M ' + newSecondsDate + 'S';
+    checkMouseOverCanvas(cnv);
+    checkButtons();
+    updateTimePanel();
 }
 
 function renderAll(queue) {
@@ -116,22 +69,7 @@ function renderAll(queue) {
         element.updateColor(colorway);
         element.render();
     });
-    vertexcounter.innerHTML = form.shape.length;
-    if (form.shape.length > 10) {
-        vertexcounter.innerHTML = form.shape.length + ' (WARN) ';
-        vertexcounter.classList.add('warn');
-    }
-    if (form.shape.length < 10) {
-        vertexcounter.classList.remove('warn');
-    }
-    if (form.shape.length > 0) {
-        // formheight.innerHTML = round(getShapeHeight(form.shape));
-        formwidth.innerHTML = round(getShapeWidth(form.shape));
-    }
-    if (form.shape.length > 3) {
-        formXorigin.innerHTML = round(form.shape[0].x);
-        formYorigin.innerHTML = round(form.shape[0].y);
-    }
+    updateShapeStatistics();
     lock = false;
 }
 
@@ -155,7 +93,7 @@ function mouseDragged() {
             }
         }
     }
-    if (!clickingOnExistingPoint(mouseX,mouseY,form.shape) && !onButton(50,50) && over == true) {
+    if (!clickingOnExistingPoint(mouseX,mouseY,form.shape) && over == true) {
         if (dist(mouseX,mouseY,form.shape[form.shape.length-1].x,form.shape[form.shape.length-1].y) > dragInterval) {
             form.addPoint(mouseX,mouseY);
         }
@@ -172,10 +110,7 @@ function mouseReleased() {
 }
 
 function validateGridUnit(unit) {
-    if (unit < getShapeHeight(form.shape) / 2 || unit < getShapeWidth(form.shape)/2 ) {
-        return getShapeHeight(form.shape) / 2;
-    }
-    else if (unit == 0) {
+    if (unit == 0) {
         return getShapeHeight(form.shape);
     } else {
         return gridUnit;
@@ -215,6 +150,12 @@ function getShapeHeight(shape) {
 }
 
 function getShapeOrigin(shape) {
+    let leftBound;
+    let rightBound;
+    let topBound;
+    let bottomBound;
+
+
     let firstMidpoint = getMidpointFromVertices(shape[0],shape[1]);
     let secondMidpoint = getMidpointFromVertices(shape[2],shape[3]);
     let thirdMidpoint = getMidpointFromVertices(firstMidpoint,secondMidpoint);
@@ -234,17 +175,26 @@ function getMidpointFromVertices(vertex1,vertex2) {
     return midpoint;
 }
 
-function drawPattern(template,unit) {
-    console.log('drawing!');
-    if (template.length > 3) {
+function drawPattern(shape,numberOfRows,numberOfColumns) {
+    numberOfRows = round(cnv.height / gridUnit) + 1;
+    numberOfColumns = round(cnv.width / gridUnit) + 1;
+    offsetMatrix = populateOffsetTargetMatrix(numberOfRows,numberOfColumns);
+    let averageX = getAverageXFromShape(shape);
+    let averageY = getAverageYFromShape(shape);
+    console.log(averageX,averageY);
+    if (shape.length > 2) {
         let copies=[];
-        for (let i = 0; i < 1000; i++) {
-            copies[i] = copyOf(form);
-            copies[i].offset(
-                getPatternXOffset(unit),
-                getPatternYOffset(unit)
-            );
-            primaryQueue.push(copies[i]);
+        let i = 0;
+        for (let rowIndex = 0; rowIndex < numberOfRows - 1; rowIndex++) {
+            for (let colIndex = 0; colIndex < numberOfColumns - 1; colIndex++) {
+                copies[i] = copyOf(shape);
+                copies[i].offset(
+                    getPatternXOffset(rowIndex,colIndex,averageX),
+                    getPatternYOffset(rowIndex,colIndex,averageY));
+                copies[i].regenColorCoinToss();
+                primaryQueue.push(copies[i]);
+                i++;
+            }
         }
         noLoop();
     } else {
@@ -252,24 +202,58 @@ function drawPattern(template,unit) {
     }
 }
 
-function getPatternXOffset(gridsize) {
-    return roundToGridUnit(random(- getShapeOrigin(form.shape).x, canvas.width - getShapeOrigin(form.shape).x), gridsize);
+function populateOffsetTargetMatrix(numberOfRows,numberOfColumns) {
+    let tempoffsetMatrix = [];
+    for (let rowNumber = 1; rowNumber < numberOfRows; rowNumber++) {
+        tempoffsetMatrix.push(genColumnArray(numberOfColumns,rowNumber));
+    }
+    return tempoffsetMatrix;
+}
+
+function genColumnArray(numberOfColumns,rowNumber) {
+    let array = [];
+    for (let column = 0; column < numberOfColumns; column++) {
+        array.push(
+            [gridUnit * column, gridUnit * rowNumber]
+            );
+    }
+    return array;
+}
+
+function getPatternXOffset(rowIndex,colIndex,averageX) {
+    return offsetMatrix[rowIndex][colIndex][0] - averageX;
 };
 
-function getPatternYOffset(gridsize) {
-    return roundToGridUnit(random(- getShapeOrigin(form.shape).y, canvas.height - getShapeOrigin(form.shape).y) - getShapeHeight(form.shape), gridsize);
+function getPatternYOffset(rowIndex,colIndex,averageY) {
+    return offsetMatrix[rowIndex][colIndex][1] - averageY;
 };
+
+function getAverageXFromShape(shape) {
+    let tempavgX = 0;
+    for (let i = 0; i < shape.length; i++) {
+        tempavgX = tempavgX + shape[i].x;
+    };
+    return tempavgX / shape.length;
+}
+
+function getAverageYFromShape(shape) {
+    let tempavgY = 0;
+    for (let i = 0; i < shape.length; i++) {
+        tempavgY = tempavgY + shape[i].y;
+    };
+    return tempavgY / shape.length;
+}
 
 function roundToGridUnit(x, gridsize) {
     return Math.ceil(x / gridsize) * gridsize;
 };
 
-function copyOf(formObj) {
+function copyOf(shape) {
     let temporaryCopy = new Form;
-    for (let i = 0; i < formObj.shape.length; i++) {
+    for (let i = 0; i < shape.length; i++) {
         temporaryCopy.shape[i] = new Vertex;
-        temporaryCopy.shape[i].x = formObj.shape[i].x;
-        temporaryCopy.shape[i].y = formObj.shape[i].y;
+        temporaryCopy.shape[i].x = shape[i].x;
+        temporaryCopy.shape[i].y = shape[i].y;
     }
     return temporaryCopy;
 }
@@ -320,14 +304,6 @@ function drawInnerShape(points,colorVal) {
     }
 }
 
-function onButton(x,y) {
-    if (dist(mouseX,mouseY,x,y) < 120) {
-        return true;
-    } else {
-        return false;
-    }
-}
-
 function findClosestPoint(x,y,shape) {
     let distances = [];
     for (let i = 0; i < shape.length; i++) {
@@ -370,15 +346,20 @@ class Form {
     constructor() {
         this.shape = [];
         this.color = color;
+        this.oneOrZero = round(100%random());
     };
     offset(xoffset,yoffset) {
         for (let i = 0; i < this.shape.length; i++) {
             this.shape[i].transform(xoffset,yoffset);
         }
     };
+    rotate(degrees) {
+    }
+    regenColorCoinToss() {
+        this.oneOrZero = round(100%random());
+    }
     updateColor(colorway) {
-        let oneOrZero = round(100%random());
-        this.color = colorway[oneOrZero];
+        this.color = colorway[this.oneOrZero];
     }
     render() {
         drawVertices(this.shape,255,borderMode);
@@ -427,13 +408,76 @@ class Vertex {
     x() {return this.x}
     y() {return this.y}
     transform(xoffset,yoffset) {
-        this.x += xoffset;
-        this.y += yoffset;
+        this.x = this.x + xoffset;
+        this.y = this.y + yoffset;
     }
 }
 
 
+function pullInputValues() {
+    gridUnit = slider.value;
+    gridUnitValue.innerHTML = gridUnit;
+    if (colorInput1.value != null && colorInput2.value != null) {
+        colorway[0] = '#' + colorInput1.value;
+        colorway[1] = '#' + colorInput2.value;
+    }
+}
+
+function checkButtons() {
+    buttonPattern.mousePressed(() => {
+        gridUnit = validateGridUnit(gridUnit);
+        if (!lock) {
+            drawPattern(form.shape,numberOfRows,numberOfColumns);
+        }
+    });
+    buttonReset.mousePressed(() => {
+        primaryQueue = [];
+        primaryQueue.push(form);
+    })
+    buttonResetForm.mousePressed(() => {
+        primaryQueue = [];
+        form.shape = [];
+        primaryQueue.push(form);
+    })
+}
+
+function updateTimePanel() {
+    let tempdate = new Date();
+    newHoursDate = tempdate.getHours();
+    newMinutesDate = tempdate.getMinutes();
+    newSecondsDate = tempdate.getSeconds();
+    currenttime.innerHTML = newHoursDate + 'HR ' + newMinutesDate + 'M ' + newSecondsDate + 'S';
+}
+
+function checkMouseOverCanvas(canvas) {
+    canvas.mouseOver(() => {over = true});
+    canvas.mouseOut(() => {over = false});
+}
+
+function initializeNewInterfaceElements() {
+    sliderStroke = createSlider(-1,10,0,1);
+    buttonPattern = createButton('Autolayout');
+    buttonReset = createButton('Reset layout');
+    buttonResetForm = createButton('Reset shape');
+
+    sliderStroke.elt.classList.add('slider-input');
+
+    sliderStroke.parent('stroke-slider');
+    buttonPattern.parent('main-control-bar');
+    buttonReset.parent('main-control-bar');
+    buttonResetForm.parent('main-control-bar');
+
+    minutesDate = fullDate.getMinutes();
+    secondsDate = fullDate.getSeconds();
+    hoursDate = fullDate.getHours();
+    date.innerHTML = hoursDate + 'HR ' + minutesDate + 'M ' + secondsDate + 'S';
+}
+
 document.addEventListener("DOMContentLoaded", function() {
+    colorInput1 = document.getElementById('color-input-1');
+    colorInput2 = document.getElementById('color-input-2');
+    slider = document.getElementById('grid-slider');
+    gridUnitValue = document.getElementById('gridunit-value');
     vertexcounter = document.getElementById('vertex-counter');
     formheight = document.getElementById('form-height');
     formwidth = document.getElementById('form-width');
@@ -441,7 +485,71 @@ document.addEventListener("DOMContentLoaded", function() {
     formYorigin = document.getElementById('form-Y-origin');
     currenttime = document.getElementById('current-date');
     date = document.getElementById('date');
+    buttonFillToggle = document.getElementById('button-fill');
+    buttonBorderToggle = document.getElementById('button-border');
+    buttonCurveToggle = document.getElementById('button-corners');
+    buttons = document.querySelectorAll('button');
+    buttons.forEach(function(e) {
+        e.addEventListener('click', () => {
+            updateButtonState(e)
+        });
+    });
+    buttonFillToggle.addEventListener('click', () => {
+        toggleFill();
+    });
+    buttonBorderToggle.addEventListener('click', () => {
+        toggleBorder();
+    });
+    buttonCurveToggle.addEventListener('click', () => {
+        toggleCurve();
+    });
 });
+
+function toggleFill() {
+    if (fillmode) {fillmode = false} else {fillmode=true};
+}
+
+function toggleBorder() {
+    if (borderMode) {borderMode = false} else {borderMode=true};
+}
+
+function toggleCurve() {
+    if (curvemode) {curvemode = false} else {curvemode=true};
+}
+
+function updateButtonState(e) {
+    if (e.className.includes('on')) {
+        console.log('was active');
+        e.classList.remove('on');
+        e.classList.add('off');
+        e.innerHTML = 'INACTIVE <span>ENABLE</span>';
+    }
+    else {
+        console.log('was inactive');
+        e.classList.remove('off');
+        e.classList.add('on');
+        e.innerHTML = 'ACTIVE <span>DISABLE</span>';
+    };
+}
+
+function updateShapeStatistics() {
+    vertexcounter.innerHTML = form.shape.length;
+    if (form.shape.length > 10) {
+        vertexcounter.innerHTML = form.shape.length + ' (WARN) ';
+        vertexcounter.classList.add('warn');
+    }
+    if (form.shape.length < 10) {
+        vertexcounter.classList.remove('warn');
+    }
+    if (form.shape.length > 0) {
+        // formheight.innerHTML = round(getShapeHeight(form.shape));
+        formwidth.innerHTML = round(getShapeWidth(form.shape));
+    }
+    if (form.shape.length > 3) {
+        formXorigin.innerHTML = round(form.shape[0].x);
+        formYorigin.innerHTML = round(form.shape[0].y);
+    }
+}
 
 var localStorageSpace = function(){
     var allStrings = '';
