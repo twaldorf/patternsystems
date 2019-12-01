@@ -110,10 +110,7 @@ function mouseReleased() {
 }
 
 function validateGridUnit(unit) {
-    if (unit < getShapeHeight(form.shape) / 2 || unit < getShapeWidth(form.shape)/2 ) {
-        return getShapeHeight(form.shape) / 2;
-    }
-    else if (unit == 0) {
+    if (unit == 0) {
         return getShapeHeight(form.shape);
     } else {
         return gridUnit;
@@ -193,8 +190,7 @@ function drawPattern(shape,numberOfRows,numberOfColumns) {
                 copies[i] = copyOf(shape);
                 copies[i].offset(
                     getPatternXOffset(rowIndex,colIndex,averageX),
-                    getPatternYOffset(rowIndex,colIndex,averageY)
-                    );
+                    getPatternYOffset(rowIndex,colIndex,averageY));
                 copies[i].regenColorCoinToss();
                 primaryQueue.push(copies[i]);
                 i++;
