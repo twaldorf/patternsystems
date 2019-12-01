@@ -15,6 +15,10 @@ button {
     text-transform: uppercase;
 }
 
+header {
+    color: #666;
+}
+
 button:hover {
     cursor: pointer;
 }

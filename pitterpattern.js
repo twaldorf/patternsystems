@@ -216,7 +216,7 @@ function populateOffsetTargetMatrix(numberOfRows,numberOfColumns) {
 
 function genColumnArray(numberOfColumns,rowNumber) {
     let array = [];
-    for (let column = 1; column < numberOfColumns; column++) {
+    for (let column = 0; column < numberOfColumns; column++) {
         array.push(
             [gridUnit * column, gridUnit * rowNumber]
             );
@@ -420,6 +420,7 @@ class Vertex {
 
 function pullInputValues() {
     gridUnit = slider.value;
+    gridUnitValue.innerHTML = gridUnit;
     if (colorInput1.value != null && colorInput2.value != null) {
         colorway[0] = '#' + colorInput1.value;
         colorway[1] = '#' + colorInput2.value;
@@ -479,7 +480,8 @@ function initializeNewInterfaceElements() {
 document.addEventListener("DOMContentLoaded", function() {
     colorInput1 = document.getElementById('color-input-1');
     colorInput2 = document.getElementById('color-input-2');
-    slider = document.getElementById('grid-slider')
+    slider = document.getElementById('grid-slider');
+    gridUnitValue = document.getElementById('gridunit-value');
     vertexcounter = document.getElementById('vertex-counter');
     formheight = document.getElementById('form-height');
     formwidth = document.getElementById('form-width');
