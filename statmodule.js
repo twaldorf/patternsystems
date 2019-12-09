@@ -1,7 +1,5 @@
 localStorageElt = document.getElementById('local-storage');
 
-localStorageElt.innerHTML = localStorageSpace();
-
 var localStorageSpace = function(){
     var allStrings = '';
     for(var key in window.localStorage){
@@ -11,3 +9,11 @@ var localStorageSpace = function(){
     }
     return allStrings ? 3 + ((allStrings.length*16)/(8*1024)) + ' KB' : 'Empty (0 KB)';
 };
+
+try {
+    localStorageSpace();
+    localStorageElt.innerHTML = localStorageSpace();
+}
+catch {
+    localStorageElt.innerHTML = "DISABLED BY BROWSER";
+}
