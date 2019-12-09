@@ -278,7 +278,7 @@ function drawVertices(shape,color,bordermode) {
 function drawBorders(points,color,i) {
     if (i > 0) {
         stroke(color);
-        strokeWeight(sliderStroke.elt.value);
+        strokeWeight(borderSize);
         line(points[i].x,points[i].y,points[i-1].x,points[i-1].y);
     }
     if (points.length > 2) {
@@ -417,6 +417,8 @@ class Vertex {
 function pullInputValues() {
     gridUnit = slider.value;
     gridUnitValue.innerHTML = gridUnit;
+    borderSize = sliderStroke.elt.value;
+    borderSizeValue.innerHTML = borderSize;
     if (colorInput1.value != null && colorInput2.value != null) {
         colorway[0] = '#' + colorInput1.value;
         colorway[1] = '#' + colorInput2.value;
@@ -455,7 +457,7 @@ function checkMouseOverCanvas(canvas) {
 }
 
 function initializeNewInterfaceElements() {
-    sliderStroke = createSlider(-1,10,0,1);
+    sliderStroke = createSlider(1,10,0,1);
     buttonPattern = createButton('Autolayout');
     buttonReset = createButton('Reset layout');
     buttonResetForm = createButton('Reset shape');
@@ -478,6 +480,8 @@ document.addEventListener("DOMContentLoaded", function() {
     colorInput2 = document.getElementById('color-input-2');
     slider = document.getElementById('grid-slider');
     gridUnitValue = document.getElementById('gridunit-value');
+    borderSlider = document.getElementById('border-slider');
+    borderSizeValue = document.getElementById('bordersize-value');
     vertexcounter = document.getElementById('vertex-counter');
     formheight = document.getElementById('form-height');
     formwidth = document.getElementById('form-width');
@@ -550,16 +554,6 @@ function updateShapeStatistics() {
         formYorigin.innerHTML = round(form.shape[0].y);
     }
 }
-
-var localStorageSpace = function(){
-    var allStrings = '';
-    for(var key in window.localStorage){
-        if(window.localStorage.hasOwnProperty(key)){
-            allStrings += window.localStorage[key];
-        }
-    }
-    return allStrings ? 3 + ((allStrings.length*16)/(8*1024)) + ' KB' : 'Empty (0 KB)';
-};
 
 //dom werk
 // document.addEventListener('readystatechange', function(element) {
