@@ -43,9 +43,15 @@ var offsetYIndex = 0;
 var numberOfRows;
 var numberOfColumns;
 
+var buttonExport;
+
+var buffer;
+var buffering = false;
+
 function setup() {
     noLoop();
     cnv = createCanvas(document.getElementById('console-label').offsetWidth - 36,innerHeight*.665);
+    buffer = createGraphics(cnv.width,cnv.height);
     cnv.parent('sketch-holder');
     form = new Form;
     primaryQueue.push(form);
@@ -54,6 +60,9 @@ function setup() {
 }
 
 function draw() {
+    if (buffering) {
+        buffer.background('#181818');
+    };
     background('#181818');
     drawCursor();
     pullInputValues();
@@ -176,9 +185,11 @@ function getMidpointFromVertices(vertex1,vertex2) {
 }
 
 function drawPattern(shape,numberOfRows,numberOfColumns) {
-    numberOfRows = round(cnv.height / gridUnit) + 1;
-    numberOfColumns = round(cnv.width / gridUnit) + 1;
-    offsetMatrix = populateOffsetTargetMatrix(numberOfRows,numberOfColumns);
+    if (!buffering) {
+        numberOfRows = round(cnv.height / gridUnit) + 1;
+        numberOfColumns = round(cnv.width / gridUnit) + 1;
+        offsetMatrix = populateOffsetTargetMatrix(numberOfRows,numberOfColumns);
+    }
     let averageX = getAverageXFromShape(shape);
     let averageY = getAverageYFromShape(shape);
     console.log(averageX,averageY);
@@ -291,6 +302,17 @@ function drawInnerShape(points,colorVal) {
         fill(colorVal);
         if (!fillmode) {
             noFill();
+        }
+        if (buffering) {
+            buffer.beginShape();
+            for (let i = 0; i < points.length; i++) {
+                if (curvemode) {
+                    buffer.curveVertex(points[i].x,points[i].y);
+                } else {
+                    buffer.vertex(points[i].x,points[i].y);
+                }
+            }
+            buffer.endShape(CLOSE);
         }
         beginShape();
         for (let i = 0; i < points.length; i++) {
@@ -488,15 +510,18 @@ document.addEventListener("DOMContentLoaded", function() {
     formXorigin = document.getElementById('form-X-origin');
     formYorigin = document.getElementById('form-Y-origin');
     currenttime = document.getElementById('current-date');
+    buttonExport = document.getElementById('button-export');
     date = document.getElementById('date');
     buttonFillToggle = document.getElementById('button-fill');
     buttonBorderToggle = document.getElementById('button-border');
     buttonCurveToggle = document.getElementById('button-corners');
     buttons = document.querySelectorAll('button');
     buttons.forEach(function(e) {
-        e.addEventListener('click', () => {
-            updateButtonState(e)
-        });
+        if (e.classList.contains('toggle')) {
+            e.addEventListener('click', () => {
+                updateButtonState(e)
+            });
+        }
     });
     buttonFillToggle.addEventListener('click', () => {
         toggleFill();
@@ -506,6 +531,9 @@ document.addEventListener("DOMContentLoaded", function() {
     });
     buttonCurveToggle.addEventListener('click', () => {
         toggleCurve();
+    });
+    buttonExport.addEventListener('click', () => {
+        exportPattern();
     });
 });
 
@@ -546,13 +574,36 @@ function updateShapeStatistics() {
         vertexcounter.classList.remove('warn');
     }
     if (form.shape.length > 0) {
-        // formheight.innerHTML = round(getShapeHeight(form.shape));
+        formheight.innerHTML = round(getShapeHeight(form.shape));
         formwidth.innerHTML = round(getShapeWidth(form.shape));
     }
     if (form.shape.length > 3) {
         formXorigin.innerHTML = round(form.shape[0].x);
         formYorigin.innerHTML = round(form.shape[0].y);
     }
+}
+
+function exportPattern(renderqueue) {
+    buffering = true;
+    console.log(buffering);
+    buffer = createGraphics(4 * cnv.width, 4 * cnv.height);
+    numberOfRows = round(buffer.height / gridUnit) + 1;
+    numberOfColumns = round(buffer.width / gridUnit) + 1;
+    offsetMatrix = populateOffsetTargetMatrix(numberOfRows,numberOfColumns);
+    drawPattern(form.shape,numberOfRows,numberOfColumns);
+    draw();
+    save(buffer, "filename", 'png');
+
+    // HighRes Export
+    // output = createGraphics(cnv.width,cnv.height);
+    // scaleOutput = 4;
+    // output = createGraphics(scaleOutput * cnv.width, scaleOutput * cnv.height);
+    // save(output, "filename", 'png');
+
+    // // Reset Default
+    // scaleOutput = 1;
+    // output = createGraphics(1000, 640);
+    // draw();
 }
 
 //dom werk
