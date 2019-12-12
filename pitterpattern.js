@@ -512,6 +512,7 @@ document.addEventListener("DOMContentLoaded", function() {
     currenttime = document.getElementById('current-date');
     buttonExport = document.getElementById('button-export');
     date = document.getElementById('date');
+    headerTitle = document.getElementById('header');
     buttonFillToggle = document.getElementById('button-fill');
     buttonBorderToggle = document.getElementById('button-border');
     buttonCurveToggle = document.getElementById('button-corners');
@@ -535,7 +536,13 @@ document.addEventListener("DOMContentLoaded", function() {
     buttonExport.addEventListener('click', () => {
         exportPattern();
     });
+    buttonExport.addEventListener('click', () => {
+        editHeader();
+    });
 });
+
+function editHeader() {
+}
 
 function toggleFill() {
     if (fillmode) {fillmode = false} else {fillmode=true};
@@ -586,10 +593,23 @@ function updateShapeStatistics() {
 function exportPattern(renderqueue) {
     buffering = true;
     console.log(buffering);
-    buffer = createGraphics(4 * cnv.width, 4 * cnv.height);
+    var exportscalex = document.getElementById('export-scale-x').value;
+    var exportscaley = document.getElementById('export-scale-y').value;
+
+    buffer = createGraphics(exportscalex * cnv.width, exportscaley * cnv.height);
     numberOfRows = round(buffer.height / gridUnit) + 1;
     numberOfColumns = round(buffer.width / gridUnit) + 1;
     offsetMatrix = populateOffsetTargetMatrix(numberOfRows,numberOfColumns);
+    if (borderMode) {
+        buffer.strokeWeight(borderSize)
+        buffer.stroke(255);
+        //flag-color-refactor
+    } else {
+        buffer.noStroke();
+    }
+    if (!fillmode) {
+        buffer.noFill();
+    }
     drawPattern(form.shape,numberOfRows,numberOfColumns);
     draw();
     save(buffer, "filename", 'png');
