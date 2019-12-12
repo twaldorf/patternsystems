@@ -43,9 +43,15 @@ var offsetYIndex = 0;
 var numberOfRows;
 var numberOfColumns;
 
+var buttonExport;
+
+var buffer;
+var buffering = false;
+
 function setup() {
     noLoop();
     cnv = createCanvas(document.getElementById('console-label').offsetWidth - 36,innerHeight*.665);
+    buffer = createGraphics(cnv.width,cnv.height);
     cnv.parent('sketch-holder');
     form = new Form;
     primaryQueue.push(form);
@@ -54,6 +60,9 @@ function setup() {
 }
 
 function draw() {
+    if (buffering) {
+        buffer.background('#181818');
+    };
     background('#181818');
     drawCursor();
     pullInputValues();
@@ -176,9 +185,11 @@ function getMidpointFromVertices(vertex1,vertex2) {
 }
 
 function drawPattern(shape,numberOfRows,numberOfColumns) {
-    numberOfRows = round(cnv.height / gridUnit) + 1;
-    numberOfColumns = round(cnv.width / gridUnit) + 1;
-    offsetMatrix = populateOffsetTargetMatrix(numberOfRows,numberOfColumns);
+    if (!buffering) {
+        numberOfRows = round(cnv.height / gridUnit) + 1;
+        numberOfColumns = round(cnv.width / gridUnit) + 1;
+        offsetMatrix = populateOffsetTargetMatrix(numberOfRows,numberOfColumns);
+    }
     let averageX = getAverageXFromShape(shape);
     let averageY = getAverageYFromShape(shape);
     console.log(averageX,averageY);
@@ -278,7 +289,7 @@ function drawVertices(shape,color,bordermode) {
 function drawBorders(points,color,i) {
     if (i > 0) {
         stroke(color);
-        strokeWeight(sliderStroke.elt.value);
+        strokeWeight(borderSize);
         line(points[i].x,points[i].y,points[i-1].x,points[i-1].y);
     }
     if (points.length > 2) {
@@ -291,6 +302,17 @@ function drawInnerShape(points,colorVal) {
         fill(colorVal);
         if (!fillmode) {
             noFill();
+        }
+        if (buffering) {
+            buffer.beginShape();
+            for (let i = 0; i < points.length; i++) {
+                if (curvemode) {
+                    buffer.curveVertex(points[i].x,points[i].y);
+                } else {
+                    buffer.vertex(points[i].x,points[i].y);
+                }
+            }
+            buffer.endShape(CLOSE);
         }
         beginShape();
         for (let i = 0; i < points.length; i++) {
@@ -417,6 +439,8 @@ class Vertex {
 function pullInputValues() {
     gridUnit = slider.value;
     gridUnitValue.innerHTML = gridUnit;
+    borderSize = sliderStroke.elt.value;
+    borderSizeValue.innerHTML = borderSize;
     if (colorInput1.value != null && colorInput2.value != null) {
         colorway[0] = '#' + colorInput1.value;
         colorway[1] = '#' + colorInput2.value;
@@ -455,7 +479,7 @@ function checkMouseOverCanvas(canvas) {
 }
 
 function initializeNewInterfaceElements() {
-    sliderStroke = createSlider(-1,10,0,1);
+    sliderStroke = createSlider(1,10,0,1);
     buttonPattern = createButton('Autolayout');
     buttonReset = createButton('Reset layout');
     buttonResetForm = createButton('Reset shape');
@@ -478,21 +502,27 @@ document.addEventListener("DOMContentLoaded", function() {
     colorInput2 = document.getElementById('color-input-2');
     slider = document.getElementById('grid-slider');
     gridUnitValue = document.getElementById('gridunit-value');
+    borderSlider = document.getElementById('border-slider');
+    borderSizeValue = document.getElementById('bordersize-value');
     vertexcounter = document.getElementById('vertex-counter');
     formheight = document.getElementById('form-height');
     formwidth = document.getElementById('form-width');
     formXorigin = document.getElementById('form-X-origin');
     formYorigin = document.getElementById('form-Y-origin');
     currenttime = document.getElementById('current-date');
+    buttonExport = document.getElementById('button-export');
     date = document.getElementById('date');
+    headerTitle = document.getElementById('header');
     buttonFillToggle = document.getElementById('button-fill');
     buttonBorderToggle = document.getElementById('button-border');
     buttonCurveToggle = document.getElementById('button-corners');
     buttons = document.querySelectorAll('button');
     buttons.forEach(function(e) {
-        e.addEventListener('click', () => {
-            updateButtonState(e)
-        });
+        if (e.classList.contains('toggle')) {
+            e.addEventListener('click', () => {
+                updateButtonState(e)
+            });
+        }
     });
     buttonFillToggle.addEventListener('click', () => {
         toggleFill();
@@ -503,7 +533,16 @@ document.addEventListener("DOMContentLoaded", function() {
     buttonCurveToggle.addEventListener('click', () => {
         toggleCurve();
     });
+    buttonExport.addEventListener('click', () => {
+        exportPattern();
+    });
+    buttonExport.addEventListener('click', () => {
+        editHeader();
+    });
 });
+
+function editHeader() {
+}
 
 function toggleFill() {
     if (fillmode) {fillmode = false} else {fillmode=true};
@@ -542,7 +581,7 @@ function updateShapeStatistics() {
         vertexcounter.classList.remove('warn');
     }
     if (form.shape.length > 0) {
-        // formheight.innerHTML = round(getShapeHeight(form.shape));
+        formheight.innerHTML = round(getShapeHeight(form.shape));
         formwidth.innerHTML = round(getShapeWidth(form.shape));
     }
     if (form.shape.length > 3) {
@@ -551,15 +590,41 @@ function updateShapeStatistics() {
     }
 }
 
-var localStorageSpace = function(){
-    var allStrings = '';
-    for(var key in window.localStorage){
-        if(window.localStorage.hasOwnProperty(key)){
-            allStrings += window.localStorage[key];
-        }
+function exportPattern(renderqueue) {
+    buffering = true;
+    console.log(buffering);
+    var exportscalex = document.getElementById('export-scale-x').value;
+    var exportscaley = document.getElementById('export-scale-y').value;
+
+    buffer = createGraphics(exportscalex * cnv.width, exportscaley * cnv.height);
+    numberOfRows = round(buffer.height / gridUnit) + 1;
+    numberOfColumns = round(buffer.width / gridUnit) + 1;
+    offsetMatrix = populateOffsetTargetMatrix(numberOfRows,numberOfColumns);
+    if (borderMode) {
+        buffer.strokeWeight(borderSize)
+        buffer.stroke(255);
+        //flag-color-refactor
+    } else {
+        buffer.noStroke();
     }
-    return allStrings ? 3 + ((allStrings.length*16)/(8*1024)) + ' KB' : 'Empty (0 KB)';
-};
+    if (!fillmode) {
+        buffer.noFill();
+    }
+    drawPattern(form.shape,numberOfRows,numberOfColumns);
+    draw();
+    save(buffer, "filename", 'png');
+
+    // HighRes Export
+    // output = createGraphics(cnv.width,cnv.height);
+    // scaleOutput = 4;
+    // output = createGraphics(scaleOutput * cnv.width, scaleOutput * cnv.height);
+    // save(output, "filename", 'png');
+
+    // // Reset Default
+    // scaleOutput = 1;
+    // output = createGraphics(1000, 640);
+    // draw();
+}
 
 //dom werk
 // document.addEventListener('readystatechange', function(element) {
