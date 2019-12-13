@@ -1,0 +1,15 @@
+body {
+    flex-direction: column;
+    padding: 4vh;
+}
+
+.hero {
+    padding: 0;
+    color: #fffffe;
+    flex-direction: column;
+    font-weight: 300;
+}
+
+.card {
+    background-color: #fffffe;
+}

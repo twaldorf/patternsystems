@@ -94,10 +94,6 @@ input[type=text]:focus {
     outline: none;
 }
 
-.hash {
-    blen
-}
-
 .flex-row {
     display: flex; flex-direction: row;
 }
