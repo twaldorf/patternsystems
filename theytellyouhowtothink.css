@@ -1,16 +1,51 @@
 body {
     margin: 0;
     padding: 0;
-    background-color: black;
+    color: #0f0e17;
+    background-color: #0f0e17;
     font-family: sans-serif;
     display: flex;
     flex-wrap: wrap;
     overflow-x: hidden;
 }
 
+.hero {
+    padding: 4vw;
+    color: #fffffe;
+    flex-direction: column;
+}
+
+.hero h3 {
+    margin: 6vh 0;
+}
+
+.hero h1 {
+    max-width: 50%;
+    font-size: 8vw;
+    margin: 0;
+    background-color: #0f0e17;
+}
+
+button {
+    background-color: #ff8906;
+    color: #fffffe;
+    border: 1px solid #ff8906;
+    padding: .4vw;
+    font-size: 2vh;
+    text-transform: uppercase;
+    font-weight: 700;
+}
+
+button:hover {
+    background-color: #fffffe;
+    color: #0f0e17;
+    cursor: pointer;
+    border-color: #fffffe;
+}
+
 .mobile-header {
     display: none;
-    color: white;
+    color: #fffffe;
     padding: 0 5%;
     text-transform: uppercase;
 }
@@ -21,8 +56,8 @@ body {
 }
 
 header {
-    background-color: black;
-    color: #888;
+    background-color: #0f0e17;
+    color: #a7a9be;
     font-size: 2rem;
     display: flex;
     flex-flow: column;
@@ -67,7 +102,7 @@ figure {
     margin: 0;
     margin-left: 5px;
     width:100%;
-    background-color: white;
+    background-color: #fffffe;
     font-weight:400;
 }
 
@@ -98,7 +133,7 @@ label {
 }
 
 hr {
-    border: 1px solid black;
+    border: 1px solid #0f0e17;
     margin: 2px 0 6px 0;
     padding: 0;
     width: 12px;
@@ -149,24 +184,24 @@ figure div div:first-child {
 }
 
 a {
-    color:white;
+    color:#f25f4c;
     mix-blend-mode: difference;
     text-decoration: none;
 }
 
 footer {
-    color:white;
-    margin-left: 5vw;
-    margin-bottom: 5vw;
-    padding: 10px;
+    font-size: 1rem;
+    color:#fffffe;
     display: flex;
     flex-direction: row;
-    justify-content: flex-end;
+    justify-content: flex-start;
     width: 100%;
+    flex-wrap: wrap;
 }
 
 footer div {
-    margin: 0 10vh;
+    margin: 1vw 10% 1vw 50px;
+    width: 12rem;
 }
 
 footer p {
