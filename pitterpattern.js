@@ -46,7 +46,10 @@ var numberOfColumns;
 var buttonExport;
 
 var buffer;
+var shapebuffer;
+var bufferform;
 var buffering = false;
+var formBuffering = false;
 
 function setup() {
     noLoop();
@@ -60,9 +63,8 @@ function setup() {
 }
 
 function draw() {
-    if (buffering) {
-        buffer.background('#181818');
-    };
+    if (buffering) {buffer.background('#181818');};
+    if (formBuffering) {shapebuffer.background('#181818');}
     background('#181818');
     drawCursor();
     pullInputValues();
@@ -159,13 +161,7 @@ function getShapeHeight(shape) {
 }
 
 function getShapeOrigin(shape) {
-    let leftBound;
-    let rightBound;
-    let topBound;
-    let bottomBound;
-
-
-    let firstMidpoint = getMidpointFromVertices(shape[0],shape[1]);
+let firstMidpoint = getMidpointFromVertices(shape[0],shape[1]);
     let secondMidpoint = getMidpointFromVertices(shape[2],shape[3]);
     let thirdMidpoint = getMidpointFromVertices(firstMidpoint,secondMidpoint);
     return thirdMidpoint;
@@ -313,6 +309,17 @@ function drawInnerShape(points,colorVal) {
                 }
             }
             buffer.endShape(CLOSE);
+        }
+        if (formBuffering) {
+            shapebuffer.beginShape();
+            for (let i = 0; i < points.length; i++) {
+                if (curvemode) {
+                    shapebuffer.curveVertex(points[i].x,points[i].y);
+                } else {
+                    shapebuffer.vertex(points[i].x,points[i].y);
+                }
+            }
+            shapebuffer.endShape(CLOSE);
         }
         beginShape();
         for (let i = 0; i < points.length; i++) {
@@ -584,54 +591,65 @@ function updateShapeStatistics() {
         formheight.innerHTML = round(getShapeHeight(form.shape));
         formwidth.innerHTML = round(getShapeWidth(form.shape));
     }
-    if (form.shape.length > 3) {
-        formXorigin.innerHTML = round(form.shape[0].x);
-        formYorigin.innerHTML = round(form.shape[0].y);
-    }
+    // if (form.shape.length > 3) {
+    //     formXorigin.innerHTML = round(form.shape[0].x);
+    //     formYorigin.innerHTML = round(form.shape[0].y);
+    // }
 }
 
-function exportPattern(renderqueue) {
+function exportPattern() {
     buffering = true;
     console.log(buffering);
-    var exportscalex = document.getElementById('export-scale-x').value;
-    var exportscaley = document.getElementById('export-scale-y').value;
-
+    let exportscalex = document.getElementById('export-scale-x').value;
+    let exportscaley = document.getElementById('export-scale-y').value;
     buffer = createGraphics(exportscalex * cnv.width, exportscaley * cnv.height);
     numberOfRows = round(buffer.height / gridUnit) + 1;
     numberOfColumns = round(buffer.width / gridUnit) + 1;
     offsetMatrix = populateOffsetTargetMatrix(numberOfRows,numberOfColumns);
-    if (borderMode) {
-        buffer.strokeWeight(borderSize)
-        buffer.stroke(255);
-        //flag-color-refactor
-    } else {
-        buffer.noStroke();
-    }
-    if (!fillmode) {
-        buffer.noFill();
-    }
+    buffer = syncBuffer(buffer,borderMode,borderSize,fillmode);
     drawPattern(form.shape,numberOfRows,numberOfColumns);
     draw();
     save(buffer, "filename", 'png');
-
-    // HighRes Export
-    // output = createGraphics(cnv.width,cnv.height);
-    // scaleOutput = 4;
-    // output = createGraphics(scaleOutput * cnv.width, scaleOutput * cnv.height);
-    // save(output, "filename", 'png');
-
-    // // Reset Default
-    // scaleOutput = 1;
-    // output = createGraphics(1000, 640);
-    // draw();
+    buffering = false;
 }
 
-//dom werk
-// document.addEventListener('readystatechange', function(element) {
-//     element.emit('ready');
-// })
+function exportForm(form) {
+    formBuffering = true;
+    shapebuffer = createGraphics(getShapeWidth(form.shape), getShapeHeight(form.shape));
+    bufferform = copyOf(form.shape);
+    bufferform.offset(-getXDistFromZero(bufferform.shape),-getYDistFromZero(bufferform.shape));
+    shapebuffer = syncBuffer(shapebuffer,borderMode,borderSize,fillmode);
+    console.log(bufferform);
+    draw();
+    save(shapebuffer, "filename", 'png');
+    formBuffering = false;
+}
 
-// let slider = document.getElementById('slider1');
-// slider.addEventListener('input', function(element) {
-//     dragInterval = parseInt(element.value);
-// });
+function syncBuffer(graphics,bordermode,bordersize,fillmode) {
+    if (bordermode) {
+        graphics.strokeWeight(bordersize)
+        graphics.stroke(255);
+        //flag-color-refactor
+    } else {
+        graphics.noStroke();
+    }
+    if (!fillmode) {
+        graphics.noFill();
+    }
+    return graphics;
+}
+
+function getXDistFromZero(shape) {
+    let lowestNum = cnv.width;
+    for (let i = 0; i < shape.length; i++) {
+        (shape[i].x < lowestNum) ? lowestNum = shape[i].x : lowestNum = lowestNum;
+    }
+    return lowestNum;
+}
+function getYDistFromZero(shape) {
+    let lowestNum = cnv.height;
+    for (let i = 0; i < shape.length; i++) {
+        (lowestNum > shape[i].y) ? lowestNum = shape[i].y : lowestNum = lowestNum;
+    }
+    return lowestNum;
+}
