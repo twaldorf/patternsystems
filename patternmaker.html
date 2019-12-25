@@ -68,10 +68,11 @@
                 <div class="control-panel">
                     <h3>Color</h3>
                     <p>Hexadecimal values for interpolation</p>
-                    <div class="flex-row">
+                    <div class="flex-row" id="colors">
                         <li>#<input type="text" id="color-input-1"></li>
                         <li>#<input type="text" id="color-input-2"></li>
                     </div>
+                    <button class="button-bar" id="add-color"><span>+</span><span>Add Color</span></button>
                 </div>
             </div>
             <div id="sketch-holder" class="control-panel">
@@ -116,6 +117,7 @@
             </div>
         </div>
     </section>
+    <script type="text/javascript" src="domcontroller.js"></script>
     <script type="text/javascript" src="statmodule.js"></script>
 </body>
 </html>

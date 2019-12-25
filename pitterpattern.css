@@ -15,6 +15,18 @@ button {
     text-transform: uppercase;
 }
 
+.button-bar {
+    width: 100%;
+    text-align: left;
+    background-color: black;
+    color: white;
+    font-size: 1vw;
+}
+
+.button-bar span {
+    margin-left: 1vh;
+}
+
 header {
     color: #666;
 }
