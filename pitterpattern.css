@@ -18,9 +18,10 @@ button {
 .button-bar {
     width: 100%;
     text-align: left;
-    background-color: black;
-    color: white;
+    /* background-color: black; */
+    /* color: white; */
     font-size: 1vw;
+    margin: .5vw 0;
 }
 
 .button-bar span {
@@ -111,7 +112,7 @@ input[type=text]:focus {
 }
 
 .flex-row {
-    display: flex; flex-direction: row;
+    display: flex; flex-direction: row; flex-wrap: wrap;
 }
 
 #main-control-bar {
