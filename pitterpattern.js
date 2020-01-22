@@ -105,8 +105,13 @@ function mouseDragged() {
         }
     }
     if (!clickingOnExistingPoint(mouseX,mouseY,form.shape) && over == true) {
-        if (dist(mouseX,mouseY,form.shape[form.shape.length-1].x,form.shape[form.shape.length-1].y) > dragInterval) {
-            form.addPoint(mouseX,mouseY);
+        try {
+            if (dist(mouseX,mouseY,form.shape[form.shape.length-1].x,form.shape[form.shape.length-1].y) > dragInterval) {
+                form.addPoint(mouseX,mouseY);
+            }
+        }
+        catch (error) {
+            console.log(`logged error: ${error}, probably because no points exist yet`)
         }
     }
 }
