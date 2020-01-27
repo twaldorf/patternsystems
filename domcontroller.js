@@ -1,4 +1,5 @@
-// add alias for documentQSBId
+const $ = _ => document.querySelector(_)
+const $c = _ => document.createElement(_)
 
 const button_add_color = document.getElementById('add-color');
 const container_color = document.getElementById('colors');

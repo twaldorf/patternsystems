@@ -368,6 +368,7 @@ function clickingOnExistingPoint(x,y,shape) {
     };
 };
 
+//not exposed
 function scaleShape(shape,scale) {
     for (let i = 0; i < shape.length; i++) {
         shape[i].x *= scale;
@@ -525,9 +526,9 @@ document.addEventListener("DOMContentLoaded", function() {
     buttonExport = document.getElementById('button-export');
     date = document.getElementById('date');
     headerTitle = document.getElementById('header');
-    buttonFillToggle = document.getElementById('button-fill');
-    buttonBorderToggle = document.getElementById('button-border');
-    buttonCurveToggle = document.getElementById('button-corners');
+    buttonFillToggle = document.getElementById('fill-toggle');
+    buttonBorderToggle = document.getElementById('border-toggle');
+    buttonCurveToggle = document.getElementById('curve-toggle');
     buttons = document.querySelectorAll('button');
     buttons.forEach(function(e) {
         if (e.classList.contains('toggle')) {
@@ -557,7 +558,13 @@ function editHeader() {
 }
 
 function toggleFill() {
-    if (fillmode) {fillmode = false} else {fillmode=true};
+    if (fillmode) {
+        fillmode = false
+        buttonFillToggle.classList.remove('active')
+    } else {
+        fillmode=true
+        buttonFillToggle.classList.add('active')
+    };
 }
 
 function toggleBorder() {

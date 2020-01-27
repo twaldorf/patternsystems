@@ -226,8 +226,15 @@ button.toggle.off {
 
 .parameters li {
     margin: 1.2rem 0;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
 }
 
+input[type=checkbox] {
+    width: 1vw;
+    display: inline;
+}
 .parameters span.descriptor {
     font-size: 10px;
     display: block;
@@ -238,3 +245,48 @@ button.toggle.off {
 .warn {
     background-color: red;
 }
+
+/* //special checkboxes */
+#fill-toggle {
+    display: flex;
+    margin: auto 1vh auto 0;
+    background-color: #181818;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: white 1px solid;
+    transition: all ease-in .08s;
+}
+#fill-toggle.active {
+    background-color:white;
+}
+#fill-toggle:hover {
+    background-color:white;
+}
+#fill-toggle.active:after {
+    border: none;
+}
+#fill-toggle.active:hover:after {
+    border: 1px solid #181818;
+}
+#fill-toggle:hover:after {
+    border: 1px solid #181818;
+}
+#fill-toggle:after {
+    content:"";
+    position: relative;
+    width: 100%;
+    border-radius: 50%;
+    transition: ease-out all .2s;
+    /* border: 1px solid #181818; */
+}
+
+/* #fill-toggle #fill-toggle-core {
+}
+
+#fill-toggle #fill-toggle-crust {
+    width: 1.8vh;
+    height: 1.8vh;
+    background-color: white;
+    border-radius: 50%;
+} */
