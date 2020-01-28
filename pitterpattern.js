@@ -1,6 +1,6 @@
 var index = 0;
 var pointRadius = 10;
-var curvemode = true;
+var curvemode = false;
 // var scale = .1; not used yet
 var primaryQueue = [];
 var form;
@@ -562,17 +562,29 @@ function toggleFill() {
         fillmode = false
         buttonFillToggle.classList.remove('active')
     } else {
-        fillmode=true
+        fillmode = true
         buttonFillToggle.classList.add('active')
     };
 }
 
 function toggleBorder() {
-    if (borderMode) {borderMode = false} else {borderMode=true};
+    if (borderMode) {
+        borderMode = false
+        buttonBorderToggle.classList.remove('active')
+    } else {
+        borderMode = true
+        buttonBorderToggle.classList.add('active')
+    };
 }
 
 function toggleCurve() {
-    if (curvemode) {curvemode = false} else {curvemode=true};
+    if (curvemode) {
+        curvemode = false
+        buttonCurveToggle.classList.remove('active')
+    } else {
+        curvemode = true
+        buttonCurveToggle.classList.add('active')
+    }
 }
 
 function updateButtonState(e) {
