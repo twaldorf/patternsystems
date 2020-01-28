@@ -234,7 +234,7 @@ button.toggle.off {
     justify-content: flex-start;
     align-items: center;
     flex-wrap: wrap;
-    max-width: 50%;
+    /* max-width: 50%; */
 }
 
 input[type=checkbox] {
@@ -310,8 +310,8 @@ input[type=checkbox] {
 #border-toggle:after {
     content:"";
     position: relative;
-    top: 20%;
-    left: 20%;
+    top: 2px;
+    left: 2px;
     width: 50%;
     height: 50%;
     border-radius: 50%;
@@ -336,8 +336,8 @@ input[type=checkbox] {
     margin-right: 1vh;
 }
 #curve-toggle:hover:after {
-    top: 20%;
-    left: 20%;
+    top: 2px;
+    left: 2px;
     width: 50%;
     height: 50%;
     border: 1px solid white;
@@ -346,8 +346,8 @@ input[type=checkbox] {
 #curve-toggle.active:after {
     border: 1px solid white;
     background-color: white;
-    top: 20%;
-    left: 20%;
+    top: 2px;
+    left: 2px;
     width: 50%;
     height: 50%;
 }
