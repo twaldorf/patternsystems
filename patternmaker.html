@@ -66,10 +66,12 @@
                 </div>
                 <div class="control-panel">
                     <h3>Color</h3>
-                    <p>Hexadecimal color codes</p>
-                    <div class="flex-row" id="colors">
-                        <li>#<input type="text" id="color-input-1" placeholder="ffffff"></li>
-                        <li>#<input type="text" id="color-input-2"></li>
+                    <div class="description">
+                        <h4>Hexadecimal color codes</h4>
+                        <div class="flex-row" id="colors">
+                            <li>#<input type="text" id="color-input-1" placeholder="ffffff"></li>
+                            <li>#<input type="text" id="color-input-2"></li>
+                        </div>
                     </div>
                     <button class="button-bar" id="add-color"><span>+</span><span>Add Color</span></button>
                 </div>
@@ -105,10 +107,12 @@
                 </div>
                 <div class="control-panel">
                     <h3>Export</h3>
-                    <p>Generate a large .png for printing on fabric.</p>
-                    <label for="X Y canvas size multiple">
-                        Output canvas size multiple
-                    </label>
+                    <div class="description">
+                        <p>Generate a large .png for printing on fabric.</p>
+                        <label for="X Y canvas size multiple">
+                                Output canvas size multiple
+                        </label>
+                    </div>
                     <div class="parameters">
                         <div class="flex-row">
                             <li>X:<input type="text" id="export-scale-x" value="2"></li>
@@ -116,7 +120,7 @@
                         </div>
                     </div>
                     <li>
-                        <button id="button-export" class="">EXPORT</button>
+                        <button id="button-export" class="button-bar"><span>-></span>  EXPORT</button>
                     </li>
                 </div>
             </div>

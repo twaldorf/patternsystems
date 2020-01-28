@@ -15,6 +15,10 @@ button {
     text-transform: uppercase;
 }
 
+p {
+    text-transform: none;
+}
+
 .button-bar {
     width: 100%;
     text-align: left;
@@ -229,6 +233,8 @@ button.toggle.off {
     display: flex;
     justify-content: flex-start;
     align-items: center;
+    flex-wrap: wrap;
+    max-width: 50%;
 }
 
 input[type=checkbox] {
@@ -240,6 +246,10 @@ input[type=checkbox] {
     display: block;
     margin-top: -12px;
     font-weight: normal;
+}
+
+.description {
+    text-align:left;
 }
 
 .warn {
