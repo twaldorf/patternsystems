@@ -33,8 +33,8 @@
                 <li>SIZE IN LOCAL STORAGE: <span id="local-storage">█</span></li>
             </div>
             <div id="console-label" class="console-label">
-                <label for="header">System type</label>
-                <h1 id="header">Standard pattern</h1>
+                <label for="header">Pattern title</label>
+                <h1 id="header">Custom pattern</h1>
             </div>
             <div class="stats">
                     <li>PRIMARY FORM: <span id="vertex-counter">0</span> VERTICES</li>
@@ -52,21 +52,24 @@
                             <label for="gridUnit slider">
                                 Grid size: <span id="gridunit-value">50</span>
                             </label>
-                            <input id="grid-slider" type="range" min="10" max="200" value="50" step="1" class="slider-input">
+                            <input id="grid-slider" type="range" min="10" max="200" value="100" step="1" class="slider-input">
                         </li>
-                        <li>
+                        <!-- <li>
                             <label for="pattern grid toggle">Grid mode</label>
                             <button class="toggle on">ACTIVE <span>DISABLE</span></button>
-                        </li>
+                        </li> -->
                     </div>
                 </div>
                 <div class="control-panel">
                     <h3>Color</h3>
-                    <p>Hexadecimal values for interpolation</p>
-                    <div class="flex-row">
-                        <li>#<input type="text" id="color-input-1"></li>
-                        <li>#<input type="text" id="color-input-2"></li>
+                    <div class="description">
+                        <label>Hexadecimal color codes</label>
+                        <div class="flex-row" id="colors">
+                            <li>#<input type="text" id="color-input-1" placeholder="ffffff"></li>
+                            <li>#<input type="text" id="color-input-2"></li>
+                        </div>
                     </div>
+                    <button class="button-bar" id="add-color"><span>+</span><span>Add Color</span></button>
                 </div>
             </div>
             <div id="sketch-holder" class="control-panel">
@@ -78,15 +81,21 @@
                 <div class="control-panel">
                     <h3>Form parameters</h3>
                     <div class="parameters">
-                        <li id="fill-toggle">Fill shape
-                            <button id="button-fill" class="toggle off">INACTIVE <span>ENABLE</span></button>
+                        <li>
+                            <element id="fill-toggle">
+                            </element>
+                            Fill shape
+                            <!-- <button id="button-fill" class="toggle off">INACTIVE <span>ENABLE</span></button> -->
                         </li>
-                        <li id="curve-toggle">Round corners
-                            <span class="descriptor">(Catmull-Rom Splination)</span>
-                            <button id="button-corners" class="toggle on">ACTIVE <span>DISABLE</span></button>
+                        <li id="">
+                            <!-- <input type="checkbox" name="toggle-fill" checked="true" id="curve-toggle"> -->
+                            <element id="curve-toggle"></element>Round corners
+                            <!-- <button id="button-corners" class="toggle on">ACTIVE <span>DISABLE</span></button> -->
                         </li>
-                        <li id="border-toggle">Border
-                            <button id="button-border" class="toggle on">ACTIVE <span>DISABLE</span></button>
+                        <li id="">
+                            <element name="toggle-border" id="border-toggle" class="active"></element>
+                            Polygon Border
+                            <!-- <button id="button-border" class="toggle on">ACTIVE <span>DISABLE</span></button> -->
                         </li>
                         <li id="stroke-slider">
                             <label for="stroke slider">Border size: <span id="bordersize-value">50</span></label></li>
@@ -94,23 +103,26 @@
                 </div>
                 <div class="control-panel">
                     <h3>Export</h3>
-                    <p>Generate an extended .png at the same shape scale.</p>
-                    <label for="X Y canvas size multiple">
-                        Output canvas size multiple
-                    </label>
-                    <div class="parameters">
+                    <div class="description">
+                        <p>Generate a large .png for printing on fabric.</p>
+                        <label for="X Y canvas size multiple">
+                                Output canvas size multiple
+                        </label>
                         <div class="flex-row">
-                            <li>X:<input type="text" id="export-scale-x" value="2"></li>
-                            <li>Y:<input type="text" id="export-scale-y" value="2"></li>
+                            <!-- <div class=""> -->
+                                <li>X:<input type="text" id="export-scale-x" value="2"></li>
+                                <li>Y:<input type="text" id="export-scale-y" value="2"></li>
+                            <!-- </div> -->
                         </div>
                     </div>
                     <li>
-                        <button id="button-export" class="">EXPORT</button>
+                        <button id="button-export" class="button-bar"><span>-></span>  EXPORT</button>
                     </li>
                 </div>
             </div>
         </div>
     </section>
+    <script type="text/javascript" src="domcontroller.js"></script>
     <script type="text/javascript" src="statmodule.js"></script>
 </body>
 </html>

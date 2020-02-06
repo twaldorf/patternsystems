@@ -1,6 +1,6 @@
 var index = 0;
 var pointRadius = 10;
-var curvemode = true;
+var curvemode = false;
 // var scale = .1; not used yet
 var primaryQueue = [];
 var form;
@@ -105,8 +105,13 @@ function mouseDragged() {
         }
     }
     if (!clickingOnExistingPoint(mouseX,mouseY,form.shape) && over == true) {
-        if (dist(mouseX,mouseY,form.shape[form.shape.length-1].x,form.shape[form.shape.length-1].y) > dragInterval) {
-            form.addPoint(mouseX,mouseY);
+        try {
+            if (dist(mouseX,mouseY,form.shape[form.shape.length-1].x,form.shape[form.shape.length-1].y) > dragInterval) {
+                form.addPoint(mouseX,mouseY);
+            }
+        }
+        catch (error) {
+            console.log(`logged error: ${error}, probably because no points exist yet`)
         }
     }
 }
@@ -363,6 +368,7 @@ function clickingOnExistingPoint(x,y,shape) {
     };
 };
 
+//not exposed
 function scaleShape(shape,scale) {
     for (let i = 0; i < shape.length; i++) {
         shape[i].x *= scale;
@@ -520,9 +526,9 @@ document.addEventListener("DOMContentLoaded", function() {
     buttonExport = document.getElementById('button-export');
     date = document.getElementById('date');
     headerTitle = document.getElementById('header');
-    buttonFillToggle = document.getElementById('button-fill');
-    buttonBorderToggle = document.getElementById('button-border');
-    buttonCurveToggle = document.getElementById('button-corners');
+    buttonFillToggle = document.getElementById('fill-toggle');
+    buttonBorderToggle = document.getElementById('border-toggle');
+    buttonCurveToggle = document.getElementById('curve-toggle');
     buttons = document.querySelectorAll('button');
     buttons.forEach(function(e) {
         if (e.classList.contains('toggle')) {
@@ -552,15 +558,33 @@ function editHeader() {
 }
 
 function toggleFill() {
-    if (fillmode) {fillmode = false} else {fillmode=true};
+    if (fillmode) {
+        fillmode = false
+        buttonFillToggle.classList.remove('active')
+    } else {
+        fillmode = true
+        buttonFillToggle.classList.add('active')
+    };
 }
 
 function toggleBorder() {
-    if (borderMode) {borderMode = false} else {borderMode=true};
+    if (borderMode) {
+        borderMode = false
+        buttonBorderToggle.classList.remove('active')
+    } else {
+        borderMode = true
+        buttonBorderToggle.classList.add('active')
+    };
 }
 
 function toggleCurve() {
-    if (curvemode) {curvemode = false} else {curvemode=true};
+    if (curvemode) {
+        curvemode = false
+        buttonCurveToggle.classList.remove('active')
+    } else {
+        curvemode = true
+        buttonCurveToggle.classList.add('active')
+    }
 }
 
 function updateButtonState(e) {
