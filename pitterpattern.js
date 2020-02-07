@@ -202,8 +202,8 @@ function drawPattern(shape,numberOfRows,numberOfColumns) {
             for (let colIndex = 0; colIndex < numberOfColumns - 1; colIndex++) {
                 copies[i] = copyOf(shape);
                 copies[i].offset(
-                    getPatternXOffset(rowIndex,colIndex,averageX),
-                    getPatternYOffset(rowIndex,colIndex,averageY));
+                    getPatternXOffset(rowIndex,colIndex,averageX) + 50,
+                    getPatternYOffset(rowIndex,colIndex,averageY) - 50);
                 copies[i].regenColorCoinToss();
                 primaryQueue.push(copies[i]);
                 i++;
@@ -218,6 +218,8 @@ function drawPattern(shape,numberOfRows,numberOfColumns) {
 
 function populateOffsetTargetMatrix(numberOfRows,numberOfColumns) {
     let tempoffsetMatrix = [];
+    // numberOfRows *= 1.2
+    // numberOfColumns *= 1.2
     for (let rowNumber = 1; rowNumber < numberOfRows; rowNumber++) {
         tempoffsetMatrix.push(genColumnArray(numberOfColumns,rowNumber));
     }
@@ -495,7 +497,7 @@ function checkMouseOverCanvas(canvas) {
 
 function initializeNewInterfaceElements() {
     sliderStroke = createSlider(1,10,0,1);
-    buttonPattern = createButton('Autolayout');
+    buttonPattern = createButton('Bake layout');
     buttonReset = createButton('Reset layout');
     buttonResetForm = createButton('Reset shape');
 
