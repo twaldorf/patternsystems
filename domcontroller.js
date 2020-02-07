@@ -8,6 +8,12 @@ button_add_color.addEventListener("mousedown", (element) => {
     addColorField();
 });
 
+$('#header').addEventListener('click', () => {
+    $('#header').classList.add('hidden')
+    $('#edit-header').classList.remove('hidden')
+    document.activeElement = $('#edit-header')
+})
+
 function addColorField(element) {
     let new_li = document.createElement('li');
     let new_input = document.createElement('input');

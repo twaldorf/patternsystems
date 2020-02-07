@@ -111,12 +111,13 @@ function mouseDragged() {
             }
         }
         catch (error) {
-            console.log(`logged error: ${error}, probably because no points exist yet`)
+            console.log(`logged error: ${error}, probably because no points exist yet. Draw something!`)
         }
     }
 }
 
 function mouseReleased() {
+
     for (let i = 0; i < form.shape.length; i++) {
         if (form.shape[i].selected == true) {
             form.shape[i].selected = false;
@@ -208,6 +209,7 @@ function drawPattern(shape,numberOfRows,numberOfColumns) {
                 i++;
             }
         }
+        primaryQueue.shift();
         noLoop();
     } else {
         console.log('not enough vertices to draw a pattern!')
@@ -642,23 +644,24 @@ function exportForm(form) {
     shapebuffer = createGraphics(getShapeWidth(form.shape), getShapeHeight(form.shape));
     bufferform = copyOf(form.shape);
     bufferform.offset(-getXDistFromZero(bufferform.shape),-getYDistFromZero(bufferform.shape));
-    shapebuffer = syncBuffer(shapebuffer,borderMode,borderSize,fillmode);
+    shapebuffer = syncBuffer(shapebuffer,borderMode,borderSize,fillmode,colorway);
     console.log(bufferform);
     draw();
     save(shapebuffer, "filename", 'png');
     formBuffering = false;
 }
 
-function syncBuffer(graphics,bordermode,bordersize,fillmode) {
+function syncBuffer(graphics,bordermode,bordersize,fillmode,color) {
     if (bordermode) {
         graphics.strokeWeight(bordersize)
         graphics.stroke(255);
-        //flag-color-refactor
     } else {
         graphics.noStroke();
     }
     if (!fillmode) {
         graphics.noFill();
+    } else {
+        graphics.fill(color)
     }
     return graphics;
 }
