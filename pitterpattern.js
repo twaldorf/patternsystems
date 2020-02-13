@@ -111,12 +111,13 @@ function mouseDragged() {
             }
         }
         catch (error) {
-            console.log(`logged error: ${error}, probably because no points exist yet`)
+            console.log(`logged error: ${error}, probably because no points exist yet. Draw something!`)
         }
     }
 }
 
 function mouseReleased() {
+
     for (let i = 0; i < form.shape.length; i++) {
         if (form.shape[i].selected == true) {
             form.shape[i].selected = false;
@@ -201,13 +202,14 @@ function drawPattern(shape,numberOfRows,numberOfColumns) {
             for (let colIndex = 0; colIndex < numberOfColumns - 1; colIndex++) {
                 copies[i] = copyOf(shape);
                 copies[i].offset(
-                    getPatternXOffset(rowIndex,colIndex,averageX),
-                    getPatternYOffset(rowIndex,colIndex,averageY));
+                    getPatternXOffset(rowIndex,colIndex,averageX) + 50,
+                    getPatternYOffset(rowIndex,colIndex,averageY) - 50);
                 copies[i].regenColorCoinToss();
                 primaryQueue.push(copies[i]);
                 i++;
             }
         }
+        primaryQueue.shift();
         noLoop();
     } else {
         console.log('not enough vertices to draw a pattern!')
@@ -216,6 +218,8 @@ function drawPattern(shape,numberOfRows,numberOfColumns) {
 
 function populateOffsetTargetMatrix(numberOfRows,numberOfColumns) {
     let tempoffsetMatrix = [];
+    // numberOfRows *= 1.2
+    // numberOfColumns *= 1.2
     for (let rowNumber = 1; rowNumber < numberOfRows; rowNumber++) {
         tempoffsetMatrix.push(genColumnArray(numberOfColumns,rowNumber));
     }
@@ -493,7 +497,7 @@ function checkMouseOverCanvas(canvas) {
 
 function initializeNewInterfaceElements() {
     sliderStroke = createSlider(1,10,0,1);
-    buttonPattern = createButton('Autolayout');
+    buttonPattern = createButton('Bake layout');
     buttonReset = createButton('Reset layout');
     buttonResetForm = createButton('Reset shape');
 
@@ -642,23 +646,24 @@ function exportForm(form) {
     shapebuffer = createGraphics(getShapeWidth(form.shape), getShapeHeight(form.shape));
     bufferform = copyOf(form.shape);
     bufferform.offset(-getXDistFromZero(bufferform.shape),-getYDistFromZero(bufferform.shape));
-    shapebuffer = syncBuffer(shapebuffer,borderMode,borderSize,fillmode);
+    shapebuffer = syncBuffer(shapebuffer,borderMode,borderSize,fillmode,colorway);
     console.log(bufferform);
     draw();
     save(shapebuffer, "filename", 'png');
     formBuffering = false;
 }
 
-function syncBuffer(graphics,bordermode,bordersize,fillmode) {
+function syncBuffer(graphics,bordermode,bordersize,fillmode,color) {
     if (bordermode) {
         graphics.strokeWeight(bordersize)
         graphics.stroke(255);
-        //flag-color-refactor
     } else {
         graphics.noStroke();
     }
     if (!fillmode) {
         graphics.noFill();
+    } else {
+        graphics.fill(color)
     }
     return graphics;
 }

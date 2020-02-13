@@ -140,6 +140,17 @@ input[type=text]:focus {
     font-size: 2vw;
     display: block;
 }
+#edit-header {
+    font-size: 2vw;
+    font-weight:bold;
+    color:white;
+    display: block;
+    text-transform: uppercase;
+    font-family: Arial, Helvetica, sans-serif;
+}
+.hidden {
+    display: none !important;
+}
 #main-pane {
     display: flex;
     flex-direction: row;
