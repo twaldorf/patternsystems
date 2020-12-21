@@ -1,4 +1,4 @@
-localStorageElt = document.getElementById('local-storage');
+var localStorageElt = document.getElementById('local-storage');
 
 var localStorageSpace = function(){
     var allStrings = '';
@@ -16,4 +16,27 @@ try {
 }
 catch {
     localStorageElt.innerHTML = "DISABLED BY BROWSER";
+}
+
+function updateShapeStatistics() {
+    vertexcounter.innerHTML = form.shape.length;
+    if (form.shape.length > 10) {
+        vertexcounter.innerHTML = form.shape.length + ' (WARN) ';
+        vertexcounter.classList.add('warn');
+    }
+    if (form.shape.length < 10) {
+        vertexcounter.classList.remove('warn');
+    }
+    if (form.shape.length > 0) {
+        formheight.innerHTML = round(getShapeHeight(form.shape));
+        formwidth.innerHTML = round(getShapeWidth(form.shape));
+    }
+}
+
+function updateTimePanel() {
+    let tempdate = new Date();
+    newHoursDate = tempdate.getHours();
+    newMinutesDate = tempdate.getMinutes();
+    newSecondsDate = tempdate.getSeconds();
+    currenttime.innerHTML = newHoursDate + 'HR ' + newMinutesDate + 'M ' + newSecondsDate + 'S';
 }

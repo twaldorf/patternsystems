@@ -3,23 +3,32 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
-        <title>CPS Docs</title>
+        <title>Pattern Systems Devlog</title>
         <link rel="stylesheet" href="theytellyouhowtothink.css">
         <link rel="stylesheet" href="docs.css">
     </head>
     <body>
         <header>
-            <h1>Camo pattern systems</h1>
+            <h1>Pattern Systems</h1>
         </header>
         <section class="hero">
-            <h1>Documentation</h1>
+            <h1>Dev log</h1>
             <h3>CPS extends P5.JS. Read the <a href="https://p5js.org/reference">P5.JS reference</a> for documentation regarding functionality in P5.JS</h3>
         </section>
-        <section markdown="1" class="card">
-            <li>
-                <h3>function super duper (dsad)</h3>
-                <p>calls something important</p>
-            </li>
+        <section>
+            <h2>August 26 2020</h2>
+            <p>It's been almost a year since I started this tool. Amazing! I've made so little progress.</p>
+            <p>Anyway, a few things are on the immediate to-do:</p>
+            <li>Backend and user profile implementation</li>
+            <li>Graphics buffer implementation</li>
+            <li>Automatic tiling</li>
+            <li>Color scheme management</li>
+            <p>And I also want to make posters for my room.</p>
+            <p>Today I'm working on the graphics buffer implementation as this is the most fundamental problem.</p>
+            <p>Currently, the program works like this: there is a render loop and if the cursor is over the vertex editor the loop runs. In the loop, the cursor is rendered, along with the all the shapes, directly on the canvas. When the user exports their pattern, a new graphics buffer is created to allow for the desired scaling and then the shape is rendered on the according to a new offset matrix that matches the parameters that the user set for their visible canvas. </p>
+            <p>This sucks for a few reasons, but most importantly it sucks because what you see is not necessarily what you get and the shape rendering is duplicated in function although it's not identical due to the quirks of drawing in graphics buffers. Currently, because of the way colors were implemented, there is no fill or color in the exported images, rendering them literally unuseable.</p>
+            <p>So the fix is to render each element to its own graphics buffer and then just re-render a version of the pattern buffer from the same parameters object. The cursor gets a buffer, the shape gets a buffer, and the pattern gets a buffer and the export function makes a new buffer that looks just like the pattern buffer but tileable.</p>
+            <p>Once each element has its own buffer built from discrete parameter objects, adding support for multiple shapes and multiple tiling schemes will be trivial, which is a nice bonus.</p>
         </section>
     </body>
 </html>
