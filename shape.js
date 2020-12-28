@@ -1,7 +1,7 @@
 export class Shape {
-    constructor(buffer) {
+    constructor(pointRadius) {
         this.points = [];
-        this.pointRadius = 15;
+        this.pointRadius = pointRadius;
     }
 
     offset(xoffset,yoffset) {
@@ -14,9 +14,8 @@ export class Shape {
     }
 
     draw(buffer) {
-        buffer.clear()
-        this.drawVertices(buffer,this.points,255,0)
-        // this.drawInnerpoints(buffer,this.points,this.color);
+        this.drawVertices(buffer,this.points,255,false)
+        this.drawFill(buffer,this.points,255);
     }
 
     addPoint(x,y) {
@@ -32,12 +31,12 @@ export class Shape {
         }
     }
 
-    drawVertices(buffer,points,color,bordermode) {
+    drawVertices(buffer,points,color,bordermode=true) {
         for (let i = 0; i < points.length; i++) {
             buffer.fill(color)
             points[i].draw(buffer)
-            this.drawBorders(buffer,points,255,i);
-        };
+            this.drawBorders(buffer,points,255,i)
+        }
     }
 
     drawBorders(buffer,points,color,i) {
@@ -48,6 +47,29 @@ export class Shape {
         }
         if (points.length > 2) {
             buffer.line(points[points.length-1].x,points[points.length-1].y,points[0].x,points[0].y);
+        }
+    }
+
+    drawFill(buffer,points,color,roundCorners=true) {
+        if (points.length > 2) {
+            buffer.fill(color)
+            buffer.beginShape()
+
+            // start with a first point to provide closed shape (CLOSE is broken in instanced mode or something)
+
+            points.map((point) => {
+                if (roundCorners) {
+                    buffer.curveVertex(point.x,point.y)
+                } else {
+                    buffer.vertex(point.x,point.y)
+                }
+            })
+
+            // wrap around the shape with an anchor [0] and a bezier [1]
+            buffer.curveVertex(points[0].x,points[0].y)
+            buffer.curveVertex(points[1].x,points[1].y)
+
+            buffer.endShape(buffer.CLOSE)
         }
     }
 }

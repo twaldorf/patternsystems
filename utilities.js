@@ -1,23 +1,27 @@
-function findClosestPoint(x,y,shape) {
-    let distances = [];
-    for (let i = 0; i < shape.length; i++) {
-        distances.push([dist(x,y,shape[i].x,shape[i].y),i]);
-    }
-    distances = sortByFirstColumn(distances,0);
-    return distances[0][1];
-}
+export function findClosestPoint(buffer,x,y,points) {
+    let distances = points.map((point) => {
+        let distance = buffer.dist(x,y,point.x,point.y)
+        return distance
+    })
+    
+    let shortestDistance = distances.reduce((currentValue, accumulator) => {
+        let comparison = accumulator - currentValue > 0 ? currentValue : accumulator
+        return comparison
+    })
 
-function sortByFirstColumn(array) {
-    for (let i = 0; i < array.length; i++) {
-        for (let i = 0; i < array.length-1; i++) {
-            if (array[i][0] > array[i+1][0]) {
-                let temp = array[i];
-                array[i] = array[i+1];
-                array[i+1] = temp;
-            }
+    let index = distances.map((value,index) => {
+        if (value == shortestDistance) {
+            console.log(index)
+            return index
+        } else return false
+    }).filter((item) => {
+        if (typeof(item) == 'number') {
+            return true
         }
-    }
-    return array;
+        return false
+    })
+    
+    return index
 }
 
 function getXDistFromZero(shape) {
@@ -142,3 +146,9 @@ function checkButtons() {
         primaryQueue.push(form);
     })
 }
+
+export function inCanvas(baseCanvas, x, y) {
+    return (x >= 0 && x <= baseCanvas.width && y >= 0 && y <= baseCanvas.height) ? true : false
+}
+
+// export {dist,findClosestPoint,inCanvas}

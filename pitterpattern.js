@@ -1,17 +1,20 @@
 import * as shape from '/shape.js'
 import * as cursor from '/cursor.js'
+import * as util from '/utilities.js'
 
 const p5Sketch = new p5( (s) => {
     var baseCanvas
     var buffers = {}
     var feedback
-    const form = new shape.Shape
+    const radius = 10
+    const form = new shape.Shape(radius)
 
     s.setup = () => {
         baseCanvas = s.createCanvas(
             document.getElementById('console-label').offsetWidth - 36,
             innerHeight * 0.665
-            );
+        )
+        s.frameRate(30)
         buffers.cursorBuffer = s.createGraphics(baseCanvas.width,baseCanvas.height);
         buffers.shapeBuffer = s.createGraphics(baseCanvas.width,baseCanvas.height);
         buffers.patternBuffer = s.createGraphics(baseCanvas.width,baseCanvas.height);
@@ -20,137 +23,105 @@ const p5Sketch = new p5( (s) => {
     }
 
     s.draw = () => {
+        // clear the baseCanvas
         s.background('#181818')
-        //this is temporarily the stuff that a render() fnc would do
-        //all functions here should specify the pencil and the canvas (usually buffers)–so no hidden stuff/autonomous functions
+
+        //this is the render queue
+
+        //all functions here should specify the drawing mechanism and the buffers on which it is being applied
+
+        //diagnostics
+
         //draw things to their respective buffers
         cursor.draw(buffers.cursorBuffer, s.mouseX, s.mouseY)
         form.draw(buffers.shapeBuffer)
-
-        //diagnostics
-        //console.log(form.points, buffers.shapeBuffer);
         
-        //draw feedback
+        //draw feedback to the cursor buffer
         let looping = feedback ? feedback.draw(buffers.cursorBuffer, s.mouseX, s.mouseY) : false
-        console.log(feedback, looping)
         if (looping) {
             s.loop()
         } else {
+            console.log('noLoop()')
             s.noLoop()
         }
         
         //apply all buffers to the sketch
         Object.keys(buffers).forEach((key) => {
             s.image(buffers[key],0,0)
+            //clear all buffers
+            //TODO: only clear when you need to (especially shape buffers with fills)
+            buffers[key].clear()
         })
 
-        //clean the cursor buffer
-        buffers.cursorBuffer.clear()
-        // s.image(buffers.cursorBuffer,0,0)
         // dom.pullInputValues()
-        // renderAll(primaryQueue)
         // dom.checkButtons()
         // stats.updateTimePanel()
     }
 
     s.mousePressed = () => {
-        feedback = cursor.updateFeedback(s.mouseX,s.mouseY)
-        form.addPoint(s.mouseX,s.mouseY)
-        s.loop()
-        // if (cursor.clickingOnExistingPoint(s.mouseX,s.mouseY,form.shape)) {
-            // let indexOfClosestPoint = findClosestPoint(mouseX,mouseY,form.shape);
-            // form.shape[indexOfClosestPoint].select();
-        // } else {
-        // }
+        let selecting = cursor.clickingOnExistingPoint(
+            buffers.cursorBuffer,
+            s.mouseX,
+            s.mouseY,
+            form.points,
+            radius
+        )
+
+        if (selecting) {
+            let indexOfClosestPoint = util.findClosestPoint(
+                buffers.cursorBuffer,
+                s.mouseX,
+                s.mouseY,
+                form.points);
+            form.points[indexOfClosestPoint].selected = true;
+            s.noLoop()
+        } else if (util.inCanvas(baseCanvas,s.mouseX,s.mouseY)) {
+            feedback = cursor.updateFeedback(s.mouseX,s.mouseY,radius)
+            form.addPoint(s.mouseX,s.mouseY)
+            s.loop()
+        }
+    }
+    
+    s.mouseMoved = () => {
+        if (util.inCanvas(baseCanvas,s.mouseX,s.mouseY)) {
+            s.loop()
+        }
     }
 
     s.mouseDown = () => {
-        s.loop()
+        // s.loop()
     }
 
-    s.mouseMoved = () => {
-        s.loop()
+    s.mouseDragged = () => {
+        // if (form.points.length > 1) {
+        //     for (let i = 0; i < form.points.length; i++) {
+        //         if (form.points[i].selected == true) {
+        //             form.points[i].x = s.mouseX;
+        //             form.points[i].y = s.mouseY;
+        //         }
+        //     }
+        // }
+
+        // drag and draw functionality
+        // if (!cursor.clickingOnExistingPoint(mouseX,mouseY,form.points) && over == true) {
+        //     try {
+        //         if (dist(mouseX,mouseY,form.points[form.points.length-1].x,form.points[form.points.length-1].y) > dragInterval) {
+        //             form.addPoint(mouseX,mouseY);
+        //         }
+        //     }
+        //     catch (error) {
+        //         console.log(error)
+        //     }
+        // }
     }
+
+    s.mouseReleased = () => {
+        // form.points = form.points.map((point) => {
+        //     point.selected = false
+        // })
+    }
+
 })
-
-// function renderAll(queue) {
-//     lock = true;
-//     queue.forEach(function(element) {
-//         element.updateColor(colorway);
-//         element.render();
-//     });
-//     updateShapeStatistics();
-//     lock = false;
-// }
-
-function mouseDragged() {
-    if (form.shape.length > 1) {
-        for (let i = 0; i < form.shape.length; i++) {
-            if (form.shape[i].selected == true) {
-                form.shape[i].x = mouseX;
-                form.shape[i].y = mouseY;
-            }
-        }
-    }
-    if (!clickingOnExistingPoint(mouseX,mouseY,form.shape) && over == true) {
-        try {
-            if (dist(mouseX,mouseY,form.shape[form.shape.length-1].x,form.shape[form.shape.length-1].y) > dragInterval) {
-                form.addPoint(mouseX,mouseY);
-            }
-        }
-        catch (error) {
-            console.log(`logged error: ${error}, probably because no points exist yet. Draw something!`)
-        }
-    }
-}
-
-function mouseReleased() {
-    for (let i = 0; i < form.shape.length; i++) {
-        if (form.shape[i].selected == true) {
-            form.shape[i].selected = false;
-        }
-    }
-}
-
-function drawInnerShape(points,colorVal) {
-    if (points.length > 2) {
-        fill(colorVal);
-        if (!fillmode) {
-            noFill();
-        }
-        if (buffering) {
-            buffer.beginShape();
-            for (let i = 0; i < points.length; i++) {
-                if (curvemode) {
-                    buffer.curveVertex(points[i].x,points[i].y);
-                } else {
-                    buffer.vertex(points[i].x,points[i].y);
-                }
-            }
-            buffer.endShape(CLOSE);
-        }
-        if (formBuffering) {
-            shapebuffer.beginShape();
-            for (let i = 0; i < points.length; i++) {
-                if (curvemode) {
-                    shapebuffer.curveVertex(points[i].x,points[i].y);
-                } else {
-                    shapebuffer.vertex(points[i].x,points[i].y);
-                }
-            }
-            shapebuffer.endShape(CLOSE);
-        }
-        beginShape();
-        for (let i = 0; i < points.length; i++) {
-            if (curvemode) {
-                curveVertex(points[i].x,points[i].y);
-            } else {
-                vertex(points[i].x,points[i].y);
-            }
-        }
-        endShape(CLOSE);
-    }
-}
 
 //not exposed
 function scaleShape(shape,scale) {

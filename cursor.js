@@ -4,18 +4,19 @@ export function draw(buffer,x,y) {
     // buffer.circle(x,y,3);
 }
 
-export function updateFeedback(x,y) {
-    return new Feedback(x,y,20)
+export function updateFeedback(x,y,r) {
+    return new Feedback(x,y,r)
 }
 
 export class Feedback {
-    constructor(x,y) {
+    constructor(x,y,r) {
         this.x = x;
         this.y = y;
-        this.r = 0;
+        this.r = r;
+        this.radius = r;
     }
     draw(buffer) {
-        if (this.r < 20 * 2) {
+        if (this.r < this.radius * 4) {
             this.r += 10
             buffer.fill(255)
             buffer.circle(this.x,this.y,this.r)
@@ -29,10 +30,16 @@ export class Feedback {
     }
 }
 
-export function clickingOnExistingPoint(x,y,shape) {
-    for (let i = 0; i < shape.length; i++) {
-        if (dist(x,y,shape[i].x,shape[i].y) < pointRadius) {
-            return true;
-        };
-    };
-};
+
+export function clickingOnExistingPoint(buffer,x,y,points,selectionRadius) {
+    return points.some((point) => {
+        console.log(`x1: ${x}, x2: ${point.x}, y1: ${y}, y2: ${point.y}`)
+
+        let distance = buffer.dist(x,y,point.x,point.y)
+
+        if (distance < selectionRadius) {
+            console.log(`distance is ${distance}`)
+            return true
+        } else return false
+    })
+}
