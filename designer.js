@@ -1,5 +1,5 @@
 function setup() {
-  createCanvas(innerWidth,500);
+  createCanvas(3800,12000);
   noLoop();
   noStroke();
 }
@@ -7,6 +7,7 @@ function setup() {
 function draw() {
   drawScuba();
   // drawSparseDark();
+  saveCanvas("scubabig","png");
 }
 
 function drawSparseDark() {
@@ -21,7 +22,8 @@ function drawSparseDark() {
 
 function drawScuba() {
   background(color(250,250,250));
-  let scaledScale = (round(innerWidth / 100) / 10)
+  let scaledScale = (round(innerWidth / 100) / 50)
+  let scaledHeightScale = (round(innerHeight / 100) / 10)
   console.log(scaledScale)
   // for(let i = 0; i < 100; i++) {
   //   push();
@@ -29,15 +31,15 @@ function drawScuba() {
   //   splotch(width/2 - 10, height/2 - 10, round(random(0,10)),2,color(100,100,200));
   //   pop();
   // }
-  for(let i = 0; i < 800; i++) {
+  for(let i = 0; i < 20000; i++) {
     push();
-    translate(round(random(-50 * scaledScale,50 * scaledScale))*60,round(random(-5,5))*60);
+    translate(round(random(-50 * scaledScale,50 * scaledScale))*60,round(random(-50 * scaledHeightScale,50 * scaledHeightScale))*60);
     splotch(width/2 - 10, height/2 - 10, round(random(0,15)), scaledScale, color(150,random(0,250),random(200,250)));
     pop();
   }
-  for(let i = 0; i < 50; i++) {
+  for(let i = 0; i < 500; i++) {
     push();
-    translate(round(random(-50 * scaledScale,50 * scaledScale))*60,round(random(-5,5))*60);
+    translate(round(random(-50 * scaledScale,50 * scaledScale))*60,round(random(-50 * scaledHeightScale,50 * scaledHeightScale))*60);
     splotch(width/2 - 10, height/2 - 10, round(random(0,5)), scaledScale,255);
     pop();
   }
@@ -71,7 +73,7 @@ function splotch(xcenter, ycenter, rows, scale, color) {
   }
   
   function drawRows() {
-    yrowcenter = ycenter + d * rowcount;
+    yrowcenter = ycenter + d * rowcount - (rowcount * .5);
     fillRow();
     superGlue();
     rowcount++;
