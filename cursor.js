@@ -1,3 +1,5 @@
+export var selecting = false
+
 export function draw(buffer,x,y) {
     // buffer.noStroke();
     // buffer.fill(255);
@@ -30,7 +32,6 @@ export class Feedback {
     }
 }
 
-
 export function clickingOnExistingPoint(buffer,x,y,points,selectionRadius) {
     return points.some((point) => {
         console.log(`x1: ${x}, x2: ${point.x}, y1: ${y}, y2: ${point.y}`)
@@ -38,7 +39,6 @@ export function clickingOnExistingPoint(buffer,x,y,points,selectionRadius) {
         let distance = buffer.dist(x,y,point.x,point.y)
 
         if (distance < selectionRadius) {
-            console.log(`distance is ${distance}`)
             return true
         } else return false
     })

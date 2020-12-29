@@ -5,7 +5,10 @@ import * as util from '/utilities.js'
 const p5Sketch = new p5( (s) => {
     var baseCanvas
     var buffers = {}
-    var feedback
+    var state = {
+        feedback: null,
+        selecting: false
+    }
     const radius = 10
     const form = new shape.Shape(radius)
 
@@ -26,18 +29,12 @@ const p5Sketch = new p5( (s) => {
         // clear the baseCanvas
         s.background('#181818')
 
-        //this is the render queue
-
-        //all functions here should specify the drawing mechanism and the buffers on which it is being applied
-
-        //diagnostics
-
         //draw things to their respective buffers
         cursor.draw(buffers.cursorBuffer, s.mouseX, s.mouseY)
         form.draw(buffers.shapeBuffer)
         
-        //draw feedback to the cursor buffer
-        let looping = feedback ? feedback.draw(buffers.cursorBuffer, s.mouseX, s.mouseY) : false
+        //draw feedback to the cursor buffer and do it smOooth
+        let looping = state.feedback ? state.feedback.draw(buffers.cursorBuffer, s.mouseX, s.mouseY) : false
         if (looping) {
             s.loop()
         } else {
@@ -59,7 +56,7 @@ const p5Sketch = new p5( (s) => {
     }
 
     s.mousePressed = () => {
-        let selecting = cursor.clickingOnExistingPoint(
+        state.selecting = cursor.clickingOnExistingPoint(
             buffers.cursorBuffer,
             s.mouseX,
             s.mouseY,
@@ -67,16 +64,16 @@ const p5Sketch = new p5( (s) => {
             radius
         )
 
-        if (selecting) {
+        if (state.selecting) {
             let indexOfClosestPoint = util.findClosestPoint(
                 buffers.cursorBuffer,
                 s.mouseX,
                 s.mouseY,
                 form.points);
-            form.points[indexOfClosestPoint].selected = true;
+            state.indexOfClosestPoint = indexOfClosestPoint
             s.noLoop()
         } else if (util.inCanvas(baseCanvas,s.mouseX,s.mouseY)) {
-            feedback = cursor.updateFeedback(s.mouseX,s.mouseY,radius)
+            state.feedback = cursor.updateFeedback(s.mouseX,s.mouseY,radius)
             form.addPoint(s.mouseX,s.mouseY)
             s.loop()
         }
@@ -87,20 +84,13 @@ const p5Sketch = new p5( (s) => {
             s.loop()
         }
     }
-
-    s.mouseDown = () => {
-        // s.loop()
-    }
-
+    
     s.mouseDragged = () => {
-        // if (form.points.length > 1) {
-        //     for (let i = 0; i < form.points.length; i++) {
-        //         if (form.points[i].selected == true) {
-        //             form.points[i].x = s.mouseX;
-        //             form.points[i].y = s.mouseY;
-        //         }
-        //     }
-        // }
+        s.loop()
+        if (state.selecting) {
+            form.points[state.indexOfClosestPoint].x = s.mouseX
+            form.points[state.indexOfClosestPoint].y = s.mouseY
+        }
 
         // drag and draw functionality
         // if (!cursor.clickingOnExistingPoint(mouseX,mouseY,form.points) && over == true) {
@@ -116,9 +106,6 @@ const p5Sketch = new p5( (s) => {
     }
 
     s.mouseReleased = () => {
-        // form.points = form.points.map((point) => {
-        //     point.selected = false
-        // })
     }
 
 })

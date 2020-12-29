@@ -1,7 +1,8 @@
 export class Shape {
-    constructor(pointRadius) {
+    constructor(pointRadius,color=255) {
         this.points = [];
         this.pointRadius = pointRadius;
+        this.color = color;
     }
 
     offset(xoffset,yoffset) {
@@ -14,8 +15,9 @@ export class Shape {
     }
 
     draw(buffer) {
-        this.drawVertices(buffer,this.points,255,false)
-        this.drawFill(buffer,this.points,255);
+        this.drawVertices(buffer,this.points,false)
+        buffer.fill(this.color)
+        this.drawFill(buffer,this.points,this.color);
     }
 
     addPoint(x,y) {
@@ -31,15 +33,14 @@ export class Shape {
         }
     }
 
-    drawVertices(buffer,points,color,bordermode=true) {
+    drawVertices(buffer,points,bordermode=true) {
         for (let i = 0; i < points.length; i++) {
-            buffer.fill(color)
             points[i].draw(buffer)
-            this.drawBorders(buffer,points,255,i)
+            this.drawPolygonBorders(buffer,points,this.color,i)
         }
     }
 
-    drawBorders(buffer,points,color,i) {
+    drawPolygonBorders(buffer,points,color,i) {
         if (i > 0) {
             buffer.stroke(color);
             buffer.strokeWeight(1);
@@ -85,11 +86,8 @@ class Vertex {
         buffer.noStroke()
         buffer.circle(this.x,this.y,this.r)
     }
-    select() {
-        this.selected = true;
-    }
-    x() {return this.x}
-    y() {return this.y}
+    x(int) {this.x = int;return this.x}
+    y(int) {this.y = int;return this.y}
     transform(xoffset,yoffset) {
         this.x = this.x + xoffset;
         this.y = this.y + yoffset;

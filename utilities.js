@@ -9,9 +9,8 @@ export function findClosestPoint(buffer,x,y,points) {
         return comparison
     })
 
-    let index = distances.map((value,index) => {
+    return distances.map((value,index) => {
         if (value == shortestDistance) {
-            console.log(index)
             return index
         } else return false
     }).filter((item) => {
@@ -20,8 +19,6 @@ export function findClosestPoint(buffer,x,y,points) {
         }
         return false
     })
-    
-    return index
 }
 
 function getXDistFromZero(shape) {
