@@ -1,6 +1,14 @@
-const getUsers = async function (db) {
+const getUser = async function (db, username) {
     try {
-        return await db.any('SELECT * FROM users', [true])
+        let user = await db.one(`
+        SELECT * FROM users 
+        WHERE id = (
+            SELECT id FROM users 
+            WHERE username = $1
+        );`, username).then(res => {
+            return res
+        })
+        return user
     } 
     catch(e) {
         return `Error: ${e}`
@@ -19,7 +27,7 @@ const addUser = async function (db, username, email) {
         } catch {
             throw('A user with this email already exists')
         }
-        return await db.one(`INSERT INTO users (username, email) VALUES ($1, $2) RETURNING *;`, username, email)
+        return await db.one(`INSERT INTO users (username, email) VALUES ($1, $2) RETURNING *;`, [username, email])
             .then(res => {
                 return res
             })
@@ -37,7 +45,7 @@ const addPattern = async function (db, username, patternName) {
             WHERE username = $1
         );`, username)
         .then((results) => {
-            if (results.patterns.includes(patternName)) {
+            if (results.patterns && results.patterns.includes(patternName)) {
                 throw(`User ${username} already has this pattern`)
             }
         })
@@ -51,12 +59,25 @@ const addPattern = async function (db, username, patternName) {
             .then(() => {
                 return 'Pattern added'
             })
-        db.done()
         return result
     } catch(e) {return `Error: ${e}`}
 }
 
-module.exports = {getUsers,addPattern,addUser}
+const getPatterns = async function (db, username) {
+    try {
+        return await db.one(`
+        SELECT patterns FROM users 
+        WHERE id = (
+            SELECT id FROM users 
+            WHERE username = $1
+        );`, username)
+        .then((res) => {
+            return res
+        })
+    } catch (e) {return `Error: ${e}`}
+}
+
+module.exports = {getUser,getPatterns,addPattern,addUser}
 
 // const { Sequelize } = require("sequelize/types");
 

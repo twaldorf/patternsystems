@@ -1,26 +1,17 @@
-require('dotenv').config()
-
 const express = require('Express')
 const app = express()
 const cors = require('cors')
+require('dotenv').config()
 const port = process.env.PORT
 
-const { db } = require('./config.js')
-const store = require('./repository.js')
+const { getUserPatterns, createUser, addPatternToUser, getUserInfo } = require('./routes.js')
 
+app.use(express.json())
 app.use(cors())
 
-const users = store.getUsers(db)
-    .then(data => {return data})
-
-app.get('/', (req, res) => {
-    res.send(index)
-})
-
-// app.post('/users/', (req, res) => {
-//     { req.json }
-// })
+app.route('/users/:username/patterns').get(getUserPatterns).post(addPatternToUser)
+app.route('/users/:username').get(getUserInfo).post(createUser)
 
 app.listen(port, () => {
-    console.log('Serving')
+    console.log(`Serving on ${port}`)
 })
