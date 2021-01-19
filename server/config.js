@@ -2,8 +2,6 @@ require('dotenv').config()
 
 const pgp = require('pg-promise')()
 
-const production = process.env.NODE_ENV === 'production'
-
 const connection = {
     host: process.env.DB_HOST,
     port: process.env.DB_PORT,
