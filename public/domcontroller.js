@@ -1,102 +1,85 @@
 const $ = _ => document.querySelector(_)
 const $c = _ => document.createElement(_)
 
-const button_add_color = document.getElementById('add-color');
-const container_color = document.getElementById('colors');
-
-button_add_color.addEventListener("mousedown", (element) => {
-    addColorField();
-});
-
-$('#header').addEventListener('click', () => {
-    $('#header').classList.add('hidden')
-    $('#edit-header').classList.remove('hidden')
-    document.activeElement = $('#edit-header')
-})
-
-function addColorField(element) {
-    let new_li = document.createElement('li');
-    let new_input = document.createElement('input');
-    new_input.setAttribute('type','text');
-    new_input.classList.add('input-color');
-    new_li.innerHTML = '#';
-    new_li.appendChild(new_input);
-    container_color.appendChild(new_li);
+function addColorField() {
+    console.log(null)
+    let new_li = $c('li')
+    let new_input = $c('input')
+    new_input.type = 'text'
+    new_input.classList.add('input-color')
+    new_li.innerHTML = '#'
+    new_li.appendChild(new_input)
+    $('#colors').appendChild(new_li)
 }
 
-function initializeNewInterfaceElements() {
-    sliderStroke = createSlider(1,10,0,1);
-    buttonPattern = createButton('Bake layout');
-    buttonReset = createButton('Reset layout');
-    buttonResetForm = createButton('Reset shape');
-
-    sliderStroke.elt.classList.add('slider-input');
-    sliderStroke.parent('stroke-slider');
-    buttonPattern.parent('main-control-bar');
-    buttonReset.parent('main-control-bar');
-    buttonResetForm.parent('main-control-bar');
-
-    minutesDate = fullDate.getMinutes();
-    secondsDate = fullDate.getSeconds();
-    hoursDate = fullDate.getHours();
-    date.innerHTML = hoursDate + 'HR ' + minutesDate + 'M ' + secondsDate + 'S';
-}
-
-function updateButtonState(e) {
-    if (e.className.includes('on')) {
-        console.log('was active');
-        e.classList.remove('on');
-        e.classList.add('off');
-        e.innerHTML = 'INACTIVE <span>ENABLE</span>';
-    }
-    else {
-        console.log('was inactive');
-        e.classList.remove('off');
-        e.classList.add('on');
-        e.innerHTML = 'ACTIVE <span>DISABLE</span>';
-    };
-}
-
-document.addEventListener("DOMContentLoaded", function() {
-    const colorInput1 = document.getElementById('color-input-1');
-    const colorInput2 = document.getElementById('color-input-2');
-    const slider = document.getElementById('grid-slider');
-    const gridUnitValue = document.getElementById('gridunit-value');
-    const borderSlider = document.getElementById('border-slider');
-    const borderSizeValue = document.getElementById('bordersize-value');
-    const vertexcounter = document.getElementById('vertex-counter');
-    const formheight = document.getElementById('form-height');
-    const formwidth = document.getElementById('form-width');
-    const formXorigin = document.getElementById('form-X-origin');
-    const formYorigin = document.getElementById('form-Y-origin');
-    const currenttime = document.getElementById('current-date');
-    const buttonExport = document.getElementById('button-export');
-    const date = document.getElementById('date');
-    const headerTitle = document.getElementById('header');
-    const buttonFillToggle = document.getElementById('fill-toggle');
-    const buttonBorderToggle = document.getElementById('border-toggle');
-    const buttonCurveToggle = document.getElementById('curve-toggle');
-    const buttons = document.querySelectorAll('button');
-    buttons.forEach(function(e) {
-        if (e.classList.contains('toggle')) {
-            e.addEventListener('click', () => {
-                updateButtonState(e)
-            });
+const tieStateToggles = (domElements, state) => {
+    return domElements.map((e) => {
+        let partnerKey = Object.keys(state.parameters).filter((param) => {return param == e.id})[0]
+        if (partnerKey) {
+            e.addEventListener('click',() => {
+                let newState = !state.parameters[partnerKey]
+                state.updateParameter(partnerKey, newState)
+            })
         }
-    });
-    buttonFillToggle.addEventListener('click', () => {
-        toggleFill();
-    });
-    buttonBorderToggle.addEventListener('click', () => {
-        toggleBorder();
-    });
-    buttonCurveToggle.addEventListener('click', () => {
-        toggleCurve();
-    });
-    buttonExport.addEventListener('click', () => {
-        exportPattern();
-    });
-    buttonExport.addEventListener('click', () => {
-        editHeader();
-    });
-});
+    })
+}
+
+const setInitialState = (state, domElements) => { 
+    return domElements.map((e) => {
+        let partnerKey = Object.keys(state.parameters).filter((param) => {return param == e.id})[0]
+        if (partnerKey) {
+            if (state.parameters[partnerKey] == true) {
+                e.classList.add('on')
+            } else if (state.parameters[partnerKey] == false) {
+                e.classList.add('off')
+            }
+        }
+    })
+} 
+
+// build an object with key(elementId): value(value)
+const buildDomStateObject = (elements) => {
+    let elementMap = elements.reduce ((obj, element) => {
+        return {
+            ...obj,
+            [element.id]: element
+        }
+    },0)
+    return elementMap
+}
+
+export const setup = (state) => {
+
+    const domElementNames = {
+        fill: 'fill',
+        stroke: 'stroke',
+        round: 'round',
+        button_add_color: 'add-color',
+        button_export: 'button-export',
+        container_color: 'colors',
+        slider_tile_spacing: 'grid-slider',
+        grid_unit: 'gridunit-value',
+        strokeWeight: 'strokeWeight',
+        strokeWeightCounter: 'stroke-weight-value',
+        vertex_counter: 'vertex-counter',
+        shape_height: 'shape-height',
+        shape_width: 'shape-width',
+        date: 'date',
+        header_title: 'header',
+        color_input_1: 'color-input-1',
+        color_input_2: 'color-input-2',
+    }
+
+    const domElements = Object.keys(domElementNames).map((e) => {
+        return document.getElementById(domElementNames[e])
+    })
+
+    const setup = setInitialState(state, domElements)
+    
+    const domObject = buildDomStateObject(domElements)
+    
+    state.updateDomElements(domObject)
+    
+    tieStateToggles(domElements, state)
+
+}

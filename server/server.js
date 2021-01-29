@@ -16,7 +16,7 @@ app.use(helmet())
 app.use(compression())
 
 const origin = process.env.NODE_ENV === 'production' ? 'https://designpattern.systems' : '*'
-
+console.log(origin)
 app.use(cors(origin))
 
 app.use(express.json())

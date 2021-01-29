@@ -1,28 +1,27 @@
-import * as shape from '/shape.js'
+
 import * as cursor from '/cursor.js'
 import * as util from '/utilities.js'
+import * as ui from '/ui.js'
+import * as store from '/store.js'
+import * as stateCore from '/state.js'
 
 const p5Sketch = new p5( (s) => {
     var baseCanvas
     var buffers = {}
-    var state = {
-        feedback: null,
-        selecting: false
-    }
-    const radius = 10
-    const form = new shape.Shape(radius)
 
+    var state = new stateCore.State()
+    
     s.setup = () => {
         baseCanvas = s.createCanvas(
             document.getElementById('console-label').offsetWidth - 36,
             innerHeight * 0.665
         )
-        s.frameRate(30)
+        s.frameRate(25)
         buffers.cursorBuffer = s.createGraphics(baseCanvas.width,baseCanvas.height);
         buffers.shapeBuffer = s.createGraphics(baseCanvas.width,baseCanvas.height);
         buffers.patternBuffer = s.createGraphics(baseCanvas.width,baseCanvas.height);
         baseCanvas.parent('sketch-holder');
-        // dom.initializeNewInterfaceElements();
+        ui.setup(state)
     }
 
     s.draw = () => {
@@ -31,7 +30,7 @@ const p5Sketch = new p5( (s) => {
 
         //draw things to their respective buffers
         cursor.draw(buffers.cursorBuffer, s.mouseX, s.mouseY)
-        form.draw(buffers.shapeBuffer)
+        state.form.draw(buffers.shapeBuffer)
         
         //draw feedback to the cursor buffer and do it smOooth
         let looping = state.feedback ? state.feedback.draw(buffers.cursorBuffer, s.mouseX, s.mouseY) : false
@@ -45,14 +44,18 @@ const p5Sketch = new p5( (s) => {
         //apply all buffers to the sketch
         Object.keys(buffers).forEach((key) => {
             s.image(buffers[key],0,0)
-            //clear all buffers
             //TODO: only clear when you need to (especially shape buffers with fills)
             buffers[key].clear()
         })
 
-        // dom.pullInputValues()
-        // dom.checkButtons()
-        // stats.updateTimePanel()
+        // save sketch to local cache
+        // const saved = store.savePattern(
+        //     {
+        //         name: 'default',
+        //         form: state.form
+        //     }
+        // )
+        // const loaded = store.loadPattern('default')
     }
 
     s.mousePressed = () => {
@@ -60,8 +63,8 @@ const p5Sketch = new p5( (s) => {
             buffers.cursorBuffer,
             s.mouseX,
             s.mouseY,
-            form.points,
-            radius
+            state.form.points,
+            state.radius
         )
 
         if (state.selecting) {
@@ -69,12 +72,12 @@ const p5Sketch = new p5( (s) => {
                 buffers.cursorBuffer,
                 s.mouseX,
                 s.mouseY,
-                form.points);
+                state.form.points);
             state.indexOfClosestPoint = indexOfClosestPoint
             s.noLoop()
         } else if (util.inCanvas(baseCanvas,s.mouseX,s.mouseY)) {
-            state.feedback = cursor.updateFeedback(s.mouseX,s.mouseY,radius)
-            form.addPoint(s.mouseX,s.mouseY)
+            state.feedback = cursor.updateFeedback(s.mouseX,s.mouseY,state.radius)
+            state.form.addPoint(s.mouseX,s.mouseY)
             s.loop()
         }
     }
@@ -88,15 +91,15 @@ const p5Sketch = new p5( (s) => {
     s.mouseDragged = () => {
         s.loop()
         if (state.selecting) {
-            form.points[state.indexOfClosestPoint].x = s.mouseX
-            form.points[state.indexOfClosestPoint].y = s.mouseY
+            state.form.points[state.indexOfClosestPoint].x = s.mouseX
+            state.form.points[state.indexOfClosestPoint].y = s.mouseY
         }
 
         // drag and draw functionality
-        // if (!cursor.clickingOnExistingPoint(mouseX,mouseY,form.points) && over == true) {
+        // if (!cursor.clickingOnExistingPoint(mouseX,mouseY,state.form.points) && over == true) {
         //     try {
-        //         if (dist(mouseX,mouseY,form.points[form.points.length-1].x,form.points[form.points.length-1].y) > dragInterval) {
-        //             form.addPoint(mouseX,mouseY);
+        //         if (dist(mouseX,mouseY,state.form.points[state.form.points.length-1].x,state.form.points[state.form.points.length-1].y) > dragInterval) {
+        //             state.form.addPoint(mouseX,mouseY);
         //         }
         //     }
         //     catch (error) {
@@ -120,31 +123,31 @@ function scaleShape(shape,scale) {
 }
 
 function toggleFill() {
-    if (fillmode) {
-        fillmode = false
+    if (state.parameters.fill) {
+        state.parameters.fill = false
         buttonFillToggle.classList.remove('active')
     } else {
-        fillmode = true
+        state.parameters.fill = true
         buttonFillToggle.classList.add('active')
     };
 }
 
 function toggleBorder() {
-    if (borderMode) {
-        borderMode = false
+    if (state.parameters.stroke) {
+        state.parameters.stroke = false
         buttonBorderToggle.classList.remove('active')
     } else {
-        borderMode = true
+        state.parameters.stroke = true
         buttonBorderToggle.classList.add('active')
     };
 }
 
 function toggleCurve() {
-    if (curvemode) {
-        curvemode = false
+    if (state.parameters.round) {
+        state.parameters.round = false
         buttonCurveToggle.classList.remove('active')
     } else {
-        curvemode = true
+        state.parameters.round = true
         buttonCurveToggle.classList.add('active')
     }
 }
