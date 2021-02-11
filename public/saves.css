@@ -1,0 +1,75 @@
+body {
+    background-color: black;
+    color: white;
+}
+
+.padded-border {
+    background-color: #181818;
+    padding: 1rem;
+}
+
+.padded-border > * {
+    border: 1px solid white;
+}
+
+#main, #head, .padded {
+    padding: 1rem;
+}
+
+#main .container {
+    display: flex;
+    flex-direction: row;
+}
+
+#main {
+    top: 0;
+}
+
+h1 {
+    font-size: 2rem;
+    margin: 0;
+}
+
+h1, h2, h3, h4 {
+    margin: .4rem 0;
+}
+
+a.pattern-link {
+    width: 25%;
+    height: 8rem;
+    margin: 1rem;
+    background-image: url('./ghheader.png');
+    background-size: contain;
+    position: relative;
+}
+
+.pattern-item {
+    background-color: #000000;
+}
+
+.metadata {
+    background-color: black;
+    font-weight: 300;
+    font-size: .8rem;
+    padding: .5rem;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.metadata li {
+    margin: 0;
+}
+
+.metadata li:first-of-type {
+    font-weight: bold;
+}
+
+.title-bar {
+    background-color: black;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding:  .2rem .5rem;
+}

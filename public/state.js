@@ -5,7 +5,7 @@ export class State {
         this.radius = 10,
         this.feedback = null,
         this.selecting = false,
-        this.form = new shape.Shape(this.radius),
+        this.form = new shape.Shape(this.radius, this),
         this.parameters = {
             colorsArray: [],
             fill: true,

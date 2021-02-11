@@ -16,10 +16,16 @@ const tieStateToggles = (domElements, state) => {
     return domElements.map((e) => {
         let partnerKey = Object.keys(state.parameters).filter((param) => {return param == e.id})[0]
         if (partnerKey) {
-            e.addEventListener('click',() => {
-                let newState = !state.parameters[partnerKey]
-                state.updateParameter(partnerKey, newState)
-            })
+            if (e.type == "range") {
+                e.addEventListener('click',() => {
+                    state.updateParameter(partnerKey, e.value)
+                })
+            } else {
+                e.addEventListener('click',() => {
+                    let newState = !state.parameters[partnerKey]
+                    state.updateParameter(partnerKey, newState)
+                })
+            }
         }
     })
 }
@@ -75,11 +81,11 @@ export const setup = (state) => {
     })
 
     const setup = setInitialState(state, domElements)
-    
+
     const domObject = buildDomStateObject(domElements)
-    
+
     state.updateDomElements(domObject)
-    
+
     tieStateToggles(domElements, state)
 
 }
