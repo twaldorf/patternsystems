@@ -47,13 +47,13 @@ export const deletePattern = (patternNameToDelete) => {
     //deletePattern('patterName')
 
     const existingPatterns = loadPatterns().patterns
-
-    const error = !JSON.stringify(existingPatterns).includes(patternNameToDelete) ? `Error: no pattern "${patternNameToDelete}"` : null
-
-    if (error) return error
-
+    
+    // const error = !JSON.stringify(existingPatterns).includes(patternNameToDelete) ? `Error: no pattern "${patternNameToDelete}"` : false
+    
+    // if (error) {return error}
+    
     const patternNamesToSave = Object.keys(existingPatterns).filter((key) => {
-        return key != patternNameToDelete
+        return existingPatterns[key].name != patternNameToDelete
     })
     var patternsToSave = { 
         patterns: {},
