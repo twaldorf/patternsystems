@@ -1,6 +1,8 @@
 const $ = _ => document.querySelector(_)
 const $c = _ => document.createElement(_)
 
+import * as erase from './buttons/erase.js'
+
 function addColorField() {
     console.log(null)
     let new_li = $c('li')
@@ -61,6 +63,7 @@ export const setup = (state) => {
         stroke: 'stroke',
         round: 'round',
         button_add_color: 'add-color',
+        button_clear_shape: 'clearShape',
         button_export: 'button-export',
         container_color: 'colors',
         slider_tile_spacing: 'grid-slider',
@@ -80,12 +83,13 @@ export const setup = (state) => {
         return document.getElementById(domElementNames[e])
     })
 
-    const setup = setInitialState(state, domElements)
-
+    setInitialState(state, domElements)
     const domObject = buildDomStateObject(domElements)
-
     state.updateDomElements(domObject)
-
     tieStateToggles(domElements, state)
+    actionSetups(state)
+}
 
+const actionSetups = (state) => {
+    state.domElements.clearShape.addEventListener('click', () => {erase.action(state)})
 }

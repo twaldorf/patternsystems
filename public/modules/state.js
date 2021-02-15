@@ -1,4 +1,4 @@
-import * as shape from '/shape.js'
+import * as shape from './shape.js'
 
 export class State {
     constructor() {

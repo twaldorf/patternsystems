@@ -2,6 +2,14 @@ require('dotenv').config()
 const { db } = require('./config.js')
 const {getUser,getPatterns,addPattern,addUser} = require('./db.js')
 
+const patternMaker = async (req, res) => {
+    let pattern = req.params.patternName
+    html = glass.pour('editor')
+    res.render('editor', { user, pattern }, (err, html) => {
+        res.send(html)
+    })
+}
+
 const getUserPatterns = async (req, res) => {
     let  username  = req.params.username
     if (!username) {

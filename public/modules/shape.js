@@ -6,10 +6,6 @@ export class Shape {
         this.state = state
     }
 
-    // assignState(state) {
-    //     this.state = state
-    // }
-
     offset(xoffset,yoffset) {
         for (let i = 0; i < this.points.length; i++) {
             this.points[i].transform(xoffset,yoffset);

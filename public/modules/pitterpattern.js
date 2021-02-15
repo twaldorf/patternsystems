@@ -1,9 +1,9 @@
 
-import * as cursor from '/cursor.js'
-import * as util from '/utilities.js'
-import * as ui from '/ui.js'
-import * as store from '/store.js'
-import * as stateCore from '/state.js'
+import * as cursor from './cursor.js'
+import * as util from './utilities.js'
+import * as ui from './ui.js'
+import * as store from './store.js'
+import * as stateCore from './state.js'
 
 const p5Sketch = new p5( (s) => {
     var baseCanvas
@@ -40,6 +40,7 @@ const p5Sketch = new p5( (s) => {
             console.log('noLoop()')
             s.noLoop()
         }
+        console.log(state)
         
         //apply all buffers to the sketch
         Object.keys(buffers).forEach((key) => {

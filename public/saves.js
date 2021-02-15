@@ -1,4 +1,4 @@
-import * as store from './store.js'
+import * as store from './modules/store.js'
 
 const user = {
     username: 'twaldorf',
@@ -106,7 +106,7 @@ const newPattern = {
     }
 }
 
-store.setStore(tempPatterns)
+// store.setStore(tempPatterns)
 
 // // store.deletePattern('pattern2')
 
