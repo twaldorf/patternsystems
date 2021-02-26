@@ -16,14 +16,22 @@ export const savePattern = (newPattern) => {
     // savePattern(newPattern)
 
     const existingPatterns = loadPatterns()
-    const { patterns, version } = existingPatterns
-    const updatedPatterns = {
-        ...patterns,
-        ...newPattern
+    let updatedPatterns = {}
+    let version = 1
+    if (existingPatterns) {
+        const { patterns, version } = existingPatterns
+        updatedPatterns = {
+            ...patterns,
+            ...newPattern
+        }
+    } else {
+        updatedPatterns = {
+            ...newPattern
+        }
     }
     const updatedStore = {
         patterns: updatedPatterns,
-        version: existingPatterns[version]
+        version: version
     }
     return localStorage.setItem('patternDesignerPatterns', JSON.stringify(updatedStore))
 }

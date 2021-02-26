@@ -3,7 +3,11 @@ export class Shape {
         this.points = [],
         this.pointRadius = pointRadius,
         this.color = color,
-        this.state = state
+        this.parameters = state.parameters
+    }
+
+    updateParams(state) {
+        this.parameters = state.parameters
     }
 
     offset(xoffset,yoffset) {
@@ -17,10 +21,78 @@ export class Shape {
 
     draw(buffer) {
         this.drawVertices(buffer,this.points)
-        if (this.state.parameters.fill) {
-            buffer.fill(this.color)
-            this.drawFill(buffer,this.points,this.color);
+        if (this.parameters.fill) {
+            buffer.fill(buffer.color(this.color))
+            this.drawFill(
+                buffer,
+                this.points,
+                buffer.color(this.color)
+            );
         }
+    }
+
+    drawShapeAt(buffer, points, x,y) {
+        let normals = this.normalize(points)
+        buffer.translate(x,y)
+        this.drawVertices(buffer,normals)
+        if (this.parameters.fill) {
+            buffer.fill(buffer.color(this.color))
+            this.drawFill(
+                buffer,
+                normals,
+                buffer.color(this.color)
+            );
+        }
+    }
+
+    getWidth(pointsArray) {
+        const left = this.leastmost(pointsArray,'x')
+        const right = this.foremost(pointsArray,'x')
+        return right - left
+    }
+
+    getHeight(pointsArray) {
+        const top = this.leastmost(pointsArray,'y')
+        const bottom = this.foremost(pointsArray,'y')
+        return bottom - top
+    }
+
+    normalize(points) {
+        const left = this.leastmost(points,'x')
+        const top = this.leastmost(points,'y')
+
+        const normals = points.map((point) => {
+            const newPointX = point.x - left
+            const newPointY = point.y - top
+            const newPoint = new Vertex(newPointX, newPointY, this.pointRadius)
+            return newPoint
+        })
+
+        return normals
+    }
+
+    leastmost(points, type='x') {
+        const edge = points.reduce((prev,curr,index,array) => {
+            return array[index][type] < prev ? array[index][type] : prev
+        }, points[0][type])
+
+        return edge
+    }
+
+    foremost(points, type='x') {
+        const edge = points.reduce((prev,curr,index,array) => {
+            return array[index][type] > prev ? array[index][type] : prev
+        }, points[0][type])
+
+        return edge
+    }
+
+    getXOffset(points) {
+        return this.leastmost(points,'x')
+    }
+
+    getYOffset(points) {
+        return this.leastmost(points,'y')
     }
 
     addPoint(x,y) {
@@ -39,16 +111,26 @@ export class Shape {
     drawVertices(buffer,points) {
         for (let i = 0; i < points.length; i++) {
             points[i].draw(buffer)
-            if (this.state.parameters.stroke) {
-                this.drawPolygonBorders(buffer,points,this.color,i)
+            if (this.parameters.stroke) {
+                this.drawPolygonBorders(
+                    buffer,
+                    points,
+                    buffer.color(this.color),
+                    i)
+                
             }
         }
+    }
+
+    pasteVertices(buffers) {
+        
+        buffer.image()
     }
 
     drawPolygonBorders(buffer,points,color,i) {
         if (i > 0) {
             buffer.stroke(color);
-            buffer.strokeWeight(this.state.parameters.strokeWeight)
+            buffer.strokeWeight(this.parameters.strokeWeight)
             buffer.line(points[i].x,points[i].y,points[i-1].x,points[i-1].y);
         }
         if (points.length > 2) {
@@ -61,13 +143,13 @@ export class Shape {
             buffer.fill(color)
             buffer.beginShape()
             points.map((point) => {
-                if (this.state.parameters.round) {
+                if (this.parameters.round) {
                     buffer.curveVertex(point.x,point.y)
                 } else {
                     buffer.vertex(point.x,point.y)
                 }
             })
-            if (this.state.parameters.round) {
+            if (this.parameters.round) {
                 buffer.curveVertex(points[0].x,points[0].y)
                 buffer.curveVertex(points[1].x,points[1].y)
             } else {

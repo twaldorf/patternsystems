@@ -22,7 +22,6 @@ export class Feedback {
             this.r += 10
             buffer.fill(255)
             buffer.circle(this.x,this.y,this.r)
-            console.log('Feedback.draw()')
             return true
         } else {
             return false
@@ -34,7 +33,6 @@ export class Feedback {
 
 export function clickingOnExistingPoint(buffer,x,y,points,selectionRadius) {
     return points.some((point) => {
-        console.log(`x1: ${x}, x2: ${point.x}, y1: ${y}, y2: ${point.y}`)
 
         let distance = buffer.dist(x,y,point.x,point.y)
 

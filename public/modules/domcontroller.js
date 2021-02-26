@@ -2,6 +2,8 @@ const $ = _ => document.querySelector(_)
 const $c = _ => document.createElement(_)
 
 import * as erase from './buttons/erase.js'
+import * as color from './buttons/color.js'
+import * as exportCanvas from './buttons/export.js'
 
 function addColorField() {
     console.log(null)
@@ -26,6 +28,7 @@ const tieStateToggles = (domElements, state) => {
                 e.addEventListener('click',() => {
                     let newState = !state.parameters[partnerKey]
                     state.updateParameter(partnerKey, newState)
+                    console.log('updated state')
                 })
             }
         }
@@ -64,7 +67,8 @@ export const setup = (state) => {
         round: 'round',
         button_add_color: 'add-color',
         button_clear_shape: 'clearShape',
-        button_export: 'button-export',
+        button_export: 'button_export',
+        button_tile: 'tiling',
         container_color: 'colors',
         slider_tile_spacing: 'grid-slider',
         grid_unit: 'gridunit-value',
@@ -75,8 +79,8 @@ export const setup = (state) => {
         shape_width: 'shape-width',
         date: 'date',
         header_title: 'header',
-        color_input_1: 'color-input-1',
-        color_input_2: 'color-input-2',
+        color_input_1: 'colorInput1',
+        color_input_2: 'colorInput2',
     }
 
     const domElements = Object.keys(domElementNames).map((e) => {
@@ -92,4 +96,10 @@ export const setup = (state) => {
 
 const actionSetups = (state) => {
     state.domElements.clearShape.addEventListener('click', () => {erase.action(state)})
+    state.domElements.colorInput1.addEventListener('focusout', () => {
+        color.paint(state,state.domElements.colorInput1)
+    })
+    state.domElements.button_export.addEventListener('click', () => {
+        exportCanvas.exportPattern(state)
+    })
 }

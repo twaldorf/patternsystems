@@ -5,15 +5,23 @@ export class State {
         this.radius = 10,
         this.feedback = null,
         this.selecting = false,
+        this.patternName = 'default pattern',
         this.form = new shape.Shape(this.radius, this),
+        this.handler = false,
         this.parameters = {
             colorsArray: [],
             fill: true,
             stroke: true,
             strokeWeight: 1,
             round: false,
+            gridSize: 50,
+            tiling: false,
         }
         this.domElements = {}
+    }
+
+    getName() {
+        return this.patternName
     }
 
     updateDomElements(object) {

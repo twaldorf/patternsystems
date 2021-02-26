@@ -86,3 +86,13 @@ li {
 a {
     color: white;
 }
+
+button.button-tile.on {
+    color: white;
+    background-color: black;
+}
+
+button.button-tile.off {
+    color: white;
+    background-color: blue;
+}

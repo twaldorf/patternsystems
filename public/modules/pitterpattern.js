@@ -2,92 +2,130 @@
 import * as cursor from './cursor.js'
 import * as util from './utilities.js'
 import * as ui from './ui.js'
-import * as store from './store.js'
 import * as stateCore from './state.js'
+import * as tile from './tile.js'
+import * as save from './save.js'
 
 const p5Sketch = new p5( (s) => {
     var baseCanvas
     var buffers = {}
 
     var state = new stateCore.State()
+    var lastFormState
     
     s.setup = () => {
         baseCanvas = s.createCanvas(
             document.getElementById('console-label').offsetWidth - 36,
             innerHeight * 0.665
         )
-        s.frameRate(25)
-        buffers.cursorBuffer = s.createGraphics(baseCanvas.width,baseCanvas.height);
-        buffers.shapeBuffer = s.createGraphics(baseCanvas.width,baseCanvas.height);
-        buffers.patternBuffer = s.createGraphics(baseCanvas.width,baseCanvas.height);
-        baseCanvas.parent('sketch-holder');
-        ui.setup(state)
+        s.frameRate(20)
+        buffers.cursorBuffer = s.createGraphics(baseCanvas.width,baseCanvas.height)
+        buffers.shapeBuffer = s.createGraphics(baseCanvas.width,baseCanvas.height)
+        buffers.patternBuffer = s.createGraphics(baseCanvas.width,baseCanvas.height)
+        ui.setup(state, baseCanvas)
+        save.setup(state)
     }
 
     s.draw = () => {
         // clear the baseCanvas
         s.background('#181818')
 
+        const updated = lastFormState == JSON.stringify(state.form) ? false : true
+        const populated = state.form.points.length > 1
+
         //draw things to their respective buffers
+        buffers.cursorBuffer.clear()
         cursor.draw(buffers.cursorBuffer, s.mouseX, s.mouseY)
-        state.form.draw(buffers.shapeBuffer)
-        
-        //draw feedback to the cursor buffer and do it smOooth
-        let looping = state.feedback ? state.feedback.draw(buffers.cursorBuffer, s.mouseX, s.mouseY) : false
-        if (looping) {
-            s.loop()
-        } else {
-            console.log('noLoop()')
-            s.noLoop()
+
+        if (updated && populated) {
+            buffers.shapeBuffer.clear()
+            state.form.updateParams(state)
+            // state.form.draw(buffers.shapeBuffer)
+            const width = state.form.getWidth(state.form.points)
+            const height = state.form.getHeight(state.form.points)
+            buffers.shapeBuffer = s.createGraphics(width, height)
+            state.form.drawShapeAt(buffers.shapeBuffer, state.form.points, 0, 0)
         }
-        console.log(state)
         
+        if (state.parameters.tiling == true && populated) {
+            if (updated) {
+                //this is where you would create a new buffer for each shape
+                buffers.patternBuffer.clear()
+                tile.draw(state, buffers.patternBuffer)
+            }
+        }
+        
+        // draw feedback to the cursor buffer
+        // let looping = (
+        //     state.feedback ? 
+        //     state.feedback.draw(buffers.cursorBuffer, s.mouseX, s.mouseY) 
+        //     : false)
+        // if (looping) {
+        //     console.log('looping')
+        //     s.loop()
+        // } else {
+        //     console.log('stop loop')
+        //     s.noLoop()
+        // }
+
         //apply all buffers to the sketch
         Object.keys(buffers).forEach((key) => {
-            s.image(buffers[key],0,0)
-            //TODO: only clear when you need to (especially shape buffers with fills)
-            buffers[key].clear()
+            if (!populated) {
+                buffers[key].clear()
+            }
+            if (key == 'shapeBuffer' && populated) {
+                const xOffset = state.form.getXOffset(state.form.points)
+                const yOffset = state.form.getYOffset(state.form.points)
+                s.image(buffers[key],xOffset,yOffset)
+            } else {
+                s.image(buffers[key],0,0)
+            }
         })
 
-        // save sketch to local cache
-        // const saved = store.savePattern(
-        //     {
-        //         name: 'default',
-        //         form: state.form
-        //     }
-        // )
-        // const loaded = store.loadPattern('default')
+        if (state.exporting) {
+            s.save(baseCanvas, "filename", 'png');
+            state.exporting = false;
+        }
+
+        lastFormState = JSON.stringify(state.form)
     }
 
     s.mousePressed = () => {
-        state.selecting = cursor.clickingOnExistingPoint(
-            buffers.cursorBuffer,
-            s.mouseX,
-            s.mouseY,
-            state.form.points,
-            state.radius
-        )
-
-        if (state.selecting) {
-            let indexOfClosestPoint = util.findClosestPoint(
+        if (!util.inCanvas(baseCanvas,s.mouseX,s.mouseY)) {
+            console.log('clicked outside')
+            s.redraw()
+            return
+        } else {
+            state.selecting = cursor.clickingOnExistingPoint(
                 buffers.cursorBuffer,
                 s.mouseX,
                 s.mouseY,
-                state.form.points);
-            state.indexOfClosestPoint = indexOfClosestPoint
-            s.noLoop()
-        } else if (util.inCanvas(baseCanvas,s.mouseX,s.mouseY)) {
-            state.feedback = cursor.updateFeedback(s.mouseX,s.mouseY,state.radius)
-            state.form.addPoint(s.mouseX,s.mouseY)
-            s.loop()
+                state.form.points,
+                state.radius
+            )
+
+            if (state.selecting) {
+                let indexOfClosestPoint = util.findClosestPoint(
+                    buffers.cursorBuffer,
+                    s.mouseX,
+                    s.mouseY,
+                    state.form.points);
+                state.indexOfClosestPoint = indexOfClosestPoint
+                s.noLoop()
+            } else if (util.inCanvas(baseCanvas,s.mouseX,s.mouseY)) {
+                state.feedback = cursor.updateFeedback(s.mouseX,s.mouseY,state.radius)
+                state.form.addPoint(s.mouseX,s.mouseY)
+                s.loop()
+            }
         }
+        
     }
     
-    s.mouseMoved = () => {
-        if (util.inCanvas(baseCanvas,s.mouseX,s.mouseY)) {
-            s.loop()
-        }
-    }
+    // s.mouseMoved = () => {
+    //     if (util.inCanvas(baseCanvas,s.mouseX,s.mouseY)) {
+    //         s.loop()
+    //     }
+    // }
     
     s.mouseDragged = () => {
         s.loop()
@@ -113,85 +151,3 @@ const p5Sketch = new p5( (s) => {
     }
 
 })
-
-//not exposed
-function scaleShape(shape,scale) {
-    for (let i = 0; i < shape.length; i++) {
-        shape[i].x *= scale;
-        shape[i].y *= scale;
-    }
-    return shape;
-}
-
-function toggleFill() {
-    if (state.parameters.fill) {
-        state.parameters.fill = false
-        buttonFillToggle.classList.remove('active')
-    } else {
-        state.parameters.fill = true
-        buttonFillToggle.classList.add('active')
-    };
-}
-
-function toggleBorder() {
-    if (state.parameters.stroke) {
-        state.parameters.stroke = false
-        buttonBorderToggle.classList.remove('active')
-    } else {
-        state.parameters.stroke = true
-        buttonBorderToggle.classList.add('active')
-    };
-}
-
-function toggleCurve() {
-    if (state.parameters.round) {
-        state.parameters.round = false
-        buttonCurveToggle.classList.remove('active')
-    } else {
-        state.parameters.round = true
-        buttonCurveToggle.classList.add('active')
-    }
-}
-
-function exportPattern() {
-    buffering = true;
-    console.log(buffering);
-    let exportscalex = document.getElementById('export-scale-x').value;
-    let exportscaley = document.getElementById('export-scale-y').value;
-    buffer = createGraphics(exportscalex * baseCanvas.width, exportscaley * baseCanvas.height);
-    numberOfRows = round(buffer.height / gridUnit) + 1;
-    numberOfColumns = round(buffer.width / gridUnit) + 1;
-    offsetMatrix = populateOffsetTargetMatrix(numberOfRows,numberOfColumns);
-    buffer = syncBuffer(buffer,borderMode,borderSize,fillmode);
-    drawPattern(form.shape,numberOfRows,numberOfColumns);
-    draw();
-    save(buffer, "filename", 'png');
-    buffering = false;
-}
-
-function exportForm(form) {
-    formBuffering = true;
-    shapebuffer = createGraphics(getShapeWidth(form.shape), getShapeHeight(form.shape));
-    bufferform = copyOf(form.shape);
-    bufferform.offset(-getXDistFromZero(bufferform.shape),-getYDistFromZero(bufferform.shape));
-    shapebuffer = syncBuffer(shapebuffer,borderMode,borderSize,fillmode,colorway);
-    console.log(bufferform);
-    draw();
-    save(shapebuffer, "filename", 'png');
-    formBuffering = false;
-}
-
-function syncBuffer(graphics,bordermode,bordersize,fillmode,color) {
-    if (bordermode) {
-        graphics.strokeWeight(bordersize)
-        graphics.stroke(255);
-    } else {
-        graphics.noStroke();
-    }
-    if (!fillmode) {
-        graphics.noFill();
-    } else {
-        graphics.fill(color)
-    }
-    return graphics;
-}
