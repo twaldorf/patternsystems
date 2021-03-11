@@ -28,10 +28,10 @@ const p5Sketch = new p5( (s) => {
 
     s.draw = () => {
         // clear the baseCanvas
-        s.background('#181818')
+        s.background(s.color(state.parameters.bgColor))
 
         const updated = lastFormState == JSON.stringify(state.form) ? false : true
-        const populated = state.form.points.length > 1
+        const populated = state.form.points.length > 0
 
         //draw things to their respective buffers
         buffers.cursorBuffer.clear()
@@ -39,12 +39,12 @@ const p5Sketch = new p5( (s) => {
 
         if (updated && populated) {
             buffers.shapeBuffer.clear()
-            state.form.updateParams(state)
+            state.form.updateParameters(state)
             // state.form.draw(buffers.shapeBuffer)
-            const width = state.form.getWidth(state.form.points)
-            const height = state.form.getHeight(state.form.points)
+            const width = state.form.getWidth(state.form.points) + 2 * state.form.pointRadius
+            const height = state.form.getHeight(state.form.points) + 2 * state.form.pointRadius
             buffers.shapeBuffer = s.createGraphics(width, height)
-            state.form.drawShapeAt(buffers.shapeBuffer, state.form.points, 0, 0)
+            state.form.drawShapeAt(buffers.shapeBuffer, state.form.points, state.form.pointRadius,state.form.pointRadius)
         }
         
         if (state.parameters.tiling == true && populated) {
@@ -53,20 +53,22 @@ const p5Sketch = new p5( (s) => {
                 buffers.patternBuffer.clear()
                 tile.draw(state, buffers.patternBuffer)
             }
+        } else {
+            buffers.patternBuffer.clear()
         }
         
         // draw feedback to the cursor buffer
-        // let looping = (
-        //     state.feedback ? 
-        //     state.feedback.draw(buffers.cursorBuffer, s.mouseX, s.mouseY) 
-        //     : false)
-        // if (looping) {
-        //     console.log('looping')
-        //     s.loop()
-        // } else {
-        //     console.log('stop loop')
-        //     s.noLoop()
-        // }
+        let looping = (
+            state.feedback ? 
+            state.feedback.draw(buffers.cursorBuffer, s.mouseX, s.mouseY) 
+            : false)
+        if (looping) {
+            // console.log('looping')
+            s.loop()
+        } else {
+            // console.log('stop loop')
+            s.noLoop()
+        }
 
         //apply all buffers to the sketch
         Object.keys(buffers).forEach((key) => {
@@ -91,15 +93,18 @@ const p5Sketch = new p5( (s) => {
     }
 
     s.mousePressed = () => {
+        console.log(state)
         if (!util.inCanvas(baseCanvas,s.mouseX,s.mouseY)) {
             console.log('clicked outside')
             s.redraw()
             return
         } else {
+            let mouseX = s.mouseX - state.form.pointRadius
+            let mouseY = s.mouseY - state.form.pointRadius
             state.selecting = cursor.clickingOnExistingPoint(
                 buffers.cursorBuffer,
-                s.mouseX,
-                s.mouseY,
+                mouseX,
+                mouseY,
                 state.form.points,
                 state.radius
             )
@@ -107,31 +112,35 @@ const p5Sketch = new p5( (s) => {
             if (state.selecting) {
                 let indexOfClosestPoint = util.findClosestPoint(
                     buffers.cursorBuffer,
-                    s.mouseX,
-                    s.mouseY,
+                    mouseX,
+                    mouseY,
                     state.form.points);
                 state.indexOfClosestPoint = indexOfClosestPoint
                 s.noLoop()
-            } else if (util.inCanvas(baseCanvas,s.mouseX,s.mouseY)) {
-                state.feedback = cursor.updateFeedback(s.mouseX,s.mouseY,state.radius)
-                state.form.addPoint(s.mouseX,s.mouseY)
+            } else if (util.inCanvas(baseCanvas,mouseX,mouseY)) {
+                state.feedback = cursor.updateFeedback(mouseX,mouseY,state.radius)
+                state.form.addPoint(mouseX,mouseY)
                 s.loop()
             }
         }
         
     }
     
-    // s.mouseMoved = () => {
-    //     if (util.inCanvas(baseCanvas,s.mouseX,s.mouseY)) {
-    //         s.loop()
-    //     }
-    // }
+    s.mouseMoved = () => {
+        if (util.inCanvas(baseCanvas,s.mouseX,s.mouseY)) {
+            s.loop()
+        }
+    }
     
     s.mouseDragged = () => {
-        s.loop()
-        if (state.selecting) {
-            state.form.points[state.indexOfClosestPoint].x = s.mouseX
-            state.form.points[state.indexOfClosestPoint].y = s.mouseY
+        if (!util.inCanvas(baseCanvas,s.mouseX,s.mouseY)) {
+            console.log('clicked outside')
+            s.redraw()
+            return
+        } else if (state.selecting) {
+            s.loop()
+            state.form.points[state.indexOfClosestPoint].x = s.mouseX - state.form.pointRadius
+            state.form.points[state.indexOfClosestPoint].y = s.mouseY - state.form.pointRadius
         }
 
         // drag and draw functionality

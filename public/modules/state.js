@@ -9,13 +9,17 @@ export class State {
         this.form = new shape.Shape(this.radius, this),
         this.handler = false,
         this.parameters = {
-            colorsArray: [],
             fill: true,
             stroke: true,
             strokeWeight: 1,
             round: false,
             gridSize: 50,
             tiling: false,
+            tileScheme: 'block',
+            colorInput1: '#ffffff',
+            colorInput2: '#222222',
+            bgColor: '#181818',
+            colorArray: ['#ffffff'],
         }
         this.domElements = {}
     }
@@ -30,9 +34,19 @@ export class State {
     }
 
     updateParameter(key, status) {
+        console.log(key, status)
         this.parameters[key] = status
-        if (key !== 'colorsArray') {
+        if (!key.includes('color') && key != 'gridSize') {
             this.updateButton(key, status)
+        } else {
+            this.parameters[key] = status
+            let colorKeys = Object.keys(this.parameters).filter((key) => {
+                return key.includes('color') && key != 'colorArray'
+            })
+            this.parameters.colorArray = []
+            colorKeys.map((key) => {
+                this.parameters.colorArray.push(this.parameters[key])
+            })
         }
         return this.parameters[key]
     }

@@ -17,18 +17,29 @@ function addColorField() {
 }
 
 const tieStateToggles = (domElements, state) => {
+    // try to wait until the window is ready
     return domElements.map((e) => {
         let partnerKey = Object.keys(state.parameters).filter((param) => {return param == e.id})[0]
         if (partnerKey) {
             if (e.type == "range") {
-                e.addEventListener('click',() => {
+                e.addEventListener('input',() => {
                     state.updateParameter(partnerKey, e.value)
                 })
+                return
+            } if (e.type == "text") {
+                e.addEventListener('input',() => {
+                    const value = 
+                        typeof(e.value) == 'string' &&
+                        (e.value.length == 6 || e.value.length == 3)
+                        ? e.value : 'eeeeee'
+                    //TO DO: const value = validate.input(e.value)
+                    state.updateParameter(partnerKey, `#${value}`)
+                })
+                return
             } else {
                 e.addEventListener('click',() => {
                     let newState = !state.parameters[partnerKey]
                     state.updateParameter(partnerKey, newState)
-                    console.log('updated state')
                 })
             }
         }
@@ -70,7 +81,7 @@ export const setup = (state) => {
         button_export: 'button_export',
         button_tile: 'tiling',
         container_color: 'colors',
-        slider_tile_spacing: 'grid-slider',
+        gridSize: 'gridSize',
         grid_unit: 'gridunit-value',
         strokeWeight: 'strokeWeight',
         strokeWeightCounter: 'stroke-weight-value',
@@ -79,7 +90,8 @@ export const setup = (state) => {
         shape_width: 'shape-width',
         date: 'date',
         header_title: 'header',
-        color_input_1: 'colorInput1',
+        bgColor: 'bgColor',
+        colorInput1: 'colorInput1',
         color_input_2: 'colorInput2',
     }
 
@@ -90,15 +102,13 @@ export const setup = (state) => {
     setInitialState(state, domElements)
     const domObject = buildDomStateObject(domElements)
     state.updateDomElements(domObject)
+    // tie the dom elements to their matching state parameters (the parameter must be defined in state independently!)
     tieStateToggles(domElements, state)
     actionSetups(state)
 }
 
 const actionSetups = (state) => {
     state.domElements.clearShape.addEventListener('click', () => {erase.action(state)})
-    state.domElements.colorInput1.addEventListener('focusout', () => {
-        color.paint(state,state.domElements.colorInput1)
-    })
     state.domElements.button_export.addEventListener('click', () => {
         exportCanvas.exportPattern(state)
     })

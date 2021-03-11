@@ -52,7 +52,7 @@
                             <label for="gridUnit slider">
                                 Grid size: <span id="gridunit-value">50</span>
                             </label>
-                            <input id="grid-slider" type="range" min="10" max="200" value="100" step="1" class="slider-input">
+                            <input id="gridSize" type="range" min="20" max="200" value="100" step="10" class="slider-input">
                         </li>
                         <!-- <li>
                             <label for="pattern grid toggle">Grid mode</label>
@@ -65,8 +65,9 @@
                     <div class="description">
                         <label>Hexadecimal color codes</label>
                         <div class="flex-row" id="colors">
-                            <li>#<input type="text" id="colorInput1" placeholder="ffffff"></li>
-                            <li>#<input type="text" id="colorInput2"></li>
+                            Background color: <li>#<input type="text" id="bgColor" value="181818"/></li>
+                            <li>#<input type="text" id="colorInput1" placeholder="ffffff" /></li>
+                            <li>#<input type="text" id="colorInput2" /></li>
                         </div>
                     </div>
                     <button class="button-bar" id="add-color"><span>+</span><span>Add Color</span></button>
@@ -76,7 +77,6 @@
                 <h3>Vertex editor</h3>
                 <div id="main-control-bar" class="control-bar">
                     <button id="tiling" class="button-tile off">Activate Pattern</button>
-                    <button id="clearTile"  class="stateful button-clear-tile">Clear pattern</button>
                     <button id="clearShape"  class="stateful button-clear-shape">Erase shape</button>
                 </div>
             </div>

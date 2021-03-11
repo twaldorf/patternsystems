@@ -1,12 +1,13 @@
 export class Shape {
-    constructor(pointRadius,state,color=255) {
+    constructor(pointRadius,state) {
         this.points = [],
         this.pointRadius = pointRadius,
-        this.color = color,
-        this.parameters = state.parameters
+        this.color = '#ffffff',
+        this.parameters = state.parameters,
+        this.counter = 0
     }
 
-    updateParams(state) {
+    updateParameters(state) {
         this.parameters = state.parameters
     }
 
@@ -19,14 +20,25 @@ export class Shape {
     rotate(degrees) {
     }
 
-    draw(buffer) {
-        this.drawVertices(buffer,this.points)
+    draw(buffer, colorInput=this.color) {
+        //todo: validate color
+        const color = colorInput.includes('#') ? colorInput : `#${colorInput}`
+
+        if (!this.parameters.tiling) {
+            this.drawVertices(buffer,this.points)
+        }
+        if (this.parameters.stroke) {
+            this.drawPolygonBorders(
+                buffer,
+                this.points,
+                buffer.color(color))
+        }
         if (this.parameters.fill) {
-            buffer.fill(buffer.color(this.color))
+            buffer.fill(buffer.color(color))
             this.drawFill(
                 buffer,
                 this.points,
-                buffer.color(this.color)
+                buffer.color(color)
             );
         }
     }
@@ -36,11 +48,11 @@ export class Shape {
         buffer.translate(x,y)
         this.drawVertices(buffer,normals)
         if (this.parameters.fill) {
-            buffer.fill(buffer.color(this.color))
+            buffer.fill(buffer.color(this.parameters.colorArray[0]))
             this.drawFill(
                 buffer,
                 normals,
-                buffer.color(this.color)
+                buffer.color(this.parameters.colorArray[0])
             );
         }
     }
@@ -111,30 +123,23 @@ export class Shape {
     drawVertices(buffer,points) {
         for (let i = 0; i < points.length; i++) {
             points[i].draw(buffer)
-            if (this.parameters.stroke) {
-                this.drawPolygonBorders(
-                    buffer,
-                    points,
-                    buffer.color(this.color),
-                    i)
-                
-            }
         }
     }
 
     pasteVertices(buffers) {
-        
         buffer.image()
     }
 
     drawPolygonBorders(buffer,points,color,i) {
-        if (i > 0) {
-            buffer.stroke(color);
-            buffer.strokeWeight(this.parameters.strokeWeight)
-            buffer.line(points[i].x,points[i].y,points[i-1].x,points[i-1].y);
-        }
-        if (points.length > 2) {
-            buffer.line(points[points.length-1].x,points[points.length-1].y,points[0].x,points[0].y);
+        for (let i = 0; i < points.length; i++) {
+            if (i > 0) {
+                buffer.stroke(color);
+                buffer.strokeWeight(this.parameters.strokeWeight)
+                buffer.line(points[i].x,points[i].y,points[i-1].x,points[i-1].y);
+            }
+            if (points.length > 2) {
+                buffer.line(points[points.length-1].x,points[points.length-1].y,points[0].x,points[0].y);
+            }
         }
     }
 
