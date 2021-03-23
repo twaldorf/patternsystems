@@ -57,19 +57,19 @@ export class Shape {
         }
     }
 
-    getWidth(pointsArray) {
+    getWidth(pointsArray=this.points) {
         const left = this.leastmost(pointsArray,'x')
         const right = this.foremost(pointsArray,'x')
         return right - left
     }
 
-    getHeight(pointsArray) {
+    getHeight(pointsArray=this.points) {
         const top = this.leastmost(pointsArray,'y')
         const bottom = this.foremost(pointsArray,'y')
         return bottom - top
     }
 
-    normalize(points) {
+    normalize(points=this.points) {
         const left = this.leastmost(points,'x')
         const top = this.leastmost(points,'y')
 
@@ -83,7 +83,7 @@ export class Shape {
         return normals
     }
 
-    leastmost(points, type='x') {
+    leastmost(points=this.points, type='x') {
         const edge = points.reduce((prev,curr,index,array) => {
             return array[index][type] < prev ? array[index][type] : prev
         }, points[0][type])
@@ -91,7 +91,7 @@ export class Shape {
         return edge
     }
 
-    foremost(points, type='x') {
+    foremost(points=this.points, type='x') {
         const edge = points.reduce((prev,curr,index,array) => {
             return array[index][type] > prev ? array[index][type] : prev
         }, points[0][type])
@@ -99,11 +99,11 @@ export class Shape {
         return edge
     }
 
-    getXOffset(points) {
+    getXOffset(points=this.points) {
         return this.leastmost(points,'x')
     }
 
-    getYOffset(points) {
+    getYOffset(points=this.points) {
         return this.leastmost(points,'y')
     }
 

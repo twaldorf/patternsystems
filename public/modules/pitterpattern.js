@@ -5,6 +5,7 @@ import * as ui from './ui.js'
 import * as stateCore from './state.js'
 import * as tile from './tile.js'
 import * as save from './save.js'
+import * as exporter from './exporter.js'
 
 const p5Sketch = new p5( (s) => {
     var baseCanvas
@@ -85,8 +86,18 @@ const p5Sketch = new p5( (s) => {
         })
 
         if (state.exporting) {
-            s.save(baseCanvas, "filename", 'png');
-            state.exporting = false;
+            let { form, parameters } = state
+            //move to export button component
+
+            const width = (form.getWidth() + parameters.gridSize) * 20
+            const height = (form.getHeight() + parameters.gridSize) * 20
+            
+            const squareBuffer = s.createGraphics(width, height)
+            const name = 'DPS pattern'
+            squareBuffer.background(state.parameters.bgColor)
+            tile.draw(state, squareBuffer)
+            exporter.exportToPng(squareBuffer, state, width, height, name)
+            state.exporting = false
         }
 
         lastFormState = JSON.stringify(state.form)
