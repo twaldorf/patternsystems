@@ -1,0 +1,32 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Saved patterns</title>
+    <script type="module" src="saves.js"></script>
+    <link rel="stylesheet" href="base.css">
+    <link rel="stylesheet" href="saves.css">
+</head>
+<body>
+    <header>
+        <a href="index.html">
+            <h1>Pattern Systems</h1>
+        </a>
+    </header>
+    <section id="head" class="padded-border">
+        <div class="padded">
+            <div>
+                <h1 id="banner">Saved patterns</h1>
+            </div>
+            <div id="current-user">
+                <h3>User: <span id="username">twaldorf</span></h3>
+            </div>
+        </div>
+    </section>
+    <section id="main" class="padded-border">
+        <div id="pattern-container" class="container padded">
+        </div>
+    </section>
+</body>
+</html>

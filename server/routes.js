@@ -1,53 +1,15 @@
-require('dotenv').config()
-const { db } = require('./config.js')
-const {getUser,getPatterns,addPattern,addUser} = require('./db.js')
+const apiRoutes = require('./apiRoutes')
+const viewRoutes = require('./viewRoutes')
 
-const patternMaker = async (req, res) => {
-    let pattern = req.params.patternName
-    html = glass.pour('editor')
-    res.render('editor', { user, pattern }, (err, html) => {
-        res.send(html)
-    })
+const { getUserPatterns, createUser, addPatternToUser, getUserInfo } = require('./apiRoutes.js')
+const { index, patterns, editor } = require('./viewRoutes.js')
+
+const setup = (app) => {  
+    app.route('/').get(index)
+    app.route('/saves').get(patterns)
+    app.route('/editor').get(editor)
+    app.route('/users/:username/patterns').get(getUserPatterns).post(addPatternToUser)
+    app.route('/users/:username').get(getUserInfo).post(createUser)
 }
 
-const getUserPatterns = async (req, res) => {
-    let  username  = req.params.username
-    if (!username) {
-        res.status(404).send('No username')
-    }
-    let { patterns } = await getPatterns(db, username)
-    res.status(200).send(patterns)
-}
-
-const getUserInfo = async (req, res) => {
-    let username  = req.params.username
-    if (!username) {
-        res.status(404).send('No username')
-    }
-    let user = await getUser(db, req.params.username)
-    res.status(200).send(user)
-}
-
-const addPatternToUser = async (req, res) => {
-    let username = req.params.username
-    let pattern = req.body.pattern
-    if (!username || !pattern) {
-        res.status(404).send('No username')
-    }
-    let patterns = await addPattern(db, username, pattern)
-    console.log(patterns)
-    res.status(200).send(patterns)
-}
-
-const createUser = async (req,res) => {
-    let { username, email } = req.body
-    console.log(username, email)
-    if (!username) {
-        res.status(404).send('No username')
-    }
-    let user = await addUser(db, username, email)
-    console.log(user)
-    res.status(200).send(user)
-}
-
-module.exports = { getUserPatterns, addPatternToUser, getUserInfo, createUser }
+module.exports = { setup }
