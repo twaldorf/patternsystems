@@ -20,7 +20,7 @@
                 <h1 id="banner">Saved patterns</h1>
             </div>
             <div id="current-user">
-                <h3>User: <span id="username">twaldorf</span></h3>
+                <h3>User: <span id="username">{username}</span></h3>
             </div>
         </div>
     </section>

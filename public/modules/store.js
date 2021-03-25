@@ -50,6 +50,26 @@ export const loadPatterns = () => {
     return JSON.parse(localStorage.getItem('patternDesignerPatterns'))
 }
 
+export const loadActivePattern = () => {
+    const { patterns } = loadPatterns()
+    console.log(patterns)
+    const editingPattern = Object.keys(patterns).filter((key) => {
+        return patterns[key].editing
+    })[0]
+    if (editingPattern) {
+        return patterns[editingPattern]
+    } else throw('No active patterns')
+}
+
+export const setActivePattern = (patternName) => {
+    const { patterns } = loadPatterns()
+    const activePatternKey = Object.keys(patterns).filter((key) => {
+        return patterns[key].name == patternName
+    })[0]
+    patterns[activePatternKey].editing = true
+    savePattern( { [activePatternKey]: patterns[activePatternKey] } )
+}
+
 export const deletePattern = (patternNameToDelete) => {
     //v1 schema:
     //deletePattern('patterName')

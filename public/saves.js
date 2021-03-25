@@ -1,14 +1,5 @@
 import * as store from './modules/store.js'
 
-const user = {
-    username: 'twaldorf',
-    patterns: 
-        [
-            'pattern1',
-            'pattern2'
-    ],
-}
-
 const renderPattern = (pattern) => {
     let aParent = document.createElement('a')
     aParent.classList.add('pattern-link')
@@ -65,7 +56,7 @@ const renderPattern = (pattern) => {
 }
 
 const tempPatterns = {
-    pattern1: {
+    pId1: {
         points: [
             [12,24],
             [18,41]
@@ -77,7 +68,7 @@ const tempPatterns = {
         name: 'Pattern 1',
         dateModified: '1 Sep 2020'
     },
-    pattern2: {
+    pId2: {
         points: [
             [856,1363],
             [957,231]
@@ -92,7 +83,7 @@ const tempPatterns = {
 }
 
 const newPattern = {
-    pattern3: {
+    pId3: {
         points: [
             [856,1363],
             [957,231]
@@ -106,11 +97,17 @@ const newPattern = {
     }
 }
 
-// store.setStore(tempPatterns)
+store.setStore(tempPatterns)
 
 // // store.deletePattern('pattern2')
 
-// console.log(store.loadPatterns())
+console.log(`load after set: `, store.loadPatterns())
+
+store.setActivePattern(tempPatterns.pId2.name)
+
+console.log(`load after setActive: `, store.loadPatterns())
+
+console.log(`loadActive: `, store.loadActivePattern())
 
 // store.savePattern(newPattern)
 
