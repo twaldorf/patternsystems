@@ -4,6 +4,7 @@ const $c = _ => document.createElement(_)
 import * as erase from './buttons/erase.js'
 import * as color from './buttons/color.js'
 import * as exportCanvas from './buttons/export.js'
+import * as title from './buttons/title.js'
 
 function addColorField() {
     console.log(null)
@@ -112,4 +113,8 @@ const actionSetups = (state) => {
     state.domElements.button_export.addEventListener('click', () => {
         exportCanvas.exportPattern(state)
     })
+    state.domElements.header.addEventListener('click', (e) => {
+        title.edit(state, e.currentTarget, document.getElementById('console-label'), state.patternName)
+    })
+    state.domElements.header.textContent = state.patternName
 }

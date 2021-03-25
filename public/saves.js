@@ -3,7 +3,10 @@ import * as store from './modules/store.js'
 const renderPattern = (pattern) => {
     let aParent = document.createElement('a')
     aParent.classList.add('pattern-link')
-    aParent.href="#"
+    aParent.href="/editor"
+    aParent.addEventListener('click', () => {
+        store.setActivePattern(pattern.name)
+    })
     
     let divContainer = document.createElement('div')
     let metadataContainer = document.createElement('div')
@@ -35,8 +38,13 @@ const renderPattern = (pattern) => {
 
     titleSpan.innerHTML = pattern.name
     dateSpan.innerHTML = pattern.dateModified
-    verticesSpan.innerHTML = `${pattern.points.length} vertices`
-    colorsSpan.innerHTML = `${pattern.colors.length} colors`
+    try {
+
+        verticesSpan.innerHTML = `${pattern.state.form.points.length} vertices`
+        colorsSpan.innerHTML = `${pattern.state.parameters.colorsArray.length} colors`
+    } catch (e) {
+        console.log(e)
+    }
 
     title.append(titleSpan)
     date.append(dateSpan)
@@ -97,21 +105,23 @@ const newPattern = {
     }
 }
 
-store.setStore(tempPatterns)
+
+// store.setStore(tempPatterns)
+store.clearActive()
 
 // // store.deletePattern('pattern2')
 
-console.log(`load after set: `, store.loadPatterns())
+// console.log(`load after set: `, store.loadPatterns())
 
-store.setActivePattern(tempPatterns.pId2.name)
+// store.setActivePattern(tempPatterns.pId2.name)
 
-console.log(`load after setActive: `, store.loadPatterns())
+// console.log(`load after setActive: `, store.loadPatterns())
 
-console.log(`loadActive: `, store.loadActivePattern())
+// console.log(`loadActive: `, store.loadActivePattern())
 
 // store.savePattern(newPattern)
 
-// console.log(store.loadPatterns())
+console.log(store.loadPatterns())
 
 // console.log(store.deletePattern('pattern23'))
 

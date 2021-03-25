@@ -16,7 +16,7 @@ export const draw = (state, buffer) => {
         const everyOtherFactor = row % 2
         const rx = everyOtherFactor * parameters.gridSize
         const ry = parameters.gridSize * row
-        buffer.translate(x,y)
+        buffer.translate(rx,ry)
 
         //count columns
         for (let col = 0; col < (buffer.width / gridSize); col++) {
@@ -35,7 +35,7 @@ export const draw = (state, buffer) => {
 
         buffer.translate(-rx, -ry)
 
-        if (counter > 2) {counter = 1}
+        if (counter > 2) {counter = 0}
     }
 
     //translate back to origin to prepare for another draw()

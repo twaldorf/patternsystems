@@ -24,7 +24,20 @@ export class State {
         this.domElements = {}
     }
 
+    loadState(newState) {
+        this.patternName = newState.patternName
+        this.form.points = newState.form.points
+        this.parameters = newState.parameters
+        if (this.domElements.header) {
+            this.domElements.header.textContent = this.patternName }
+    }
+
     getName() {
+        return this.patternName
+    }
+
+    setName(name) {
+        this.patternName = name
         return this.patternName
     }
 

@@ -1,6 +1,5 @@
 const helmet = require('helmet')
 const compression = require('compression')
-const rateLimit = require('express-rate-limit')
 const cors = require('cors')
 const path = require('path')
 
@@ -12,6 +11,13 @@ const app = express()
 
 app.use(helmet())
 app.use(compression())
+
+const rateLimit = require('express-rate-limit')
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100 // limit each IP to 100 requests per windowMs
+})
+app.use(limiter)
 
 const origin = process.env.NODE_ENV === 'production' ? 'https://designpattern.systems' : '*'
 app.use(cors(origin))

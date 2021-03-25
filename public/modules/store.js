@@ -52,13 +52,13 @@ export const loadPatterns = () => {
 
 export const loadActivePattern = () => {
     const { patterns } = loadPatterns()
-    console.log(patterns)
     const editingPattern = Object.keys(patterns).filter((key) => {
-        return patterns[key].editing
+        return patterns[key].active == true
     })[0]
+    console.log(patterns)
     if (editingPattern) {
         return patterns[editingPattern]
-    } else throw('No active patterns')
+    } else return false
 }
 
 export const setActivePattern = (patternName) => {
@@ -66,7 +66,7 @@ export const setActivePattern = (patternName) => {
     const activePatternKey = Object.keys(patterns).filter((key) => {
         return patterns[key].name == patternName
     })[0]
-    patterns[activePatternKey].editing = true
+    patterns[activePatternKey].active = true
     savePattern( { [activePatternKey]: patterns[activePatternKey] } )
 }
 
@@ -92,3 +92,14 @@ export const deletePattern = (patternNameToDelete) => {
     })
     return localStorage.setItem('patternDesignerPatterns', JSON.stringify(patternsToSave))
 }
+
+//untested
+export const clearActive = () => {
+    let { patterns } = loadPatterns()
+    Object.keys(patterns).forEach((key) => {
+        patterns[key].active = false
+    })
+    console.log('cleared from: ', patterns)
+    setStore(patterns)
+}
+
