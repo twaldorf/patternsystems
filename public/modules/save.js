@@ -3,7 +3,7 @@ import * as store from './store.js'
 export const setup = (state) => {
     const activePattern = store.loadActivePattern()
     console.log(activePattern)
-    if (activePattern.state.form.points) {
+    if (activePattern && activePattern.state.form.points) {
         state.loadState(activePattern.state)
     }
     // clear activity
@@ -11,7 +11,7 @@ export const setup = (state) => {
     // if new unique pattern, set new id
     setInterval(() => {
         let patternSnapshot = {
-            [state.patternName]: {
+            [state.dateCreated]: {
                 state: state,
                 name: state.patternName,
                 active: true,

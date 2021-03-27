@@ -1,4 +1,5 @@
 import * as shape from './shape.js'
+import * as hash from './hash.js'
 
 export class State {
     constructor() {
@@ -6,6 +7,7 @@ export class State {
         this.feedback = null,
         this.selecting = false,
         this.patternName = 'default pattern',
+        this.dateCreated = new Date().toISOString()
         this.form = new shape.Shape(this.radius, this),
         this.handler = false,
         this.parameters = {
@@ -39,6 +41,10 @@ export class State {
     setName(name) {
         this.patternName = name
         return this.patternName
+    }
+
+    generateId() {
+        return hash.hashCode(JSON.stringify(this.form.points + this.parameters))
     }
 
     updateDomElements(object) {

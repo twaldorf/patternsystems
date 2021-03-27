@@ -103,3 +103,8 @@ export const clearActive = () => {
     setStore(patterns)
 }
 
+export const countPatterns = () => {
+    let { patterns } = loadPatterns()
+    return Object.keys(patterns).length
+}
+

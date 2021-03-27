@@ -1,5 +1,8 @@
 import * as store from './modules/store.js'
 
+// clear active flag from all patterns
+store.clearActive()
+
 const renderPattern = (pattern) => {
     let aParent = document.createElement('a')
     aParent.classList.add('pattern-link')
@@ -105,9 +108,7 @@ const newPattern = {
     }
 }
 
-
 // store.setStore(tempPatterns)
-store.clearActive()
 
 // // store.deletePattern('pattern2')
 
@@ -120,8 +121,6 @@ store.clearActive()
 // console.log(`loadActive: `, store.loadActivePattern())
 
 // store.savePattern(newPattern)
-
-console.log(store.loadPatterns())
 
 // console.log(store.deletePattern('pattern23'))
 

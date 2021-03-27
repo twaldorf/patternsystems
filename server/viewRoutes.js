@@ -1,5 +1,5 @@
 const index = async (req, res) => {
-    res.render('index', { title: 'DPS' })
+    res.render('patterns', { title: 'DPS' })
 }
 
 const patterns = async (req, res) => {
