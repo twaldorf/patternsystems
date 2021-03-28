@@ -1,20 +1,24 @@
 import * as store from './modules/store.js'
+import * as hash from './modules/hash.js'
 
 // clear active flag from all patterns
 store.clearActive()
 
 const renderPattern = (pattern) => {
+    const id = hash.hashCode(pattern.state.dateCreated)
+
+    let divParent = document.createElement('div')
+    divParent.classList.add('pattern-link-container')
+    divParent.classList.add(id)
+    divParent.id = id
+        
     let aParent = document.createElement('a')
-    aParent.classList.add('pattern-link')
+    aParent.classList.add(`pattern-link`)
     aParent.href="/editor"
-    aParent.addEventListener('click', () => {
-        store.setActivePattern(pattern.name)
-    })
-    
-    let divContainer = document.createElement('div')
+
     let metadataContainer = document.createElement('div')
     let titleBar = document.createElement('div')
-    divContainer.classList.add('pattern-item')
+
     metadataContainer.classList.add('metadata')
     titleBar.classList.add('title-bar')
 
@@ -28,21 +32,14 @@ const renderPattern = (pattern) => {
     let title = document.createElement('h4')
     let deleteBtn = document.createElement('button')
 
-    deleteBtn.innerHTML = 'x'
-
-    deleteBtn.addEventListener('click', () => {
-        store.deletePattern(pattern.name)
-        let parent  = document.getElementById('pattern-container')
-        while (parent.firstChild) {
-            parent.removeChild(parent.firstChild)
-        }
-        render()
-    })
+    deleteBtn.textContent = 'x'
+    deleteBtn.classList.add('delete')
+    deleteBtn.classList.add(id)
 
     titleSpan.innerHTML = pattern.name
     dateSpan.innerHTML = pattern.dateModified
-    try {
 
+    try {
         verticesSpan.innerHTML = `${pattern.state.form.points.length} vertices`
         colorsSpan.innerHTML = `${pattern.state.parameters.colorsArray.length} colors`
     } catch (e) {
@@ -55,89 +52,47 @@ const renderPattern = (pattern) => {
     colors.append(colorsSpan)
     
     titleBar.append(title)
-    titleBar.append(deleteBtn)
+    divParent.append(deleteBtn)
     metadataContainer.append(date)
     metadataContainer.append(vertices)
     metadataContainer.append(colors)
 
-    divContainer.append(metadataContainer)
-    divContainer.append(titleBar)
-    aParent.append(divContainer)
-    return aParent
+    aParent.append(metadataContainer)
+    aParent.append(titleBar)
+    divParent.append(aParent)
+    return { patternLink: divParent }
 }
-
-const tempPatterns = {
-    pId1: {
-        points: [
-            [12,24],
-            [18,41]
-        ],
-        colors: [
-            '#000000',
-            '#15A341'
-        ],
-        name: 'Pattern 1',
-        dateModified: '1 Sep 2020'
-    },
-    pId2: {
-        points: [
-            [856,1363],
-            [957,231]
-        ],
-        colors: [
-            '#FFFFFF',
-            '#134ECC'
-        ],
-        name: 'Pattern 2',
-        dateModified: '2 Sep 2020'
-    }
-}
-
-const newPattern = {
-    pId3: {
-        points: [
-            [856,1363],
-            [957,231]
-        ],
-        colors: [
-            '#FFFFFF',
-            '#134ECC'
-        ],
-        name: 'Pattern 3',
-        dateModified: '3 Sep 2020'
-    }
-}
-
-// store.setStore(tempPatterns)
-
-// // store.deletePattern('pattern2')
-
-// console.log(`load after set: `, store.loadPatterns())
-
-// store.setActivePattern(tempPatterns.pId2.name)
-
-// console.log(`load after setActive: `, store.loadPatterns())
-
-// console.log(`loadActive: `, store.loadActivePattern())
-
-// store.savePattern(newPattern)
-
-// console.log(store.deletePattern('pattern23'))
-
 
 const render = () => {
     const parent = document.getElementById('pattern-container')
-    const patternStore = store.loadPatterns()
-    Object.keys(patternStore.patterns).map((pattern) => {
-        let patternObj = patternStore.patterns[pattern]
+    const { patterns } = store.loadPatterns()
 
+    Object.keys(patterns).map((pattern) => {
+        let patternObj = patterns[pattern]
         try {
-            let patternLink = renderPattern(patternObj)
+            let { patternLink } = renderPattern(patternObj)
             parent.append(patternLink)
         } catch (e) {
             console.log(e)
         }
     })
+
+    document.addEventListener( 'click', (event) => {
+        if (event.target.matches('.delete')) {
+            const id = event.target.classList[1]
+            const patternIdToDelete = Object.keys(patterns).filter((key) => {
+                return hash.hashCode(patterns[key].state.dateCreated) == id
+            })
+            store.deletePatternById(patternIdToDelete)
+            document.getElementById(id).remove()
+        } else if (event.target.matches(aParent)) {
+            // aParent.addEventListener('click', () => {
+                //     store.setActivePattern(pattern.name)
+                // })
+            console.log('nav')
+        }
+    })
+
 }
 
 render()

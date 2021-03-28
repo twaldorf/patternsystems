@@ -26,7 +26,7 @@
     </section>
     <section id="main" class="padded-border">
         <div id="pattern-container" class="container padded">
-            <div>
+            <div class="new-pattern">
                 <a href="/editor">+ New pattern</a>
             </div>
         </div>

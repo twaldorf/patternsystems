@@ -70,30 +70,32 @@ export const setActivePattern = (patternName) => {
     savePattern( { [activePatternKey]: patterns[activePatternKey] } )
 }
 
-export const deletePattern = (patternNameToDelete) => {
+export const deletePatternById = (patternId) => {
     //v1 schema:
     //deletePattern('patterName')
 
-    const existingPatterns = loadPatterns().patterns
-    
+    const { patterns } = loadPatterns()
+
     // const error = !JSON.stringify(existingPatterns).includes(patternNameToDelete) ? `Error: no pattern "${patternNameToDelete}"` : false
     
     // if (error) {return error}
     
-    const patternNamesToSave = Object.keys(existingPatterns).filter((key) => {
-        return existingPatterns[key].name != patternNameToDelete
+    const patternIdsToSave = Object.keys(patterns).filter((key) => {
+        return key != patternId
     })
+
     var patternsToSave = { 
         patterns: {},
         version: 1
     }
-    patternNamesToSave.map((patternName) => {
-        patternsToSave.patterns[patternName] = existingPatterns[patternName]
+
+    patternIdsToSave.map((id) => {
+        patternsToSave.patterns[id] = patterns[id]
     })
+
     return localStorage.setItem('patternDesignerPatterns', JSON.stringify(patternsToSave))
 }
 
-//untested
 export const clearActive = () => {
     let { patterns } = loadPatterns()
     Object.keys(patterns).forEach((key) => {

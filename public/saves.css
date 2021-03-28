@@ -37,6 +37,18 @@ h1, h2, h3, h4 {
     margin: .4rem 0;
 }
 
+.new-pattern {
+    display: flex;
+    background-color: black;
+}
+
+.new-pattern a {
+    margin: auto;
+    font-size: 1.2rem;
+    font-weight: bold;
+    text-decoration: none;
+}
+
 a.pattern-link {
     width: 100%;
     height: 8rem;
@@ -73,9 +85,8 @@ a.pattern-link {
     position: absolute;
     bottom: 0;
     left: 0;
-    width: 100%;
+    width: calc(100% - 1rem);
     padding:  .2rem .5rem;
-
     display: flex;
     justify-content: space-between;
 }

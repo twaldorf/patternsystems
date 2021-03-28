@@ -1,5 +1,4 @@
 export const hashCode = (string) => {
-    // from Barak at stack overflow q 6122571
     var hash = 0;
     if (string.length == 0) {
         return hash;
