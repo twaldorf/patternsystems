@@ -14,11 +14,13 @@ const renderPattern = (pattern) => {
         
     let aParent = document.createElement('a')
     aParent.classList.add(`pattern-link`)
+    aParent.classList.add(id)
     aParent.href="/editor"
 
     let metadataContainer = document.createElement('div')
     let titleBar = document.createElement('div')
 
+    metadataContainer.classList.add('metadata')
     metadataContainer.classList.add('metadata')
     titleBar.classList.add('title-bar')
 
@@ -85,11 +87,12 @@ const render = () => {
             })
             store.deletePatternById(patternIdToDelete)
             document.getElementById(id).remove()
-        } else if (event.target.matches(aParent)) {
-            // aParent.addEventListener('click', () => {
-                //     store.setActivePattern(pattern.name)
-                // })
-            console.log('nav')
+        } else if (event.target.matches('.pattern-link')) {
+            const id = event.target.classList[1]
+            const patternIdToActivate = Object.keys(patterns).filter((key) => {
+                return hash.hashCode(patterns[key].state.dateCreated) == id
+            })
+            store.setActivePatternById(patternIdToActivate)
         }
     })
 

@@ -1,20 +1,4 @@
-export const savePattern = (newPattern) => {
-    // v1 schema:
-    // const newPattern = {
-    //     pattern3: {
-    //         points: [
-    //             [856,1363],
-    //             [957,231]
-    //         ],
-    //         colors: [
-    //             '#FFFFFF',
-    //             '#134ECC'
-    //         ]
-    //     }
-    // } 
-    // 
-    // savePattern(newPattern)
-
+export const savePattern = (wrappedPattern) => {
     const existingPatterns = loadPatterns()
     let updatedPatterns = {}
     let version = 1
@@ -22,11 +6,11 @@ export const savePattern = (newPattern) => {
         const { patterns, version } = existingPatterns
         updatedPatterns = {
             ...patterns,
-            ...newPattern
+            ...wrappedPattern
         }
     } else {
         updatedPatterns = {
-            ...newPattern
+            ...wrappedPattern
         }
     }
     const updatedStore = {
@@ -52,34 +36,26 @@ export const loadPatterns = () => {
 
 export const loadActivePattern = () => {
     const { patterns } = loadPatterns()
-    const editingPattern = Object.keys(patterns).filter((key) => {
+    const activePattern = Object.keys(patterns).filter((key) => {
         return patterns[key].active == true
     })[0]
-    console.log(patterns)
-    if (editingPattern) {
-        return patterns[editingPattern]
+    console.log(`active pattern: ${activePattern}`)
+    if (activePattern) {
+        return patterns[activePattern]
     } else return false
 }
 
-export const setActivePattern = (patternName) => {
+export const setActivePatternById = (id) => {
     const { patterns } = loadPatterns()
     const activePatternKey = Object.keys(patterns).filter((key) => {
-        return patterns[key].name == patternName
+        return key == id
     })[0]
     patterns[activePatternKey].active = true
     savePattern( { [activePatternKey]: patterns[activePatternKey] } )
 }
 
 export const deletePatternById = (patternId) => {
-    //v1 schema:
-    //deletePattern('patterName')
-
     const { patterns } = loadPatterns()
-
-    // const error = !JSON.stringify(existingPatterns).includes(patternNameToDelete) ? `Error: no pattern "${patternNameToDelete}"` : false
-    
-    // if (error) {return error}
-    
     const patternIdsToSave = Object.keys(patterns).filter((key) => {
         return key != patternId
     })

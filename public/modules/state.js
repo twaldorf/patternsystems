@@ -6,7 +6,7 @@ export class State {
         this.radius = 10,
         this.feedback = null,
         this.selecting = false,
-        this.patternName = 'default pattern',
+        this.patternName = 'untitled',
         this.dateCreated = new Date().toISOString()
         this.form = new shape.Shape(this.radius, this),
         this.handler = false,
@@ -30,6 +30,7 @@ export class State {
         this.patternName = newState.patternName
         this.form.points = newState.form.points
         this.parameters = newState.parameters
+        this.dateCreated = newState.dateCreated
         if (this.domElements.header) {
             this.domElements.header.textContent = this.patternName }
     }
