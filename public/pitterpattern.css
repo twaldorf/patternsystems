@@ -3,6 +3,10 @@ body {
     background-color:black;
     text-transform: uppercase;
     list-style: none;
+    --padding: .5rem;
+    --margin: .5rem;
+
+    overflow: hidden;
 }
 
 button {
@@ -73,11 +77,34 @@ section {
 .console-label {
     border: 1px solid white;
     width: 52%;
-    padding: 1rem;
+
+    padding: var(--padding);
     line-height: 0;
-    height: 50%;
-    margin: auto;
-    font-size: .8vw;
+    margin: var(--margin);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+
+.console-label h4 {
+    margin: 0.8rem 0;
+}
+
+.console-label input[type="text"], .console-label input:focus {
+    font-weight: 700;
+    display: block;
+    box-sizing: border-box;
+    color: white;
+    text-transform: uppercase;
+    text-decoration: none;
+    padding: 0;
+    margin: 0;
+    border-bottom: 1px solid #666;
+    max-width: 100%;
+}
+
+.console-label input[type="text"]:hover {
+    border-bottom: 1px solid white;
 }
 
 .stats {
@@ -123,8 +150,6 @@ input[type=text]:focus {
     width: 100%;
     margin: auto;
 }
-
-
 #banner {
     background-color: white;
     text-align: center;

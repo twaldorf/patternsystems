@@ -106,15 +106,17 @@ export const setup = (state) => {
     // tie the dom elements to their matching state parameters (the parameter must be defined in state independently!)
     tieStateToggles(domElements, state)
     actionSetups(state)
+
+    state.domElements.header.addEventListener('input', (e) => {
+        state.setName(e.target.value)
+    })
+    document.getElementById('header').value = state.patternName
 }
 
 const actionSetups = (state) => {
     state.domElements.clearShape.addEventListener('click', () => {erase.action(state)})
     state.domElements.button_export.addEventListener('click', () => {
         exportCanvas.exportPattern(state)
-    })
-    state.domElements.header.addEventListener('click', (e) => {
-        title.edit(state, e.currentTarget, document.getElementById('console-label'), state.patternName)
     })
     state.domElements.header.textContent = state.patternName
 }

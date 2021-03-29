@@ -11,16 +11,15 @@
     <link rel="stylesheet" href="../modulators.css">
 </head>
 <body>
-    <div class="mobile-header">
-        <a href="/">
-        <h1>Design pattern systems</h1>
-        </a>
-    </div>
     <header>
         <a href="/">
-        <h1>Design pattern systems</h1>
-    </a>
+            <h1>Design pattern systems</h1>
+        </a>
     </header>
+    <section id="toolbar">
+        <a href="/editor" class="button">New pattern</a>
+        <a href="/editor" class="button">Duplicate pattern</a>
+    </section>
     <section id="main">
         <div>
             <h4 id="banner">System designer</h4>
@@ -33,8 +32,8 @@
                 <li>SIZE IN LOCAL STORAGE: <span id="local-storage">█</span></li>
             </div>
             <div id="console-label" class="console-label">
-                <label for="header">Pattern title</label>
-                <h1 id="header"></h1>
+                <h4 for="header">Pattern title</h4>
+                <input type="text" id="header" value="">
             </div>
             <div class="stats">
                     <li>PRIMARY FORM: <span id="vertex-counter">0</span> VERTICES</li>
