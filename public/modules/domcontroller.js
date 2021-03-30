@@ -77,7 +77,6 @@ export const setup = (state) => {
         fill: 'fill',
         stroke: 'stroke',
         round: 'round',
-        button_add_color: 'add-color',
         button_clear_shape: 'clearShape',
         button_export: 'button_export',
         button_tile: 'tiling',
@@ -107,9 +106,7 @@ export const setup = (state) => {
     tieStateToggles(domElements, state)
     actionSetups(state)
 
-    state.domElements.header.addEventListener('input', (e) => {
-        state.setName(e.target.value)
-    })
+    state.domElements.date.textContent = state.dateCreated
     document.getElementById('header').value = state.patternName
 }
 
@@ -118,5 +115,7 @@ const actionSetups = (state) => {
     state.domElements.button_export.addEventListener('click', () => {
         exportCanvas.exportPattern(state)
     })
-    state.domElements.header.textContent = state.patternName
+    state.domElements.header.addEventListener('input', (e) => {
+        state.setName(e.target.value)
+    })
 }

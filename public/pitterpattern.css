@@ -3,7 +3,7 @@ body {
     background-color:black;
     text-transform: uppercase;
     list-style: none;
-    --padding: .5rem;
+    --padding: 1.2rem;
     --margin: .5rem;
 
     overflow: hidden;
@@ -62,8 +62,8 @@ section {
 
 .pane {
     background-color: #181818;
-    margin: 10px 10px 0 10px;
-    padding: 0rem 1.2rem;
+    margin: var(--margin) 0 0 0;
+    padding: 0rem var(--padding);
 }
 
 .top-console {
@@ -107,6 +107,19 @@ section {
     border-bottom: 1px solid white;
 }
 
+#toolbar {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    background-color: white;
+    padding: 0 0 0 var(--padding);
+}
+
+#toolbar a {
+    margin-right: 1rem;
+}
+
 .stats {
     font-size: .6rem;
     margin: auto 0;
@@ -139,8 +152,16 @@ input[type=text]:focus {
     outline: none;
 }
 
+#colors label {
+    margin-top: var(--margin);
+    display: block;
+}
+
 .flex-row {
     display: flex; flex-direction: row; flex-wrap: wrap;
+}
+.flex-col {
+    display: flex; flex-direction: column; flex-wrap: wrap;
 }
 
 #main-control-bar {
@@ -152,21 +173,19 @@ input[type=text]:focus {
 }
 #banner {
     background-color: white;
-    text-align: center;
     color: black;
     width: 100%;
-    margin: 0;
-    letter-spacing: 5vw;
     text-transform: uppercase;
-    padding: .1rem 1.8rem;
+    padding: 0 var(--padding);
     font-size: .8rem;
+    margin: var(--margin) 0 0 0;
 }
 #header {
-    font-size: 2vw;
+    font-size: 2rem;
     display: block;
 }
 #edit-header {
-    font-size: 2vw;
+    font-size: 2rem;
     font-weight:bold;
     color:white;
     display: block;

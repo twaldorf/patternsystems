@@ -16,14 +16,14 @@
             <h1>Design pattern systems</h1>
         </a>
     </header>
+    <section>
+        <h4 id="banner">System designer</h4>
+    </section>
     <section id="toolbar">
         <a href="/editor" class="button">New pattern</a>
         <a href="/editor" class="button">Duplicate pattern</a>
     </section>
     <section id="main">
-        <div>
-            <h4 id="banner">System designer</h4>
-        </div>
         <div class="pane top-console">
             <div class="stats">
                 <li>USER: <span id="current-user">█</span></li>
@@ -62,14 +62,16 @@
                 <div class="control-panel">
                     <h3>Color</h3>
                     <div class="description">
-                        <label>Hexadecimal color codes</label>
-                        <div class="flex-row" id="colors">
-                            Background color: <li>#<input type="text" id="bgColor" value="181818"/></li>
+                        <div class="flex-col" id="colors">
+                            <label for="bgColor">Background color:</label>
+                            <li>#<input type="text" id="bgColor" value="181818"/></li>
+                            <label for="bgColor">Primary color:</label>
                             <li>#<input type="text" id="colorInput1" placeholder="ffffff" /></li>
-                            <li>#<input type="text" id="colorInput2" /></li>
+                            <label for="bgColor">Alternate color:</label>
+                            <li>#<input type="text" id="colorInput2" placeholder="222222"/></li>
                         </div>
                     </div>
-                    <button class="button-bar" id="add-color"><span>+</span><span>Add Color</span></button>
+                    <!-- <button class="button-bar" id="add-color"><span>+</span><span>Add Color</span></button> -->
                 </div>
             </div>
             <div id="sketch-holder" class="control-panel">

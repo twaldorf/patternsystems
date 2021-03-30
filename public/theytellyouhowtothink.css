@@ -59,7 +59,6 @@ button:hover {
 }
 
 header {
-    background-color: #0f0e17;
     color: #a7a9be;
     display: flex;
     flex-flow: column;
