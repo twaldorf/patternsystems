@@ -6,7 +6,7 @@ const path = require('path')
 require('dotenv').config()
 const port = process.env.PORT
 
-const express = require('Express')
+const express = require('express')
 const app = express()
 
 app.use(helmet())
