@@ -24,7 +24,6 @@ function drawScuba() {
   background(color(250,250,250));
   let scaledScale = (round(innerWidth / 100) / 50)
   let scaledHeightScale = (round(innerHeight / 100) / 10)
-  console.log(scaledScale)
   // for(let i = 0; i < 100; i++) {
   //   push();
   //   translate(round(random(-50,50))*60,round(random(-50,50))*60);

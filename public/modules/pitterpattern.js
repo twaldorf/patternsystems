@@ -5,6 +5,7 @@ import * as stateCore from './state.js'
 import * as tile from './tile.js'
 import * as save from './save.js'
 import * as exporter from './exporter.js'
+import { Shape } from './shape.js'
 
 const p5Sketch = new p5( (s) => {
     var baseCanvas
@@ -41,8 +42,8 @@ const p5Sketch = new p5( (s) => {
             buffers.shapeBuffer.clear()
             state.form.updateParameters(state)
             // state.form.draw(buffers.shapeBuffer)
-            const width = state.form.getWidth(state.form.points) + 2 * state.form.pointRadius
-            const height = state.form.getHeight(state.form.points) + 2 * state.form.pointRadius
+            const width = state.form.getWidth() + 2 * state.form.pointRadius
+            const height = state.form.getHeight() + 2 * state.form.pointRadius
             buffers.shapeBuffer = s.createGraphics(width, height)
             state.form.drawShapeAt(buffers.shapeBuffer, state.form.points, state.form.pointRadius,state.form.pointRadius)
         }
@@ -51,7 +52,7 @@ const p5Sketch = new p5( (s) => {
             if (updated) {
                 //this is where you would create a new buffer for each shape
                 buffers.patternBuffer.clear()
-                tile.draw(state, buffers.patternBuffer)
+                tile.drawRelativeGrid(state, buffers.patternBuffer)
             }
         } else {
             buffers.patternBuffer.clear()
@@ -63,10 +64,8 @@ const p5Sketch = new p5( (s) => {
             state.feedback.draw(buffers.cursorBuffer, s.mouseX, s.mouseY) 
             : false)
         if (looping) {
-            // console.log('looping')
             s.loop()
         } else {
-            // console.log('stop loop')
             s.noLoop()
         }
 
@@ -85,17 +84,31 @@ const p5Sketch = new p5( (s) => {
         })
 
         if (state.exporting) {
-            let { form, parameters } = state
-            //move to export button component
-
-            const width = (form.getWidth() + parameters.gridSize) * 20
-            const height = (form.getHeight() + parameters.gridSize) * 20
+            //TODO: move to export component please
+            let { form } = state
             
-            const squareBuffer = s.createGraphics(width, height)
+            const scaledForm = new Shape(10, state)
+
+            scaledForm.scale(4, form.points)
+
+            scaledForm.points = scaledForm.normalize()
+
+            // set up a "single tile" buffer for seamless tile
+            // the width and size multiple of this buffer depends on the tile scheme
+            // currently 2x for the simple alternating color grid scheme, for 4 complete shapes on the tile
+            const width = scaledForm.getWidth() * state.parameters.gridSize * 0.01 * 2
+            const height = scaledForm.getHeight() * state.parameters.gridSize * 0.01  * 2
+
+            const singleTileBuffer = s.createGraphics(width, height)
             const name = 'DPS pattern'
-            squareBuffer.background(state.parameters.bgColor)
-            tile.draw(state, squareBuffer)
-            exporter.exportToPng(squareBuffer, state, width, height, name)
+
+            //paint background
+            singleTileBuffer.background(state.parameters.bgColor)
+            // patternize
+            tile.drawRelativeGrid(state, singleTileBuffer, scaledForm)
+
+            exporter.exportToPng(singleTileBuffer, state, width, height, name)
+
             state.exporting = false
         }
 
@@ -103,9 +116,7 @@ const p5Sketch = new p5( (s) => {
     }
 
     s.mousePressed = () => {
-        console.log(state)
         if (!util.inCanvas(baseCanvas,s.mouseX,s.mouseY)) {
-            console.log('clicked outside')
             s.redraw()
             return
         } else {

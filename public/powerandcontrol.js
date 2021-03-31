@@ -10,7 +10,6 @@ function ready(callback){
 ready(function(){
     let iframes = document.querySelectorAll('iframe');
     for (let i = 0; i < iframes.length; i++) {
-        console.log('hey');
         iframes[i].style.width = window.outerWidth - document.querySelector('header').offsetWidth + ('px');
     }
 });

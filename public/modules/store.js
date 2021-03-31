@@ -39,7 +39,6 @@ export const loadActivePattern = () => {
     const activePattern = Object.keys(patterns).filter((key) => {
         return patterns[key].active == true
     })[0]
-    console.log(`active pattern: ${activePattern}`)
     if (activePattern) {
         return patterns[activePattern]
     } else return false
@@ -77,7 +76,6 @@ export const clearActive = () => {
     Object.keys(patterns).forEach((key) => {
         patterns[key].active = false
     })
-    console.log('cleared from: ', patterns)
     setStore(patterns)
 }
 

@@ -2,7 +2,6 @@ import * as store from './store.js'
 
 export const setup = (state) => {
     const activePattern = store.loadActivePattern()
-    console.log(activePattern)
     if (activePattern && activePattern.state.form.points) {
         state.loadState(activePattern.state)
     }

@@ -15,8 +15,8 @@ export class State {
             stroke: true,
             strokeWeight: 1,
             round: false,
-            gridSize: 50,
             tiling: false,
+            gridSize: 50,
             tileScheme: 'block',
             colorInput1: '#ffffff',
             colorInput2: '#222222',
@@ -54,7 +54,6 @@ export class State {
     }
 
     updateParameter(key, status) {
-        console.log(key, status)
         this.parameters[key] = status
         if (!key.includes('color') && key != 'gridSize') {
             this.updateButton(key, status)

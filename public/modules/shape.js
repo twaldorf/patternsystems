@@ -1,5 +1,5 @@
 export class Shape {
-    constructor(pointRadius,state) {
+    constructor(pointRadius=10,state) {
         this.points = [],
         this.pointRadius = pointRadius,
         this.color = '#ffffff',
@@ -15,6 +15,14 @@ export class Shape {
         for (let i = 0; i < this.points.length; i++) {
             this.points[i].transform(xoffset,yoffset);
         }
+    }
+
+    scale(scale, points) {
+        const scaledPoints = points.map((point) => {
+            return new Vertex(point.x * scale, point.y * scale, this.pointRadius)
+        })
+        this.points = scaledPoints
+        return this.points
     }
 
     rotate(degrees) {

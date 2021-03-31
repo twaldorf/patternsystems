@@ -6,17 +6,6 @@ import * as color from './buttons/color.js'
 import * as exportCanvas from './buttons/export.js'
 import * as title from './buttons/title.js'
 
-function addColorField() {
-    console.log(null)
-    let new_li = $c('li')
-    let new_input = $c('input')
-    new_input.type = 'text'
-    new_input.classList.add('input-color')
-    new_li.innerHTML = '#'
-    new_li.appendChild(new_input)
-    $('#colors').appendChild(new_li)
-}
-
 const tieStateToggles = (domElements, state) => {
     // try to wait until the window is ready
     return domElements.map((e) => {

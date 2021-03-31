@@ -36,18 +36,15 @@ const addPatternToUser = async (req, res) => {
         res.status(404).send('No username')
     }
     let patterns = await addPattern(db, username, pattern)
-    console.log(patterns)
     res.status(200).send(patterns)
 }
 
 const createUser = async (req,res) => {
     let { username, email } = req.body
-    console.log(username, email)
     if (!username) {
         res.status(404).send('No username')
     }
     let user = await addUser(db, username, email)
-    console.log(user)
     res.status(200).send(user)
 }
 
