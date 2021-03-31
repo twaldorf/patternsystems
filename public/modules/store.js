@@ -31,7 +31,13 @@ export const setStore = (patterns) => {
 } 
 
 export const loadPatterns = () => {
-    return JSON.parse(localStorage.getItem('patternDesignerPatterns'))
+    try {
+        const patterns = JSON.parse(localStorage.getItem('patternDesignerPatterns'))
+        return patterns
+    } catch (e) {
+        console.log(e)
+        return false
+    }
 }
 
 export const loadActivePattern = () => {
