@@ -17,7 +17,7 @@ export class Shape {
         }
     }
 
-    scale(scale, points) {
+    scale(scale, points=this.points) {
         const scaledPoints = points.map((point) => {
             return new Vertex(point.x * scale, point.y * scale, this.pointRadius)
         })

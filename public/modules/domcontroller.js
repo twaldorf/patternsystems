@@ -82,6 +82,8 @@ export const setup = (state) => {
         bgColor: 'bgColor',
         colorInput1: 'colorInput1',
         color_input_2: 'colorInput2',
+        scale: 'scale',
+        scaleCounter: 'scale-counter'
     }
 
     const domElements = Object.keys(domElementNames).map((e) => {
@@ -106,5 +108,8 @@ const actionSetups = (state) => {
     })
     state.domElements.header.addEventListener('input', (e) => {
         state.setName(e.target.value)
+    })
+    state.domElements.scale.addEventListener('input', (e) => {
+        state.form.scale(e.target.value, state.form.points)
     })
 }
