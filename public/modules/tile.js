@@ -67,12 +67,11 @@ export const drawRelativeGrid = (state, buffer, form=state.form) => {
     // count rows
     for (let row = 0; row < (buffer.height / yGap + 2); row++) {
         const everyOtherFactor = row % 2
-        console.log(row)
         // temp row shifts for the alternation
-        // const rx = everyOtherFactor * xGap
+        const rx = everyOtherFactor * xGap
         // row shift
         const ry = yGap * row
-        buffer.translate(0, ry)
+        buffer.translate(rx, ry)
 
         // count columns
         for (let col = 0; col < ((buffer.width * 1.5) / xGap); col++) {
@@ -88,8 +87,8 @@ export const drawRelativeGrid = (state, buffer, form=state.form) => {
             buffer.translate(-cx, 0)
         }
 
-        // reverse temp row shift
-        buffer.translate(0, -ry)
+        // reverse row shift
+        buffer.translate(-rx, -ry)
 
         if (counter > 2) {counter = 1}
     }
