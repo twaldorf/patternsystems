@@ -5,6 +5,8 @@ import * as erase from './buttons/erase.js'
 import * as color from './buttons/color.js'
 import * as exportCanvas from './buttons/export.js'
 import * as title from './buttons/title.js'
+import * as scale from './buttons/scale.js'
+import * as gridSize from './buttons/gridSize.js'
 
 const tieStateToggles = (domElements, state) => {
     // try to wait until the window is ready
@@ -71,7 +73,7 @@ export const setup = (state) => {
         button_tile: 'tiling',
         container_color: 'colors',
         gridSize: 'gridSize',
-        grid_unit: 'gridunit-value',
+        gridSizeCounter: 'gridSizeCounter',
         strokeWeight: 'strokeWeight',
         strokeWeightCounter: 'stroke-weight-value',
         vertex_counter: 'vertex-counter',
@@ -83,7 +85,7 @@ export const setup = (state) => {
         colorInput1: 'colorInput1',
         color_input_2: 'colorInput2',
         scale: 'scale',
-        scaleCounter: 'scale-counter'
+        scaleCounter: 'scaleCounter'
     }
 
     const domElements = Object.keys(domElementNames).map((e) => {
@@ -109,7 +111,6 @@ const actionSetups = (state) => {
     state.domElements.header.addEventListener('input', (e) => {
         state.setName(e.target.value)
     })
-    state.domElements.scale.addEventListener('input', (e) => {
-        state.form.scale(e.target.value, state.form.points)
-    })
+    gridSize.setup(state)
+    scale.setup(state)
 }
