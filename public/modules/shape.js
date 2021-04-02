@@ -5,6 +5,7 @@ export class Shape {
         this.color = '#ffffff',
         this.parameters = state.parameters,
         this.counter = 0
+        this.normalPoints = []
     }
 
     updateParameters(state) {
@@ -18,9 +19,17 @@ export class Shape {
     }
 
     scale(scale, points=this.points) {
-        const scaledPoints = points.map((point) => {
+        const xOffset = this.getXOffset(this.points)
+        const yOffset = this.getYOffset(this.points)
+        const normalizedPoints = this.normalize(points)
+        const scaledPoints = normalizedPoints.map((point) => {
             return new Vertex(point.x * scale, point.y * scale, this.pointRadius)
         })
+        scaledPoints.map((point) => {
+            point.x = point.x + xOffset
+            point.y = point.y + yOffset
+        })
+        console.log(scaledPoints)
         this.points = scaledPoints
         return this.points
     }

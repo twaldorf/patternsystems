@@ -89,7 +89,9 @@ const p5Sketch = new p5( (s) => {
             
             const scaledForm = new Shape(10, state)
 
-            scaledForm.scale(4, form.points)
+            scaledForm.points = form.points
+
+            scaledForm.scale(4)
 
             scaledForm.points = scaledForm.normalize()
 
