@@ -86,15 +86,23 @@ export const deletePatternById = (patternId) => {
 }
 
 export const clearActive = () => {
-    let { patterns } = loadPatterns()
-    Object.keys(patterns).forEach((key) => {
-        patterns[key].active = false
-    })
-    setStore(patterns)
+    const patterns = loadPatterns().patterns
+    if (!patterns) {
+        return false
+    } else {
+        Object.keys(patterns).forEach((key) => {
+            patterns[key].active = false
+        })
+        setStore(patterns)
+    }
 }
 
 export const countPatterns = () => {
-    let { patterns } = loadPatterns()
-    return Object.keys(patterns).length
+    const patterns = loadPatterns().patterns
+    if (!patterns) {
+        return false
+    } else {
+        return Object.keys(patterns).length
+    }
 }
 
