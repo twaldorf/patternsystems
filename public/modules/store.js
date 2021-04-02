@@ -33,6 +33,10 @@ export const setStore = (patterns) => {
 export const loadPatterns = () => {
     try {
         const patterns = JSON.parse(localStorage.getItem('patternDesignerPatterns'))
+        if (!patterns) {
+            console.error('no patterns!')
+            return false
+        }
         return patterns
     } catch (e) {
         console.log(e)
@@ -41,13 +45,17 @@ export const loadPatterns = () => {
 }
 
 export const loadActivePattern = () => {
-    const { patterns } = loadPatterns()
-    const activePattern = Object.keys(patterns).filter((key) => {
-        return patterns[key].active == true
-    })[0]
-    if (activePattern) {
-        return patterns[activePattern]
-    } else return false
+    try {
+        const { patterns } = loadPatterns()
+        const activePattern = Object.keys(patterns).filter((key) => {
+            return patterns[key].active == true
+        })[0]
+        if (activePattern) {
+            return patterns[activePattern]
+        } else return false
+    } catch (e) {
+        console.error(e)
+    }
 }
 
 export const setActivePatternById = (id) => {
