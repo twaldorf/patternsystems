@@ -109,9 +109,9 @@ const p5Sketch = new p5( (s) => {
             // patternize
             tile.drawRelativeGrid(state, singleTileBuffer, scaledForm)
 
-            exporter.exportToPng(singleTileBuffer, state, width, height, name)
-
             state.exporting = false
+
+            exporter.exportToPng(singleTileBuffer, state, width, height, name)
         }
 
         lastFormState = JSON.stringify(state.form)

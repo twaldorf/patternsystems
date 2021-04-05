@@ -16,12 +16,12 @@ export class State {
             strokeWeight: 1,
             round: false,
             tiling: false,
-            gridSize: 50,
+            gridSize: 100,
             tileScheme: 'block',
             colorInput1: '#ffffff',
             colorInput2: '#222222',
             bgColor: '#181818',
-            colorArray: ['#ffffff'],
+            colorArray: ['#ffffff','#222222'],
         }
         this.domElements = {}
     }
