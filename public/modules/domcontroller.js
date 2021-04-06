@@ -7,6 +7,7 @@ import * as exportCanvas from './buttons/export.js'
 import * as title from './buttons/title.js'
 import * as scale from './buttons/scale.js'
 import * as gridSize from './buttons/gridSize.js'
+import * as stroke from './buttons/stroke.js'
 
 const tieStateToggles = (domElements, state) => {
     // try to wait until the window is ready
@@ -66,8 +67,8 @@ export const setup = (state) => {
 
     const domElementNames = {
         fill: 'fill',
-        stroke: 'stroke',
         round: 'round',
+        stroke: 'stroke',
         button_clear_shape: 'clearShape',
         button_export: 'button_export',
         button_tile: 'tiling',
@@ -75,7 +76,7 @@ export const setup = (state) => {
         gridSize: 'gridSize',
         gridSizeCounter: 'gridSizeCounter',
         strokeWeight: 'strokeWeight',
-        strokeWeightCounter: 'stroke-weight-value',
+        strokeWeightCounter: 'strokeWeightCounter',
         vertex_counter: 'vertex-counter',
         shape_height: 'shape-height',
         shape_width: 'shape-width',
@@ -113,4 +114,5 @@ const actionSetups = (state) => {
     })
     gridSize.setup(state)
     scale.setup(state)
+    stroke.setup(state)
 }

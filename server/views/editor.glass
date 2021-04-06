@@ -108,8 +108,8 @@
                             <!-- <button id="button-border" class="toggle on">ACTIVE <span>DISABLE</span></button> -->
                         </li>
                         <li id="stroke-slider">
-                            <label for="stroke slider">Border size: <span id="stroke-weight-value">1</span></label>
-                            <input id="strokeWeight" type="range" min="1" max="10" value="1" step=".5" class="slider-input">
+                            <label for="stroke slider">Stroke weight: <span id="strokeWeightCounter"></span></label>
+                            <input id="strokeWeight" type="range" min="0" max="20" value="1" step=".5" class="slider-input">
                         </li>
                     </div>
                 </div>

@@ -21,8 +21,8 @@ const p5Sketch = new p5( (s) => {
         )
         s.frameRate(20)
         buffers.cursorBuffer = s.createGraphics(baseCanvas.width,baseCanvas.height)
-        buffers.shapeBuffer = s.createGraphics(baseCanvas.width,baseCanvas.height)
         buffers.patternBuffer = s.createGraphics(baseCanvas.width,baseCanvas.height)
+        buffers.shapeBuffer = s.createGraphics(baseCanvas.width,baseCanvas.height)
         ui.setup(state, baseCanvas)
         save.setup(state)
     }
@@ -34,25 +34,35 @@ const p5Sketch = new p5( (s) => {
         const updated = lastFormState == JSON.stringify(state.form) ? false : true
         const populated = state.form.points.length > 0
 
-        //draw things to their respective buffers
+        //clear and draw cursor
         buffers.cursorBuffer.clear()
         cursor.draw(buffers.cursorBuffer, s.mouseX, s.mouseY)
 
+        //clear and draw shapes to shape buffer
         if (updated && populated) {
             buffers.shapeBuffer.clear()
             state.form.updateParameters(state)
-            // state.form.draw(buffers.shapeBuffer)
             const width = state.form.getWidth() + 2 * state.form.pointRadius
             const height = state.form.getHeight() + 2 * state.form.pointRadius
+            if (tiling) {
+                buffers.shapeBuffer.blendMode(s.DIFFERENCE)
+            }
             buffers.shapeBuffer = s.createGraphics(width, height)
-            state.form.drawShapeAt(buffers.shapeBuffer, state.form.points, state.form.pointRadius,state.form.pointRadius)
+            state.form.drawShapeAt(buffers.shapeBuffer, state.form.points, state.form.pointRadius, state.form.pointRadius)
+            state.form.drawVerticesAtZero(buffers.shapeBuffer, state.form.points, state.form.pointRadius,state.form.pointRadius)
         }
         
+        //clear and draw pattern
         if (state.parameters.tiling == true && populated) {
             if (updated) {
-                //this is where you would create a new buffer for each shape
+                //create a new buffer for each shape
+                const buffer1 = s.createGraphics(state.form.getWidth(),state.form.getHeight())
+                const buffer2 = s.createGraphics(state.form.getWidth(),state.form.getHeight())
+                state.form.drawShapeAt(buffer1, state.form.points, 0,0)
+                state.form.drawShapeAt(buffer2, state.form.points, 0,0, state.parameters.colorArray[1])
                 buffers.patternBuffer.clear()
-                tile.drawRelativeGrid(state, buffers.patternBuffer)
+                tile.drawGridFromShapeBufferArray(state, buffers.patternBuffer, [buffer1, buffer2])
+                // tile.drawRelativeGrid(state, buffers.patternBuffer)
             }
         } else {
             buffers.patternBuffer.clear()

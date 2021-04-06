@@ -29,7 +29,6 @@ export class Shape {
             point.x = point.x + xOffset
             point.y = point.y + yOffset
         })
-        console.log(scaledPoints)
         this.points = scaledPoints
         return this.points
     }
@@ -60,18 +59,33 @@ export class Shape {
         }
     }
 
-    drawShapeAt(buffer, points, x,y) {
+    // drawActiveShapeAt(buffer, points, x, y) {
+
+    // }
+
+    drawShapeAt(buffer, points, x, y, color=this.parameters.colorArray[0]) {
         let normals = this.normalize(points)
         buffer.translate(x,y)
-        this.drawVertices(buffer,normals)
+        if (this.parameters.stroke) {
+            this.drawPolygonBorders(
+                buffer,
+                normals,
+                color)
+        }
+        buffer.noStroke()
         if (this.parameters.fill) {
-            buffer.fill(buffer.color(this.parameters.colorArray[0]))
             this.drawFill(
                 buffer,
                 normals,
-                buffer.color(this.parameters.colorArray[0])
+                buffer.color(color)
             );
         }
+    }
+
+    drawVerticesAtZero(buffer, points, x, y) {
+        let normals = this.normalize(points)
+        // buffer.translate(x,y)
+        this.drawVertices(buffer,normals)
     }
 
     getWidth(pointsArray=this.points) {
@@ -147,11 +161,11 @@ export class Shape {
         buffer.image()
     }
 
-    drawPolygonBorders(buffer,points,color,i) {
+    drawPolygonBorders(buffer,points,color) {
+        buffer.stroke(buffer.color(color))
+        buffer.strokeWeight(this.parameters.strokeWeight)
         for (let i = 0; i < points.length; i++) {
             if (i > 0) {
-                buffer.stroke(color);
-                buffer.strokeWeight(this.parameters.strokeWeight)
                 buffer.line(points[i].x,points[i].y,points[i-1].x,points[i-1].y);
             }
             if (points.length > 2) {
@@ -179,7 +193,6 @@ export class Shape {
                 buffer.vertex(points[1].x,points[1].y)
             }
             // wrap around the shape with an anchor [0] and a bezier [1]
-
             buffer.endShape(buffer.CLOSE)
         }
     }
