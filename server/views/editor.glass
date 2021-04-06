@@ -119,16 +119,16 @@
                 <div class="control-panel">
                     <h3>Export</h3>
                     <div class="description">
-                        <p>Generate a large .png for printing on fabric.</p>
-                        <label for="X Y canvas size multiple">
+                        <p>Generate a tileable .png for printing on fabric.</p>
+                        <!-- <label for="X Y canvas size multiple">
                                 Output canvas size multiple
-                        </label>
-                        <div class="flex-row">
-                            <!-- <div class=""> -->
+                        </label> -->
+                        <!-- <div class="flex-row">
+                            <div class="">
                                 <li>X:<input type="text" id="export-scale-x" value="2"></li>
                                 <li>Y:<input type="text" id="export-scale-y" value="2"></li>
-                            <!-- </div> -->
-                        </div>
+                            </div>
+                        </div> -->
                     </div>
                     <li>
                         <button id="button_export" class="button-bar"><span>-></span>  EXPORT</button>

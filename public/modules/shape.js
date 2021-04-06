@@ -72,7 +72,6 @@ export class Shape {
                 normals,
                 color)
         }
-        buffer.noStroke()
         if (this.parameters.fill) {
             this.drawFill(
                 buffer,
@@ -86,6 +85,43 @@ export class Shape {
         let normals = this.normalize(points)
         // buffer.translate(x,y)
         this.drawVertices(buffer,normals)
+    }
+
+    drawPolygonBorders(buffer,points,color) {
+        buffer.stroke(buffer.color(color))
+        buffer.strokeWeight(this.parameters.strokeWeight)
+        for (let i = 0; i < points.length; i++) {
+            if (i > 0) {
+                buffer.line(points[i].x,points[i].y,points[i-1].x,points[i-1].y);
+            }
+            if (points.length > 2) {
+                buffer.line(points[points.length-1].x,points[points.length-1].y,points[0].x,points[0].y);
+            }
+        }
+    }
+
+    drawFill(buffer,points,color) {
+        buffer.noStroke()
+        if (points.length > 2) {
+            buffer.fill(color)
+            buffer.beginShape()
+            points.map((point) => {
+                if (this.parameters.round) {
+                    buffer.curveVertex(point.x,point.y)
+                } else {
+                    buffer.vertex(point.x,point.y)
+                }
+            })
+            if (this.parameters.round) {
+                buffer.curveVertex(points[0].x,points[0].y)
+                buffer.curveVertex(points[1].x,points[1].y)
+            } else {
+                buffer.vertex(points[0].x,points[0].y)
+                buffer.vertex(points[1].x,points[1].y)
+            }
+            // wrap around the shape with an anchor [0] and a bezier [1]
+            buffer.endShape(buffer.CLOSE)
+        }
     }
 
     getWidth(pointsArray=this.points) {
@@ -159,42 +195,6 @@ export class Shape {
 
     pasteVertices(buffers) {
         buffer.image()
-    }
-
-    drawPolygonBorders(buffer,points,color) {
-        buffer.stroke(buffer.color(color))
-        buffer.strokeWeight(this.parameters.strokeWeight)
-        for (let i = 0; i < points.length; i++) {
-            if (i > 0) {
-                buffer.line(points[i].x,points[i].y,points[i-1].x,points[i-1].y);
-            }
-            if (points.length > 2) {
-                buffer.line(points[points.length-1].x,points[points.length-1].y,points[0].x,points[0].y);
-            }
-        }
-    }
-
-    drawFill(buffer,points,color) {
-        if (points.length > 2) {
-            buffer.fill(color)
-            buffer.beginShape()
-            points.map((point) => {
-                if (this.parameters.round) {
-                    buffer.curveVertex(point.x,point.y)
-                } else {
-                    buffer.vertex(point.x,point.y)
-                }
-            })
-            if (this.parameters.round) {
-                buffer.curveVertex(points[0].x,points[0].y)
-                buffer.curveVertex(points[1].x,points[1].y)
-            } else {
-                buffer.vertex(points[0].x,points[0].y)
-                buffer.vertex(points[1].x,points[1].y)
-            }
-            // wrap around the shape with an anchor [0] and a bezier [1]
-            buffer.endShape(buffer.CLOSE)
-        }
     }
 }
 

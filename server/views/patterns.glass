@@ -19,9 +19,9 @@
             <div>
                 <h1 id="banner">Saved patterns</h1>
             </div>
-            <div id="current-user">
+            <!-- <div id="current-user">
                 <h3>User: <span id="username">{username}</span></h3>
-            </div>
+            </div> -->
         </div>
     </section>
     <section id="main" class="padded-border">

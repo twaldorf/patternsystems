@@ -156,13 +156,16 @@ const p5Sketch = new p5( (s) => {
                 s.loop()
             }
         }
-        
+        setTimeout(()=>{s.redraw()}, 800)
     }
     
     s.mouseMoved = () => {
         if (util.inCanvas(baseCanvas,s.mouseX,s.mouseY)) {
             s.loop()
+        } else {
+            s.redraw()
         }
+        setTimeout(()=>{s.redraw()}, 800)
     }
     
     s.mouseDragged = () => {
