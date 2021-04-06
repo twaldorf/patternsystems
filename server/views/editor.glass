@@ -85,11 +85,14 @@
                 <div class="control-panel">
                     <h3>Form parameters</h3>
                     <div class="parameters">
-                        <li>
+                        <li class="scale">
                             <label for="scale">
-                                Scale: <span id="scaleCounter">1</span>
+                                Scale:
                             </label>
-                            <input id="scale" type="range" min="0" max="5" value="1" step="0.1" class="slider-input">
+                            <div>
+                                <button id="scaleDown">0.75x</button>
+                                <button id="scaleUp">1.5x</button>
+                            </div>
                         </li>
                         <li>
                             <div id="fill" class="button toggle">

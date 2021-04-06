@@ -132,6 +132,19 @@ section {
     margin-top: 14px;
 }
 
+.parameters > li.scale {
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.scale button {
+    margin-right: 1rem;
+}
+.scale div {
+    display: flex;
+    flex-direction: row;
+}
+
 input[type=text]::-webkit-inner-spin-button, 
 input[type=text]::-webkit-outer-spin-button { 
   -webkit-appearance: none; 

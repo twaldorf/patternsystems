@@ -85,8 +85,8 @@ export const setup = (state) => {
         bgColor: 'bgColor',
         colorInput1: 'colorInput1',
         color_input_2: 'colorInput2',
-        scale: 'scale',
-        scaleCounter: 'scaleCounter'
+        scaleDown: 'scaleDown',
+        scaleUp: 'scaleUp',
     }
 
     const domElements = Object.keys(domElementNames).map((e) => {
