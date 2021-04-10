@@ -1,8 +1,31 @@
 import * as store from './modules/store.js'
 import * as hash from './modules/hash.js'
+import * as utilities from './modules/utilities.js'
 
 // clear active flag from all patterns
 store.clearActive()
+
+const shapePreviewDataUrl = (points, rect) => {
+    const canvas = document.createElement('canvas')
+    canvas.width = rect.width * devicePixelRatio
+    canvas.height = rect.height * devicePixelRatio
+    console.log(points)
+    const context = canvas.getContext('2d')
+    context.fillStyle = 'black'
+    context.fillRect(0,0,canvas.width,canvas.height)
+    context.lineWidth = 2
+    context.strokeStyle = 'white'
+    context.beginPath()
+    context.moveTo(points[0][0], points[0][1])
+    points.map((point) => {
+        context.lineTo(point[0], point[1])
+    })
+    context.stroke()
+    context.fillStyle = 'white'
+    context.fill()
+    context.closePath()
+    return canvas.toDataURL()
+}
 
 const renderPattern = (pattern) => {
     const id = hash.hashCode(pattern.state.dateCreated)
@@ -43,7 +66,7 @@ const renderPattern = (pattern) => {
 
     try {
         verticesSpan.innerHTML = `${pattern.state.form.points.length} vertices`
-        colorsSpan.innerHTML = `${pattern.state.parameters.colorsArray.length} colors`
+        colorsSpan.innerHTML = `${pattern.state.parameters.colorArray.length} colors`
     } catch (e) {
         console.log(e)
     }
@@ -74,6 +97,12 @@ const render = () => {
         try {
             let { patternLink } = renderPattern(patternObj)
             parent.append(patternLink)
+            const rect = patternLink.getBoundingClientRect()
+            const coordinates = utilities.distillCoordinates(patternObj.state.form.points)
+            const points = utilities.normalizeCoordinates(coordinates)
+            const aParent = patternLink.childNodes[1]
+            const preview = shapePreviewDataUrl(points, rect)
+            aParent.style.backgroundImage = `url(${preview})`
         } catch (e) {
             console.log(e)
         }

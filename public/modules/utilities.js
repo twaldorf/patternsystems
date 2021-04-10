@@ -148,4 +148,33 @@ export function inCanvas(baseCanvas, x, y) {
     return (x >= 0 && x <= baseCanvas.width && y >= 0 && y <= baseCanvas.height) ? true : false
 }
 
+export function distillCoordinates(vertices) {
+    const points = Object.keys(vertices).map((vertex) => {
+        return [vertices[vertex].x, vertices[vertex].y]
+    })
+    return points
+}
+
+export function normalizeCoordinates(points) {
+    const left = points.reduce((prev, curr, index, array) => {
+        if (prev <= curr[0]) 
+        { return prev }
+        else { return curr[0] }
+    }, points[0][0])
+    const top = points.reduce((prev, curr, index, array) => {
+        if (prev <= curr[1]) 
+        { return prev }
+        else { return curr[1] }
+    }, points[1][1])
+
+    const normals = points.map((point) => {
+        const newPointX = point[0] - left
+        const newPointY = point[1] - top
+        const newPoint = [newPointX, newPointY]
+        return newPoint
+    })
+
+    return normals
+}
+
 // export {dist,findClosestPoint,inCanvas}
