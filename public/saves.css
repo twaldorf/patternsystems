@@ -54,7 +54,8 @@ a.pattern-link {
     width: 100%;
     height: 8rem;
     background-color: black;
-    background-size: contain;
+    background-size: 25%;
+    background-repeat: repeat;
     position: relative;
     display: block;
 }

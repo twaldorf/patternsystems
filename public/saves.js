@@ -7,9 +7,9 @@ store.clearActive()
 
 const shapePreviewDataUrl = (points, rect) => {
     const canvas = document.createElement('canvas')
-    canvas.width = rect.width * devicePixelRatio
-    canvas.height = rect.height * devicePixelRatio
-    console.log(points)
+    const {width, height} = utilities.getDimensionsFromCoordinates(points)
+    canvas.width = width * devicePixelRatio
+    canvas.height = height * devicePixelRatio
     const context = canvas.getContext('2d')
     context.fillStyle = 'black'
     context.fillRect(0,0,canvas.width,canvas.height)

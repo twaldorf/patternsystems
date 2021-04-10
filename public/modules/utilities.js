@@ -177,4 +177,31 @@ export function normalizeCoordinates(points) {
     return normals
 }
 
+export function getDimensionsFromCoordinates(points) {
+    const left = points.reduce((prev, curr, index, array) => {
+        if (prev <= curr[0]) 
+        { return prev }
+        else { return curr[0] }
+    }, points[0][0])
+    const top = points.reduce((prev, curr, index, array) => {
+        if (prev <= curr[1]) 
+        { return prev }
+        else { return curr[1] }
+    }, points[1][1])
+    const right = points.reduce((prev, curr, index, array) => {
+        if (prev > curr[0]) 
+        { return prev }
+        else { return curr[0] }
+    }, points[0][0])
+    const bottom = points.reduce((prev, curr, index, array) => {
+        if (prev > curr[1]) 
+        { return prev }
+        else { return curr[1] }
+    }, points[1][1])
+    return {
+        width: right - left,
+        height: bottom - top
+    }
+}
+
 // export {dist,findClosestPoint,inCanvas}
