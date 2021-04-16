@@ -15,6 +15,43 @@ const getUser = async function (db, username) {
     }
 }
 
+const getUserById = async function (db, userId) {
+    try {
+        let user = await db.one(`
+        SELECT * FROM users 
+        WHERE id = (
+            SELECT id FROM users 
+            WHERE uid = $1
+        );`, userId).then(res => {
+            return res
+        })
+        return user
+    } 
+    catch(e) {
+        return false
+    }
+}
+
+const addUserById = async function (db, uid) {
+    console.log(uid)
+    if (!uid) {
+        return `Error: empty Id`
+    }
+    try {
+        try {
+            const userIdExists = await db.none(`SELECT * FROM users WHERE uid = $1;`, uid)
+        } catch {
+            throw('A user with this uid already exists')
+        }
+        return await db.one(`INSERT INTO users (uid) VALUES ($1) RETURNING *;`, uid)
+            .then(res => {
+                return res
+            })
+    } catch (e) {
+        return `Error: ${e}`
+    }
+}
+
 const addUser = async function (db, username, email) {
     try {
         try {
@@ -36,17 +73,17 @@ const addUser = async function (db, username, email) {
     }
 }
 
-const addPattern = async function (db, username, patternName) {
+const addPattern = async function (db, uid, pattern) {
     try {
         const exists = await db.one(`
         SELECT patterns FROM users 
         WHERE id = (
             SELECT id FROM users 
-            WHERE username = $1
-        );`, username)
+            WHERE uid = $1
+        );`, uid)
         .then((results) => {
-            if (results.patterns && results.patterns.includes(patternName)) {
-                throw(`User ${username} already has this pattern`)
+            if (results.patterns && results.patterns.includes(pattern)) {
+                throw(`User ${uid} already has this pattern`)
             }
         })
         const result = await db.none(`
@@ -54,8 +91,8 @@ const addPattern = async function (db, username, patternName) {
                 SET patterns = array_append(patterns, $1) 
             WHERE id = (
                 SELECT id FROM users 
-                WHERE username = $2
-            );`, [patternName,username])
+                WHERE uid = $2
+            );`, [pattern,uid])
             .then(() => {
                 return 'Pattern added'
             })
@@ -63,18 +100,18 @@ const addPattern = async function (db, username, patternName) {
     } catch(e) {return `Error: ${e}`}
 }
 
-const getPatterns = async function (db, username) {
+const getPatternsById = async function (db, uid) {
     try {
         return await db.one(`
         SELECT patterns FROM users 
         WHERE id = (
             SELECT id FROM users 
-            WHERE username = $1
-        );`, username)
+            WHERE uid = $1
+        );`, uid)
         .then((res) => {
             return res
         })
     } catch (e) {return `Error: ${e}`}
 }
 
-module.exports = { getUser,getPatterns,addPattern,addUser }
+module.exports = { getUser,getUserById,getPatternsById,addPattern,addUser,addUserById }

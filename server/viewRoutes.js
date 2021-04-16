@@ -11,4 +11,8 @@ const editor = async (req, res) => {
     res.render('editor', {})
 }
 
-module.exports = { index, patterns, editor }
+const login = async (req, res) => {
+    res.render('login', {})
+}
+
+module.exports = { index, patterns, editor, login }

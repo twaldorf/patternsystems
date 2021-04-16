@@ -1,23 +1,37 @@
 require('dotenv').config()
 const { db } = require('./config.js')
-const { getUser,getPatterns,addPattern,addUser } = require('./db.js')
+const { getUserById,addPattern,addUser,addUserById, getPatternsById } = require('./db.js')
+const { verifyTokenForId } = require('./verify.js')
 
-const patternMaker = async (req, res) => {
-    const { patternName } = req.params
-    const patternObject = await getPattern(patternName)
-    html = glass.pour('editor')
-    res.render('editor', { user, pattern }, (err, html) => {
-        res.send(html)
-    })
+const loginWithIdToken = async (req, res) => {
+    const verity = await verifyTokenForId(req.body.idToken).catch(console.error)
+    if (verity) {
+        const user = await getUserById(db, verity)
+        if (!user) {
+            const newUser = await addUserById(db, verity)
+            res.status(200).send({response: newUser})
+        } else {
+            res.cookie('session', verity, {signed: true, maxAge: 60000000})
+            res.status(200).send({response: user})
+        }
+    } else {
+        res.status(401).send({response:'Invalid OAuth token'})
+    }
 }
 
-const getUserPatterns = async (req, res) => {
-    let  username  = req.params.username
-    if (!username) {
-        res.status(404).send('No username')
+const getUserPatternsById = async (req, res) => {
+    console.log(`signed cookies: ${req.signedCookies}`)
+    let  uid  = req.params.uid
+    if (!uid) {
+        res.status(404).send('No uid')
     }
-    let { patterns } = await getPatterns(db, username)
-    res.status(200).send(patterns)
+    let { patterns } = await getPatternsById(db, uid)
+    console.log(patterns)
+    if (!patterns) {
+        res.status(200).send({response: 'User has no patterns'})
+    } else {
+        res.status(200).send(patterns)
+    }
 }
 
 const getUserInfo = async (req, res) => {
@@ -30,22 +44,29 @@ const getUserInfo = async (req, res) => {
 }
 
 const addPatternToUser = async (req, res) => {
-    let username = req.params.username
-    let pattern = req.body.pattern
-    if (!username || !pattern) {
-        res.status(404).send('No username')
+    const {session} = req.signedCookies
+    if (session == req.params.uid) {
+        const pattern = JSON.stringify(req.body.pattern)
+        console.log(`pattern: ${pattern}`)
+        if (!req.params.uid || !pattern) {
+            res.status(404).send('Missing uid or pattern')
+        } else {
+            let patterns = await addPattern(db, req.params.uid, pattern)
+            res.status(200).send({patterns})
+        }
+    } else {
+        res.status(401).send({response:'Invalid session'})
     }
-    let patterns = await addPattern(db, username, pattern)
-    res.status(200).send(patterns)
 }
 
-const createUser = async (req,res) => {
-    let { username, email } = req.body
-    if (!username) {
-        res.status(404).send('No username')
+const createUserFromId = async (req,res) => {
+    let { idToken } = req.body
+    const uid = verifyTokenForId(idToken)
+    if (!uid) {
+        res.status(404).send('Invalid token')
     }
-    let user = await addUser(db, username, email)
+    let user = await addUserById(db, uid)
     res.status(200).send(user)
 }
 
-module.exports = { getUserPatterns, addPatternToUser, getUserInfo, createUser }
+module.exports = { loginWithIdToken, getUserPatternsById, addPatternToUser, getUserInfo, createUserFromId }

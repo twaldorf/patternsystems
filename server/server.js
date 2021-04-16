@@ -2,6 +2,7 @@ const helmet = require('helmet')
 const compression = require('compression')
 const cors = require('cors')
 const path = require('path')
+const cookieParser = require('cookie-parser')
 
 require('dotenv').config()
 const port = process.env.PORT
@@ -11,6 +12,13 @@ const app = express()
 
 app.use(helmet())
 app.use(compression())
+
+app.use(function(req, res, next) {
+    res.setHeader("Content-Security-Policy", "script-src 'self' https://apis.google.com");
+    return next();
+});
+
+app.use(cookieParser(process.env.SECRET))
 
 const rateLimit = require('express-rate-limit')
 const limiter = rateLimit({
@@ -22,7 +30,7 @@ app.use(limiter)
 const origin = process.env.NODE_ENV === 'production' ? 'https://designpattern.systems' : '*'
 app.use(cors(origin))
 
-app.use(express.json())
+app.use(express.json({type:"application/json"}))
 app.use(express.static(path.join(__dirname, '../public')))
 
 const glass = require('./glasscannon')

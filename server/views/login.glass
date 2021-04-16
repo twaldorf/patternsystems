@@ -1,0 +1,29 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>DPS log in</title>
+    <link rel="stylesheet" href="base.css">
+    <link rel="stylesheet" href="theytellyouhowtothink.css">
+    <link rel="stylesheet" href="login.css">
+    <meta name="google-signin-client_id" content="873248529781-m38sr7u8k8lq20cndsr4ptiv6k1u6ojl.apps.googleusercontent.com">
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <script src="login.js"></script>
+</head>
+    <body>
+        <header>
+            <a href="index.html">
+            <h1>Design pattern systems</h1>
+        </a>
+        </header>
+        <title>Authenticate</title>
+        <section>
+            <div class="content">
+                <h2>Log in</h2>
+                <p>Logging in enables cloud saving</p>
+                <div class="g-signin2" data-onsuccess="onSignIn"></div>
+            </div>
+        </section>
+    </body>
+</html>
