@@ -17,7 +17,8 @@ export const setup = (state) => {
                 version: 1
             }
         }
-        console.log('saved')
+        patternSnapshot[state.dateCreated].dateModified = new Date()
+        console.log(patternSnapshot)
         store.savePattern(patternSnapshot)
-    }, 1000 * 1)
+    }, 3000 * 1)
 }

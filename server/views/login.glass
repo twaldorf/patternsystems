@@ -19,10 +19,13 @@
         </header>
         <title>Authenticate</title>
         <section>
-            <div class="content">
-                <h2>Log in</h2>
-                <p>Logging in enables cloud saving</p>
+            <div class="content" id="login-container">
+                <div>
+                    <h2>Log in using Google</h2>
+                    <p>Logging in enables cloud saving</p>
+                </div>
                 <div class="g-signin2" data-onsuccess="onSignIn"></div>
+                <a href="#" class="button">Continue <span>></span></a>
             </div>
         </section>
     </body>

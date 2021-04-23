@@ -82,19 +82,20 @@ const addPattern = async function (db, uid, pattern) {
             WHERE uid = $1
         );`, uid)
         .then((results) => {
-            if (results.patterns && results.patterns.includes(pattern)) {
+            if (results.patterns && results.patterns.toString().includes(pattern)) {
                 throw(`User ${uid} already has this pattern`)
             }
         })
-        const result = await db.none(`
+        const result = await db.any(`
             UPDATE users 
-                SET patterns = array_append(patterns, $1) 
+                SET patterns = patterns || $1
             WHERE id = (
                 SELECT id FROM users 
                 WHERE uid = $2
             );`, [pattern,uid])
-            .then(() => {
-                return 'Pattern added'
+            .then(async () => {
+                const patterns = await getPatternsById(db, uid)
+                return `Added, current patterns: ${JSON.stringify(patterns)}`
             })
         return result
     } catch(e) {return `Error: ${e}`}

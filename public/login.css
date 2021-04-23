@@ -1,7 +1,8 @@
 body {
     color: white;
-    --banner-width: 2rem;
+    --banner-width: 3rem;
     font-size: 16px;
+    mix-blend-mode: normal;
 }
 
 header {
@@ -13,12 +14,15 @@ header h1 {
 }
 
 .content {
-    margin: auto;
+    margin: var(--banner-width);
     max-width: 24rem;
     background-color:#333;
     padding: 4rem;
 
     background-repeat: repeat;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
 }
 
 title {
@@ -29,4 +33,25 @@ title {
     font-weight: bold;
     display: block;
     margin-left: var(--banner-width);
+    padding: 0 0 0 1rem;
+}
+
+.content > .g-signin2 {
+    grid-row-start: 2;
+}
+
+.content > a {
+    grid-row-start: 3;
+}
+
+a.button {
+    mix-blend-mode: normal;
+    background-color: white;
+    color: black;
+    padding: .5rem;
+}
+
+a.button:hover {
+    background-color: black;
+    color:white;
 }

@@ -34,6 +34,19 @@ const getUserPatternsById = async (req, res) => {
     }
 }
 
+const getUserPatterns = async (req, res) => {
+    let  uid  = req.signedCookies.session
+    if (!uid) {
+        res.status(404).send('Invalid session')
+    }
+    let { patterns } = await getPatternsById(db, uid)
+    if (!patterns) {
+        res.status(200).send({response: 'User has no patterns'})
+    } else {
+        res.status(200).send(patterns)
+    }
+}
+
 const getUserInfo = async (req, res) => {
     let username  = req.params.username
     if (!username) {
@@ -45,14 +58,31 @@ const getUserInfo = async (req, res) => {
 
 const addPatternToUser = async (req, res) => {
     const {session} = req.signedCookies
-    if (session == req.params.uid) {
+    if (session) {
         const pattern = JSON.stringify(req.body.pattern)
         console.log(`pattern: ${pattern}`)
-        if (!req.params.uid || !pattern) {
+        if (!pattern) {
             res.status(404).send('Missing uid or pattern')
         } else {
-            let patterns = await addPattern(db, req.params.uid, pattern)
+            let patterns = await addPattern(db, session, pattern)
             res.status(200).send({patterns})
+        }
+    } else {
+        res.status(401).send({response:'Invalid session'})
+    }
+}
+
+const addPatternToUserById = async (req, res) => {
+    const {session} = req.signedCookies
+    console.log(req.body)
+    if (session) {
+        const pattern = JSON.stringify(req.body.pattern)
+        console.log(`pattern: ${pattern}`)
+        if (!session || !pattern) {
+            res.status(404).send('Missing uid or pattern')
+        } else {
+            let patternAdded = await addPattern(db, session, pattern)
+            res.status(200).send({patternAdded})
         }
     } else {
         res.status(401).send({response:'Invalid session'})
@@ -69,4 +99,4 @@ const createUserFromId = async (req,res) => {
     res.status(200).send(user)
 }
 
-module.exports = { loginWithIdToken, getUserPatternsById, addPatternToUser, getUserInfo, createUserFromId }
+module.exports = { loginWithIdToken, getUserPatternsById, getUserPatterns, addPatternToUser, addPatternToUserById, getUserInfo, createUserFromId }

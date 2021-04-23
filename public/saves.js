@@ -88,7 +88,7 @@ const renderPattern = (pattern) => {
     return { patternLink: divParent }
 }
 
-const render = () => {
+const render = (cloudPatterns) => {
     const parent = document.getElementById('pattern-container')
     const { patterns } = store.loadPatterns()
 
@@ -107,6 +107,24 @@ const render = () => {
             console.log(e)
         }
     })
+
+    if (cloudPatterns) {
+        Object.keys(cloudPatterns).map((pattern) => {
+            let patternObj = patterns[pattern]
+            try {
+                let { patternLink } = renderPattern(patternObj)
+                parent.append(patternLink)
+                const rect = patternLink.getBoundingClientRect()
+                const coordinates = utilities.distillCoordinates(patternObj.state.form.points)
+                const points = utilities.normalizeCoordinates(coordinates)
+                const aParent = patternLink.childNodes[1]
+                const preview = shapePreviewDataUrl(points, rect)
+                aParent.style.backgroundImage = `url(${preview})`
+            } catch (e) {
+                console.log(e)
+            }
+        })
+    }
 
     document.addEventListener( 'click', (event) => {
         if (event.target.matches('.delete')) {
@@ -128,3 +146,17 @@ const render = () => {
 }
 
 render()
+getRemotePatterns()
+console.log(store.setRemoteStore())
+
+async function getRemotePatterns() {
+    const saves = await fetch(`http://localhost:3000/users/me/patterns`, {
+        method: 'get',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+    })
+    .then(response => response.json())
+    .then(data => {return data})
+    console.log(saves)
+}

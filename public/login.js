@@ -23,38 +23,46 @@ async function onSignIn(googleUser) {
     // })
     // .then(response => response.json())
     // .then(data => {console.log(data)})
-    fetch(`http://localhost:3000/users/${uid}/patterns`, {
-        method: 'post',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            pattern: {
-                key1: "pattern1"
-            },
-        }),
-    })
-    .then(response => response.json())
-    .then(data => {console.log(data)})
+    // fetch(`http://localhost:3000/users/${uid}/patterns`, {
+    //     method: 'post',
+    //     headers: {
+    //         'Content-Type': 'application/json'
+    //     },
+    //     body: JSON.stringify({
+    //         pattern: {
+    //             key1: "pattern1"
+    //         },
+    //     }),
+    // })
+    // .then(response => response.json())
+    // .then(data => {console.log(data)})
 }
 
-function setBackground() {
+document.addEventListener("DOMContentLoaded", () => {
+    document.getElementById('login-container').style.backgroundImage = `url(${genBackgroundDataURL('login-container')})`
+})
+
+function genBackgroundDataURL(element) {
         const canvas = document.createElement('canvas')
-        const {width, height} = utilities.getDimensionsFromCoordinates(points)
+        const {width, height} = document.getElementById(element).getBoundingClientRect()
         canvas.width = width * devicePixelRatio
         canvas.height = height * devicePixelRatio
         const context = canvas.getContext('2d')
-        context.fillStyle = 'black'
+        context.fillStyle = '#444'
         context.fillRect(0,0,canvas.width,canvas.height)
-        context.lineWidth = 2
-        context.strokeStyle = 'white'
         context.beginPath()
-        context.moveTo(points[0][0], points[0][1])
-        points.map((point) => {
-            context.lineTo(point[0], point[1])
-        })
-        context.stroke()
-        context.fillStyle = 'white'
+        context.moveTo(Math.random()*500 - 800, Math.random()*500 - 800)
+        for (let i = 0; i < 80; i++) {
+            context.lineTo(Math.random()*500, Math.random()*500)
+            if (i%20 == 0) {
+                context.fillStyle = '#4a4a4a'
+                context.fill()
+                context.closePath()
+                context.beginPath()
+                context.moveTo(-50,-50)
+            }
+        }
+        context.fillStyle = `#555`
         context.fill()
         context.closePath()
         return canvas.toDataURL()

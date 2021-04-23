@@ -8,6 +8,7 @@ export class State {
         this.selecting = false,
         this.patternName = 'untitled',
         this.dateCreated = new Date().toISOString()
+        this.dateModified = new Date()
         this.form = new shape.Shape(this.radius, this),
         this.handler = false,
         this.parameters = {

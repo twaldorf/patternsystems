@@ -106,3 +106,32 @@ export const countPatterns = () => {
     }
 }
 
+export const pullRemoteStore = async () => {
+    const patterns = loadPatterns().patterns
+    const remotePatterns = await fetch(`http://localhost:3000/users/me/patterns`, {
+        method: 'get',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+    })
+    .then(response => response.json())
+    .then(data => {return data[0]})
+}
+
+export const setRemoteStore = async () => {
+    const patterns = loadPatterns().patterns
+    const receipts = Object.keys(patterns).map(async (pattern)=> {
+        return await fetch(`http://localhost:3000/users/me/patterns`, {
+            method: 'post',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({pattern: {
+                [pattern]: patterns[pattern]},
+            }),
+        })
+        .then(response => response.json())
+        .then(data => {return data})
+    })
+    return receipts
+}
