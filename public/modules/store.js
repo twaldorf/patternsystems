@@ -115,7 +115,8 @@ export const pullRemoteStore = async () => {
         },
     })
     .then(response => response.json())
-    .then(data => {return data[0]})
+    .then(data => {return data})
+    return remotePatterns
 }
 
 export const setRemoteStore = async () => {

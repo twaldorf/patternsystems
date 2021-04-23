@@ -146,8 +146,8 @@ const render = (cloudPatterns) => {
 }
 
 render()
-getRemotePatterns()
-console.log(store.setRemoteStore())
+// getRemotePatterns()
+console.log(await store.pullRemoteStore())
 
 async function getRemotePatterns() {
     const saves = await fetch(`http://localhost:3000/users/me/patterns`, {
