@@ -9,11 +9,7 @@
     <link rel="stylesheet" href="saves.css">
 </head>
 <body>
-    <header>
-        <a href="index.html">
-            <h1>Pattern Systems</h1>
-        </a>
-    </header>
+    {header}
     <section id="head" class="padded-border">
         <div class="padded">
             <div>
