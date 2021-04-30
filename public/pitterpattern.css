@@ -36,10 +36,6 @@ p {
     margin-left: 1vh;
 }
 
-header {
-    color: #666;
-}
-
 button:hover {
     cursor: pointer;
 }
@@ -55,9 +51,6 @@ button:active {
 
 section {
     flex-direction: column;
-    width: 100%;
-    margin: 0;
-    margin-left:50px;
 }
 
 .pane {
@@ -184,14 +177,20 @@ input[type=text]:focus {
     width: 100%;
     margin: auto;
 }
+
 #banner {
     background-color: white;
     color: black;
-    width: 100%;
+    width: calc(100% - (2* var(--margin) + var(--padding)));
     text-transform: uppercase;
     padding: 0 var(--padding);
     font-size: .8rem;
     margin: var(--margin) 0 0 0;
+    display: flex;
+    justify-content: space-between;
+}
+#banner > * {
+    margin: auto 0;
 }
 #header {
     font-size: 2rem;

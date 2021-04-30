@@ -1,7 +1,9 @@
-const comps = require('./layoutcomponents.js')
+const comps = require('./comps.js')
 
 const index = async (req, res) => {
-    res.render('patterns', { title: 'DPS' })
+    res.render('patterns', { 
+        header: comps.header
+    })
 }
 
 const patterns = async (req, res) => {
@@ -12,12 +14,17 @@ const patterns = async (req, res) => {
 }
 
 const editor = async (req, res) => {
-    // const { patternId } = req.params
-    res.render('editor', {})
+    res.render('editor', {
+        header: comps.header,
+        btnLogin: comps.btnLogin,
+        banner: comps.banner,
+    })
 }
 
 const login = async (req, res) => {
-    res.render('login', {})
+    res.render('login', {
+        header: comps.header,
+    })
 }
 
 module.exports = { index, patterns, editor, login }

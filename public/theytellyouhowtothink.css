@@ -1,42 +1,15 @@
+/* DEPRECATING */
 body {
     margin: 0;
     padding: 0;
-    color: #0f0e17;
-    background-color: #0f0e17;
+    color: black;
+    background-color: black;
     font-family: sans-serif;
     display: flex;
     flex-wrap: wrap;
     overflow-x: hidden;
-}
-
-.hero {
-    padding: 4vw;
-    color: #fffffe;
-    flex-direction: column;
-    font-weight: 300;
-}
-
-.hero h3 {
-    margin: 6vh 0;
-    font-weight: 300;
-}
-
-.hero h1 {
-    max-width: 50%;
-    font-size: 8vw;
-    margin: 0;
-    background-color: #0f0e17;
-}
-
-button {
-    background-color: #ff8906;
-    color: #fffffe;
-    border: 1px solid #ff8906;
-    padding: .4vw;
-    font-size: 2vh;
-    text-transform: uppercase;
-    font-weight: 700;
-    transition: all .1s ease-in;
+    --banner-width: 3rem;
+    mix-blend-mode: normal;
 }
 
 button:hover {
@@ -58,31 +31,17 @@ button:hover {
     font-size: 14px;
 }
 
-header {
-    color: #a7a9be;
-    display: flex;
-    flex-flow: column;
-    writing-mode: vertical-rl;
-    transform: rotate(180deg);
-    text-transform: uppercase;
-    text-align: right;
-    height: 100%;
-    position: fixed;
-    left: 0;
-}
-
 header h1 {
     letter-spacing: 6px;
-    font-size:4vh;
+    font-size: calc(var(--banner-width) - 4px);
     margin: 0;
-    mix-blend-mode: difference;
 }
 
 section {
     display: flex; 
     flex-direction: row;
     flex-wrap: wrap;
-    margin-left: 40px;
+    margin: var(--banner-width);
 }
 
 figure {
@@ -181,6 +140,8 @@ footer {
     font-size: 1rem;
     color:#fffffe;
     display: flex;
+
+
     flex-direction: row;
     justify-content: flex-start;
     width: 100%;
@@ -194,4 +155,12 @@ footer div {
 
 footer p {
     font-size: 12px;
+}
+
+header {
+    width: var(--banner-width);
+}
+
+header h1 {
+    font-size: calc(var(--banner-width) - 4px);
 }

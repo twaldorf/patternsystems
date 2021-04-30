@@ -6,9 +6,15 @@ const cannon = (filePath, options, callback) => {
     try {
       const string = content.toString()
 
-      const renderedString = string.replace(/\{([^}]+)\}/g, (_, num) => {
+      var renderedString = string.replace(/\{([^}]+)\}/g, (_, num) => {
         return options[num]
       })
+
+      while (renderedString.match(/\{([^}]+)\}/g)) {
+        var renderedString = renderedString.replace(/\{([^}]+)\}/g, (_, num) => {
+          return options[num]
+        })
+      }
 
       return callback(null, renderedString)
 

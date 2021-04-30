@@ -62,7 +62,7 @@ const renderPattern = (pattern) => {
     deleteBtn.classList.add(id)
 
     titleSpan.innerHTML = pattern.name
-    dateSpan.innerHTML = pattern.dateModified
+    dateSpan.textContent = `Edited: ${new Date(pattern.dateModified).toLocaleDateString()}`
 
     try {
         verticesSpan.innerHTML = `${pattern.state.form.points.length} vertices`
@@ -147,7 +147,14 @@ const render = (cloudPatterns) => {
 
 render()
 // getRemotePatterns()
-console.log(await store.pullRemoteStore())
+try {
+    const remotePatterns = store.pullRemoteStore()
+    if (remotePatterns == 401) {
+        throw('Not logged in')
+    }
+} catch {
+    window.location.replace('./login')
+}
 
 async function getRemotePatterns() {
     const saves = await fetch(`http://localhost:3000/users/me/patterns`, {

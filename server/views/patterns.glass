@@ -22,6 +22,7 @@
     </section>
     <section id="main" class="padded-border">
         <div id="pattern-container" class="container padded">
+            <h3>Local patterns</h3>
             <div class="new-pattern">
                 <a href="/editor">+ New pattern</a>
             </div>

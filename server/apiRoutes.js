@@ -23,7 +23,8 @@ const getUserPatternsById = async (req, res) => {
     console.log(`signed cookies: ${req.signedCookies}`)
     let  uid  = req.params.uid
     if (!uid) {
-        res.status(404).send('No uid')
+        res.status(401).send()
+        return
     }
     let { patterns } = await getPatternsById(db, uid)
     console.log(patterns)
@@ -37,8 +38,9 @@ const getUserPatternsById = async (req, res) => {
 const getUserPatterns = async (req, res) => {
     let  uid  = req.signedCookies.session
     if (!uid) {
-        res.status(404).send('Invalid session')
-    }
+        res.status(401).send('Invalid session')
+        return
+    } 
     let { patterns } = await getPatternsById(db, uid)
     if (!patterns) {
         res.status(200).send({response: 'User has no patterns'})
@@ -51,6 +53,7 @@ const getUserInfo = async (req, res) => {
     let username  = req.params.username
     if (!username) {
         res.status(404).send('No username')
+        return
     }
     let user = await getUser(db, req.params.username)
     res.status(200).send(user)
@@ -94,6 +97,7 @@ const createUserFromId = async (req,res) => {
     const uid = verifyTokenForId(idToken)
     if (!uid) {
         res.status(404).send('Invalid token')
+        return
     }
     let user = await addUserById(db, uid)
     res.status(200).send(user)

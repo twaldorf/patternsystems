@@ -38,8 +38,11 @@ async function onSignIn(googleUser) {
     // .then(data => {console.log(data)})
 }
 
+
+
 document.addEventListener("DOMContentLoaded", () => {
     document.getElementById('login-container').style.backgroundImage = `url(${genBackgroundDataURL('login-container')})`
+    document.getElementById("continue").addEventListener('click',() => {history.back()})
 })
 
 function genBackgroundDataURL(element) {

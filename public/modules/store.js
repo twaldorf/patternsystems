@@ -108,15 +108,28 @@ export const countPatterns = () => {
 
 export const pullRemoteStore = async () => {
     const patterns = loadPatterns().patterns
-    const remotePatterns = await fetch(`http://localhost:3000/users/me/patterns`, {
-        method: 'get',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-    })
-    .then(response => response.json())
-    .then(data => {return data})
-    return remotePatterns
+    try {
+        const remotePatterns = await fetch(`http://localhost:3000/users/me/patterns`, {
+            method: 'get',
+            headers: {
+                'Content-Type': 'application/json'
+            }, 
+        })
+        .catch(err => {
+            console.log(err)
+        })
+        .then(response => {
+            if (response.status == 401) {
+                return Promise.reject(401)
+            } else {
+                return response.json()
+            }
+        })
+        .then(data => data)
+        return remotePatterns
+    } catch {
+        return 401
+    }
 }
 
 export const setRemoteStore = async () => {

@@ -6,19 +6,14 @@
     <title>System designer</title>
     <script type="text/javascript" src="../p5.min.js"></script>
     <script type="module" src="../modules/pitterpattern.js"></script>
-    <link rel="stylesheet" href="../theytellyouhowtothink.css">
+    <!-- <link rel="stylesheet" href="../theytellyouhowtothink.css"> -->
+    <link rel="stylesheet" href="../base.css">
     <link rel="stylesheet" href="../pitterpattern.css">
     <link rel="stylesheet" href="../modulators.css">
 </head>
 <body>
-    <header>
-        <a href="/">
-            <h1>Design pattern systems</h1>
-        </a>
-    </header>
-    <section>
-        <h4 id="banner">System designer</h4>
-    </section>
+    {header}
+    {banner}
     <!-- <section id="toolbar">
         <a href="/editor" class="button">New pattern</a>
         <a href="/editor" class="button">Duplicate pattern</a>
