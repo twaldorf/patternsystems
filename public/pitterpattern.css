@@ -185,7 +185,6 @@ input[type=text]:focus {
     text-transform: uppercase;
     padding: 0 var(--padding);
     font-size: .8rem;
-    margin: var(--margin) 0 0 0;
     display: flex;
     justify-content: space-between;
 }

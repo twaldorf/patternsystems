@@ -134,7 +134,11 @@ export const pullRemoteStore = async () => {
 
 export const setRemoteStore = async () => {
     const patterns = loadPatterns().patterns
+    console.log('local patterns:', patterns)
     const receipts = Object.keys(patterns).map(async (pattern)=> {
+        console.log({pattern: {
+            [pattern]: patterns[pattern]},
+        })
         return await fetch(`http://localhost:3000/users/me/patterns`, {
             method: 'post',
             headers: {
@@ -147,5 +151,6 @@ export const setRemoteStore = async () => {
         .then(response => response.json())
         .then(data => {return data})
     })
+    console.log('receipts', receipts)
     return receipts
 }

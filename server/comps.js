@@ -7,7 +7,7 @@ const header = `
 `
 
 const btnLogin = `
-    <a class="button" href="/login">Log in</a>
+    <a class="button" id="btnLogin" href="/login">Log in</a>
 `
 
 const banner = `

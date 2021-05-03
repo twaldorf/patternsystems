@@ -59,6 +59,17 @@ const getUserInfo = async (req, res) => {
     res.status(200).send(user)
 }
 
+const getUserInfoById = async (req, res) => {
+    let uid  = req.signedCookies.session
+    if (!uid) {
+        res.status(401).send('Not logged in')
+        return
+    } else {
+        let user = await getUserById(db, uid)
+        res.status(200).send(user)
+    }
+}
+
 const addPatternToUser = async (req, res) => {
     const {session} = req.signedCookies
     if (session) {
@@ -103,4 +114,4 @@ const createUserFromId = async (req,res) => {
     res.status(200).send(user)
 }
 
-module.exports = { loginWithIdToken, getUserPatternsById, getUserPatterns, addPatternToUser, addPatternToUserById, getUserInfo, createUserFromId }
+module.exports = { loginWithIdToken, getUserPatternsById, getUserPatterns, addPatternToUser, addPatternToUserById, getUserInfo, getUserInfoById, createUserFromId }

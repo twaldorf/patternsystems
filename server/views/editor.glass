@@ -21,7 +21,7 @@
     <section id="main">
         <div class="pane top-console">
             <div class="stats">
-                <li>USER: <span id="current-user">█</span></li>
+                <li>USER ID: <span id="current-user">█</span></li>
                 <li>INITIALIZED: <span id="date">█</span></li>
                 <li>PATTERN SYSTEM: PITTERPATTERN.JS</li>
                 <li>SIZE IN LOCAL STORAGE: <span id="local-storage">█</span></li>
@@ -127,6 +127,7 @@
                     </div>
                     <li>
                         <button id="button_export" class="button-bar"><span>-></span>  EXPORT</button>
+                        <button id="save">Save to cloud</button>
                     </li>
                 </div>
             </div>

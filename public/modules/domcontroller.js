@@ -8,6 +8,7 @@ import * as title from './buttons/title.js'
 import * as scale from './buttons/scale.js'
 import * as gridSize from './buttons/gridSize.js'
 import * as stroke from './buttons/stroke.js'
+import * as save from './buttons/save.js'
 
 const tieStateToggles = (domElements, state) => {
     // try to wait until the window is ready
@@ -87,6 +88,7 @@ export const setup = (state) => {
         color_input_2: 'colorInput2',
         scaleDown: 'scaleDown',
         scaleUp: 'scaleUp',
+        save: 'save'
     }
 
     const domElements = Object.keys(domElementNames).map((e) => {
@@ -115,4 +117,5 @@ const actionSetups = (state) => {
     gridSize.setup(state)
     scale.setup(state)
     stroke.setup(state)
+    save.setup(state)
 }

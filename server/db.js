@@ -88,15 +88,15 @@ const addPattern = async function (db, uid, pattern) {
         })
         const result = await db.any(`
             UPDATE users 
-                SET patterns = patterns || $1
+                SET patterns = COALESCE(patterns || $1, $1)
             WHERE id = (
                 SELECT id FROM users 
                 WHERE uid = $2
             );`, [pattern,uid])
-            .then(async () => {
-                const patterns = await getPatternsById(db, uid)
-                return `Added, current patterns: ${JSON.stringify(patterns)}`
-            })
+        .then(async () => {
+            const patterns = await getPatternsById(db, uid)
+            return `Added, current patterns: ${JSON.stringify(patterns)}`
+        })
         return result
     } catch(e) {return `Error: ${e}`}
 }
