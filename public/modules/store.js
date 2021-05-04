@@ -17,7 +17,13 @@ export const savePattern = (wrappedPattern) => {
         patterns: updatedPatterns,
         version: version
     }
-    return localStorage.setItem('patternDesignerPatterns', JSON.stringify(updatedStore))
+    try {
+        localStorage.setItem('patternDesignerPatterns', JSON.stringify(updatedStore))
+        return loadPatterns()
+    } catch (e) {
+        console.log(e)
+        return false
+    }
 }
 
 export const setStore = (patterns) => {
@@ -134,11 +140,7 @@ export const pullRemoteStore = async () => {
 
 export const setRemoteStore = async () => {
     const patterns = loadPatterns().patterns
-    console.log('local patterns:', patterns)
     const receipts = Object.keys(patterns).map(async (pattern)=> {
-        console.log({pattern: {
-            [pattern]: patterns[pattern]},
-        })
         return await fetch(`http://localhost:3000/users/me/patterns`, {
             method: 'post',
             headers: {
@@ -151,6 +153,34 @@ export const setRemoteStore = async () => {
         .then(response => response.json())
         .then(data => {return data})
     })
-    console.log('receipts', receipts)
     return receipts
+}
+
+export const mergeStores = (localStoreGroup, cloudStore) => {
+    const { patterns } = localStoreGroup
+    const localStore = patterns
+    const dupes = Object.keys(cloudStore).filter((key) => {
+        return localStore[key]
+    })
+    const superStore = {...localStore,...cloudStore}
+    const clearStore = Object.keys(superStore).filter((key) => {
+        if (cloudStore[key] && localStore[key]) {return false} else {return true}
+    })
+    const clearStoreObj = clearStore.reduce((prevValue,cKey,keyIndex,keyArray) => {
+        console.log(prevValue)
+        return {...prevValue, [cKey]: superStore[cKey]}
+    }, {})
+    const unduped = dupes[0] ? false : dupes.map((key) => {
+        return localStore[key].dateModified > cloudStore[key].dateModified ? {[key]:cloudStore[key]} : {[key]:localStore[key]}
+    })
+    const undupedObj = unduped[0] != false ? false : unduped.reduce((prev,curr,index,array) => {
+        console.log(prev, curr)
+        return {...prev, ...curr}
+    }, {})
+    const mergedStore = {
+        ...clearStoreObj,
+        ...undupedObj
+    }
+    console.log('dupes',dupes,'superStore',superStore,'clearStore',clearStore,'clearStoreObj',clearStoreObj,'unduped',unduped,'mergedStore','undupedObj',undupedObj,mergedStore)
+    return mergedStore
 }

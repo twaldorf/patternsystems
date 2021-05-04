@@ -88,9 +88,8 @@ const renderPattern = (pattern) => {
     return { patternLink: divParent }
 }
 
-const render = (cloudPatterns=null) => {
+const render = (patterns) => {
     const parent = document.getElementById('pattern-container')
-    const { patterns } = store.loadPatterns()
 
     Object.keys(patterns).map((pattern) => {
         let patternObj = patterns[pattern]
@@ -107,27 +106,6 @@ const render = (cloudPatterns=null) => {
             console.log(e)
         }
     })
-
-    if (cloudPatterns) {
-        console.log(cloudPatterns)
-        Object.keys(cloudPatterns).map((pattern) => {
-            let patternObj = patterns[pattern]
-            if (patternObj) {
-                try {
-                    let { patternLink } = renderPattern(patternObj)
-                    parent.append(patternLink)
-                    const rect = patternLink.getBoundingClientRect()
-                    const coordinates = utilities.distillCoordinates(patternObj.state.form.points)
-                    const points = utilities.normalizeCoordinates(coordinates)
-                    const aParent = patternLink.childNodes[1]
-                    const preview = shapePreviewDataUrl(points, rect)
-                    aParent.style.backgroundImage = `url(${preview})`
-                } catch (e) {
-                    console.log(e)
-                }
-            }
-        })
-    }
 
     document.addEventListener( 'click', (event) => {
         if (event.target.matches('.delete')) {
@@ -148,23 +126,21 @@ const render = (cloudPatterns=null) => {
 
 }
 
-render()
-
 try {
     const remotePatterns = await getRemotePatterns()
     if (remotePatterns == 401) {
-        throw('Not logged in')
-    } else if (!remotePatterns) {
-        throw('No patterns saved')
-    } else {
-        render(remotePatterns)
+        console.log(remotePatterns)
+        // throw('Not logged in') 
+    } else if (remotePatterns) {
+        const patterns = store.mergeStores(store.loadPatterns(), remotePatterns)
+        console.log(patterns)
+        render(patterns)
     }
-} catch {
-    window.location.replace('./login')
+} catch (e) {
+    console.log(e)
+    // window.location.replace('./login')
 }
 
-console.log(`remote store:`, await store.setRemoteStore())
-console.log(`local store:`, store.loadPatterns())
 
 async function getRemotePatterns() {
     const saves = await fetch(`http://localhost:3000/users/me/patterns`, {
