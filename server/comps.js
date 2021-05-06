@@ -10,7 +10,7 @@ const btnLogin = `
     <a class="button" id="btnLogin" href="/login">Log in</a>
 `
 
-const banner = `
+const editorBanner = `
     <section>
     <div id="banner">
         <h4>System designer</h4>
@@ -19,4 +19,13 @@ const banner = `
     </section>
 `
 
-module.exports = { header, btnLogin, banner }
+const savesBanner = `
+<section>
+<div id="banner">
+    <h4>Saved patterns</h4>
+    {btnLogin}
+</div>
+</section>
+`
+
+module.exports = { header, btnLogin, editorBanner, savesBanner }

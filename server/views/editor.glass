@@ -13,7 +13,7 @@
 </head>
 <body>
     {header}
-    {banner}
+    {editorBanner}
     <!-- <section id="toolbar">
         <a href="/editor" class="button">New pattern</a>
         <a href="/editor" class="button">Duplicate pattern</a>

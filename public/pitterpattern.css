@@ -178,19 +178,6 @@ input[type=text]:focus {
     margin: auto;
 }
 
-#banner {
-    background-color: white;
-    color: black;
-    width: calc(100% - (2* var(--margin) + var(--padding)));
-    text-transform: uppercase;
-    padding: 0 var(--padding);
-    font-size: .8rem;
-    display: flex;
-    justify-content: space-between;
-}
-#banner > * {
-    margin: auto 0;
-}
 #header {
     font-size: 2rem;
     display: block;

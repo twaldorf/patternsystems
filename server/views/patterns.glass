@@ -10,25 +10,13 @@
 </head>
 <body>
     {header}
-    <section id="head" class="padded-border">
-        <div class="padded">
-            <div>
-                <h1 id="banner">Saved patterns</h1>
-            </div>
-            <!-- <div id="current-user">
-                <h3>User: <span id="username">{username}</span></h3>
-            </div> -->
-        </div>
-    </section>
+    {savesBanner}
     <section id="main" class="padded-border">
         <div id="pattern-container" class="container padded">
             <h3>Local patterns</h3>
             <div class="new-pattern">
                 <a href="/editor">+ New pattern</a>
             </div>
-        </div>
-        <div id="pattern-container" class="container padded">
-            <h3>Cloud patterns</h3>
         </div>
     </section>
 </body>

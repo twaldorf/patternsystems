@@ -2,7 +2,7 @@ import * as api from '../api.js'
 
 export const setup = (state) => {
     document.getElementById('save').addEventListener('click', async () => {
-        let patternSnapshot = {
+        const patternSnapshot = {
             [state.dateCreated]: {
                 state: state,
                 name: state.patternName,
@@ -11,7 +11,8 @@ export const setup = (state) => {
             }
         }
         patternSnapshot[state.dateCreated].dateModified = new Date()
-        const receipt = await api.savePattern(patternSnapshot[0]).then(data=>data)
+        console.log()
+        const receipt = await api.savePattern({pattern: patternSnapshot}).then(data=>data)
         console.log(receipt)
     })
 }

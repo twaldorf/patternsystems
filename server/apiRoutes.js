@@ -1,4 +1,5 @@
 require('dotenv').config()
+const { json } = require('body-parser')
 const { db } = require('./config.js')
 const { getUserById,addPattern,addUser,addUserById, getPatternsById } = require('./db.js')
 const { verifyTokenForId } = require('./verify.js')
@@ -73,7 +74,7 @@ const getUserInfoById = async (req, res) => {
 const addPatternToUser = async (req, res) => {
     const {session} = req.signedCookies
     if (session) {
-        const pattern = JSON.stringify(req.body.pattern)
+        const pattern = await JSON.parse(req.body).then(result => result)[0]
         console.log(`pattern: ${pattern}`)
         if (!pattern) {
             res.status(404).send('Missing uid or pattern')
@@ -87,15 +88,14 @@ const addPatternToUser = async (req, res) => {
 }
 
 const addPatternToUserById = async (req, res) => {
-    const {session} = req.signedCookies
-    console.log(req.body)
+    const { session } = req.signedCookies
+    const { pattern } = req.body
+    console.log(pattern)
     if (session) {
-        const pattern = JSON.stringify(req.body.pattern)
-        console.log(`pattern: ${pattern}`)
         if (!session || !pattern) {
             res.status(404).send('Missing uid or pattern')
         } else {
-            let patternAdded = await addPattern(db, session, pattern)
+            const patternAdded = await addPattern(db, session, pattern)
             res.status(200).send({patternAdded})
         }
     } else {

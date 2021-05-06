@@ -167,20 +167,20 @@ export const mergeStores = (localStoreGroup, cloudStore) => {
         if (cloudStore[key] && localStore[key]) {return false} else {return true}
     })
     const clearStoreObj = clearStore.reduce((prevValue,cKey,keyIndex,keyArray) => {
-        console.log(prevValue)
         return {...prevValue, [cKey]: superStore[cKey]}
     }, {})
-    const unduped = dupes[0] ? false : dupes.map((key) => {
+    const unduped = dupes[0] ? null : dupes.map((key) => {
         return localStore[key].dateModified > cloudStore[key].dateModified ? {[key]:cloudStore[key]} : {[key]:localStore[key]}
     })
-    const undupedObj = unduped[0] != false ? false : unduped.reduce((prev,curr,index,array) => {
-        console.log(prev, curr)
+    const undupedObj = unduped[0] ? null : unduped.reduce((prev,curr,index,array) => {
         return {...prev, ...curr}
     }, {})
+    console.log(clearStoreObj,undupedObj)
     const mergedStore = {
         ...clearStoreObj,
         ...undupedObj
     }
-    console.log('dupes',dupes,'superStore',superStore,'clearStore',clearStore,'clearStoreObj',clearStoreObj,'unduped',unduped,'mergedStore','undupedObj',undupedObj,mergedStore)
+    // console.log('dupes',dupes,'superStore',superStore,'clearStore',clearStore,'clearStoreObj',clearStoreObj,'unduped',unduped,'mergedStore','undupedObj',undupedObj,mergedStore)
+    // setRemoteStore({patterns: mergedStore})
     return mergedStore
 }

@@ -2,28 +2,25 @@ const comps = require('./comps.js')
 
 const index = async (req, res) => {
     res.render('patterns', { 
-        header: comps.header
+        ...comps
     })
 }
 
 const patterns = async (req, res) => {
-    res.render('patterns', { 
-        header: comps.header,
-        title: 'DPS', message: 'Hello there!' 
+    res.render('patterns', {
+        ...comps,
     })
 }
 
 const editor = async (req, res) => {
     res.render('editor', {
-        header: comps.header,
-        btnLogin: comps.btnLogin,
-        banner: comps.banner,
+        ...comps
     })
 }
 
 const login = async (req, res) => {
     res.render('login', {
-        header: comps.header,
+        ...comps
     })
 }
 

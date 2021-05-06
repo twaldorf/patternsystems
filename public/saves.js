@@ -1,9 +1,7 @@
 import * as store from './modules/store.js'
 import * as hash from './modules/hash.js'
 import * as utilities from './modules/utilities.js'
-
-// clear active flag from all patterns
-store.clearActive()
+import * as api from './modules/api.js'
 
 const shapePreviewDataUrl = (points, rect) => {
     const canvas = document.createElement('canvas')
@@ -11,6 +9,7 @@ const shapePreviewDataUrl = (points, rect) => {
     canvas.width = width * devicePixelRatio
     canvas.height = height * devicePixelRatio
     const context = canvas.getContext('2d')
+    context.scale(devicePixelRatio,devicePixelRatio)
     context.fillStyle = 'black'
     context.fillRect(0,0,canvas.width,canvas.height)
     context.lineWidth = 2
@@ -24,6 +23,7 @@ const shapePreviewDataUrl = (points, rect) => {
     context.fillStyle = 'white'
     context.fill()
     context.closePath()
+    
     return canvas.toDataURL()
 }
 
@@ -97,11 +97,13 @@ const render = (patterns) => {
             let { patternLink } = renderPattern(patternObj)
             parent.append(patternLink)
             const rect = patternLink.getBoundingClientRect()
-            const coordinates = utilities.distillCoordinates(patternObj.state.form.points)
-            const points = utilities.normalizeCoordinates(coordinates)
-            const aParent = patternLink.childNodes[1]
-            const preview = shapePreviewDataUrl(points, rect)
-            aParent.style.backgroundImage = `url(${preview})`
+            if (patternObj.state.form.points.length > 0) {
+                const coordinates = utilities.distillCoordinates(patternObj.state.form.points)
+                const points = utilities.normalizeCoordinates(coordinates)
+                const preview = shapePreviewDataUrl(points, rect)
+                const aParent = patternLink.childNodes[1]
+                aParent.style.backgroundImage = `url(${preview})`
+            }
         } catch (e) {
             console.log(e)
         }
@@ -126,21 +128,37 @@ const render = (patterns) => {
 
 }
 
-try {
-    const remotePatterns = await getRemotePatterns()
-    if (remotePatterns == 401) {
-        console.log(remotePatterns)
-        // throw('Not logged in') 
-    } else if (remotePatterns) {
-        const patterns = store.mergeStores(store.loadPatterns(), remotePatterns)
-        console.log(patterns)
-        render(patterns)
+async function syncPatterns () {
+    try {
+        const remotePatterns = await getRemotePatterns()
+        if (remotePatterns == 401) {
+            throw('Not logged in') 
+        } else if (remotePatterns) {
+            const patterns = store.mergeStores(store.loadPatterns(), remotePatterns)
+            store.setStore(patterns)
+        }
+    } catch (e) {
+        console.log(e)
+        if (e == 'Not logged in') {
+            window.location.replace('./login')
+        }
     }
-} catch (e) {
-    console.log(e)
-    // window.location.replace('./login')
 }
 
+const setUserState = async () => {
+    const currentUser = await api.getCurrentUser()
+    if (currentUser) {
+        document.getElementById('btnLogin').textContent = 'Logged in'
+    }
+}
+
+console.log(store.loadPatterns().patterns)
+await syncPatterns()
+console.log(store.loadPatterns().patterns)
+render(store.loadPatterns().patterns)
+setUserState()
+store.clearActive()
+// clear active flag from all patterns
 
 async function getRemotePatterns() {
     const saves = await fetch(`http://localhost:3000/users/me/patterns`, {
@@ -153,3 +171,7 @@ async function getRemotePatterns() {
     .then(data => {return data})
     return saves
 }
+
+setTimeout(() => {
+    syncPatterns()
+}, 5 * 1000)

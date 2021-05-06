@@ -15,14 +15,14 @@ export const getCurrentUser = async () => {
 }
 
 export const savePattern = async (pattern) => {
+    console.log(pattern)
+    const jsonPattern = JSON.stringify(pattern)
         const data = await fetch(`http://localhost:3000/users/me/patterns`, {
             method: 'post',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({pattern: {
-                [pattern]: pattern},
-            }),
+            body: jsonPattern,
         }).then(response => response.json()).then(data => data)
         return data
 }

@@ -33,7 +33,6 @@ const getUserById = async function (db, userId) {
 }
 
 const addUserById = async function (db, uid) {
-    console.log(uid)
     if (!uid) {
         return `Error: empty Id`
     }
@@ -75,17 +74,18 @@ const addUser = async function (db, username, email) {
 
 const addPattern = async function (db, uid, pattern) {
     try {
-        const exists = await db.one(`
-        SELECT patterns FROM users 
-        WHERE id = (
-            SELECT id FROM users 
-            WHERE uid = $1
-        );`, uid)
-        .then((results) => {
-            if (results.patterns && results.patterns.toString().includes(pattern)) {
-                throw(`User ${uid} already has this pattern`)
-            }
-        })
+        // const exists = await db.one(`
+        // SELECT patterns FROM users 
+        // WHERE id = (
+        //     SELECT id FROM users 
+        //     WHERE uid = $1
+        // );`, uid)
+        // .then((results) => {
+        //     if (results.patterns && results.patterns.toString().includes(pattern.toString())) {
+        //         console.log(results.patterns.toString(),pattern.toString())
+        //         throw(`User ${uid} already has this pattern`)
+        //     }
+        // })
         const result = await db.any(`
             UPDATE users 
                 SET patterns = COALESCE(patterns || $1, $1)
@@ -95,7 +95,20 @@ const addPattern = async function (db, uid, pattern) {
             );`, [pattern,uid])
         .then(async () => {
             const patterns = await getPatternsById(db, uid)
-            return `Added, current patterns: ${JSON.stringify(patterns)}`
+            const added = await db.one(`
+                SELECT patterns FROM users 
+                WHERE id = (
+                    SELECT id FROM users 
+                    WHERE uid = $1
+                );`, uid)
+                .then((results) => {
+                    if (results.patterns && !results.patterns.toString().includes(pattern.toString())) {
+                        throw(`Failed to add pattern ${pattern}`)
+                    } else {
+                        return `Added, current patterns: ${JSON.stringify(patterns)}`
+                    }
+                })
+            return added
         })
         return result
     } catch(e) {return `Error: ${e}`}

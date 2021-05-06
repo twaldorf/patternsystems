@@ -7,7 +7,8 @@ body {
     flex-wrap: wrap;
     overflow-x: hidden;
     flex-direction: column;
-
+    --padding: 1.2rem;
+    --margin: .5rem;
     --banner-width: 3rem;
 }
 
@@ -82,4 +83,18 @@ button:hover {
     color: #0f0e17;
     cursor: pointer;
     border-color: #fffffe;
+}
+
+#banner {
+    background-color: white;
+    color: black;
+    width: calc(100% - (2* var(--margin) + var(--padding)));
+    text-transform: uppercase;
+    padding: 0 var(--padding);
+    font-size: .8rem;
+    display: flex;
+    justify-content: space-between;
+}
+#banner > * {
+    margin: auto 0;
 }
