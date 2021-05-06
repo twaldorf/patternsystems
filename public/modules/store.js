@@ -1,4 +1,21 @@
-export const savePattern = (wrappedPattern) => {
+const validate = (wrappedPattern) => {
+    try {
+        const pattern = wrappedPattern[Object.entries(wrappedPattern)[0][0]]
+        const state = pattern.state
+        const points = state.form.points
+        if (!state || !points) {
+            return false
+        } else {
+            return wrappedPattern
+        }
+    } catch (e) {
+        return false
+    }
+}
+
+export const savePattern = (incomingPattern) => {
+    const wrappedPattern = validate(incomingPattern)
+    console.log(wrappedPattern)
     const existingPatterns = loadPatterns()
     let updatedPatterns = {}
     let version = 1
@@ -141,17 +158,7 @@ export const pullRemoteStore = async () => {
 export const setRemoteStore = async () => {
     const patterns = loadPatterns().patterns
     const receipts = Object.keys(patterns).map(async (pattern)=> {
-        return await fetch(`http://localhost:3000/users/me/patterns`, {
-            method: 'post',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({pattern: {
-                [pattern]: patterns[pattern]},
-            }),
-        })
-        .then(response => response.json())
-        .then(data => {return data})
+        return await api.savePattern({pattern: pattern})
     })
     return receipts
 }
@@ -175,12 +182,10 @@ export const mergeStores = (localStoreGroup, cloudStore) => {
     const undupedObj = unduped[0] ? null : unduped.reduce((prev,curr,index,array) => {
         return {...prev, ...curr}
     }, {})
-    console.log(clearStoreObj,undupedObj)
     const mergedStore = {
         ...clearStoreObj,
         ...undupedObj
     }
     // console.log('dupes',dupes,'superStore',superStore,'clearStore',clearStore,'clearStoreObj',clearStoreObj,'unduped',unduped,'mergedStore','undupedObj',undupedObj,mergedStore)
-    // setRemoteStore({patterns: mergedStore})
     return mergedStore
 }

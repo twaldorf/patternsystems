@@ -15,7 +15,6 @@ export const getCurrentUser = async () => {
 }
 
 export const savePattern = async (pattern) => {
-    console.log(pattern)
     const jsonPattern = JSON.stringify(pattern)
         const data = await fetch(`http://localhost:3000/users/me/patterns`, {
             method: 'post',

@@ -1,5 +1,4 @@
 require('dotenv').config()
-const { json } = require('body-parser')
 const { db } = require('./config.js')
 const { getUserById,addPattern,addUser,addUserById, getPatternsById } = require('./db.js')
 const { verifyTokenForId } = require('./verify.js')
@@ -30,7 +29,7 @@ const getUserPatternsById = async (req, res) => {
     let { patterns } = await getPatternsById(db, uid)
     console.log(patterns)
     if (!patterns) {
-        res.status(200).send({response: 'User has no patterns'})
+        res.status(404).send({response: 'User has no patterns'})
     } else {
         res.status(200).send(patterns)
     }
@@ -74,10 +73,11 @@ const getUserInfoById = async (req, res) => {
 const addPatternToUser = async (req, res) => {
     const {session} = req.signedCookies
     if (session) {
-        const pattern = await JSON.parse(req.body).then(result => result)[0]
+        let { pattern } = req.body
+        pattern = validate(pattern)
         console.log(`pattern: ${pattern}`)
         if (!pattern) {
-            res.status(404).send('Missing uid or pattern')
+            res.status(200).send('Missing uid or pattern')
         } else {
             let patterns = await addPattern(db, session, pattern)
             res.status(200).send({patterns})
@@ -89,11 +89,12 @@ const addPatternToUser = async (req, res) => {
 
 const addPatternToUserById = async (req, res) => {
     const { session } = req.signedCookies
-    const { pattern } = req.body
-    console.log(pattern)
     if (session) {
+        let { pattern } = req.body
+        pattern = validate(pattern)
+        console.log(pattern)
         if (!session || !pattern) {
-            res.status(404).send('Missing uid or pattern')
+            res.status(200).send('Missing uid or pattern')
         } else {
             const patternAdded = await addPattern(db, session, pattern)
             res.status(200).send({patternAdded})
@@ -112,6 +113,21 @@ const createUserFromId = async (req,res) => {
     }
     let user = await addUserById(db, uid)
     res.status(200).send(user)
+}
+
+const validate = (pattern) => {
+    try {
+        const barePattern = pattern[Object.keys(pattern)[0]]
+        const state = barePattern.state
+        const points = state.form.points
+        if (!state || !points) {
+            return false
+        } else {
+            return pattern
+        }
+    } catch (e) {
+        return false
+    }
 }
 
 module.exports = { loginWithIdToken, getUserPatternsById, getUserPatterns, addPatternToUser, addPatternToUserById, getUserInfo, getUserInfoById, createUserFromId }

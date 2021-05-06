@@ -74,18 +74,6 @@ const addUser = async function (db, username, email) {
 
 const addPattern = async function (db, uid, pattern) {
     try {
-        // const exists = await db.one(`
-        // SELECT patterns FROM users 
-        // WHERE id = (
-        //     SELECT id FROM users 
-        //     WHERE uid = $1
-        // );`, uid)
-        // .then((results) => {
-        //     if (results.patterns && results.patterns.toString().includes(pattern.toString())) {
-        //         console.log(results.patterns.toString(),pattern.toString())
-        //         throw(`User ${uid} already has this pattern`)
-        //     }
-        // })
         const result = await db.any(`
             UPDATE users 
                 SET patterns = COALESCE(patterns || $1, $1)

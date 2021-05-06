@@ -7,7 +7,7 @@ export const setup = (state) => {
         state.loadState(activePattern.state)
     }
     // clear activity
-    // store.clearActive()
+    store.clearActive()
     // if new unique pattern, set new id
     setInterval(() => {
         let patternSnapshot = {
@@ -20,5 +20,6 @@ export const setup = (state) => {
         }
         patternSnapshot[state.dateCreated].dateModified = new Date()
         store.savePattern(patternSnapshot)
+        console.log(store.loadPatterns())
     }, 3000 * 1)
 }

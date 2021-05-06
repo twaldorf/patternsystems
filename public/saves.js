@@ -133,9 +133,17 @@ async function syncPatterns () {
         const remotePatterns = await getRemotePatterns()
         if (remotePatterns == 401) {
             throw('Not logged in') 
+        } else if (remotePatterns.response == 'User has no patterns') {
+            const patterns = store.loadPatterns().patterns
+            const receipts = Object.keys(patterns).map(async (key) => {
+                return await api.savePattern({pattern: {[key]: patterns[key]}})
+            })
+            return receipts
         } else if (remotePatterns) {
             const patterns = store.mergeStores(store.loadPatterns(), remotePatterns)
-            store.setStore(patterns)
+            Object.keys(patterns).map((key) => {
+                store.savePattern({[key]: patterns[key]})
+            })
         }
     } catch (e) {
         console.log(e)
@@ -174,4 +182,4 @@ async function getRemotePatterns() {
 
 setTimeout(() => {
     syncPatterns()
-}, 5 * 1000)
+}, 2 * 1000)
