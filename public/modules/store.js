@@ -132,7 +132,7 @@ export const countPatterns = () => {
 export const pullRemoteStore = async () => {
     const patterns = loadPatterns().patterns
     try {
-        const remotePatterns = await fetch(`http://localhost:3000/users/me/patterns`, {
+        const remotePatterns = await fetch(`users/me/patterns`, {
             method: 'get',
             headers: {
                 'Content-Type': 'application/json'

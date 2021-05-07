@@ -1,6 +1,6 @@
 export const getCurrentUser = async () => {
     try {
-        const user = await fetch(`http://localhost:3000/users/me`, {
+        const user = await fetch(`users/me`, {
                 method: 'get',
                 headers: {
                     'Content-Type': 'application/json'
@@ -16,7 +16,7 @@ export const getCurrentUser = async () => {
 
 export const savePattern = async (pattern) => {
     const jsonPattern = JSON.stringify(pattern)
-        const data = await fetch(`http://localhost:3000/users/me/patterns`, {
+        const data = await fetch(`users/me/patterns`, {
             method: 'post',
             headers: {
                 'Content-Type': 'application/json'

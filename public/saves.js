@@ -177,7 +177,7 @@ store.clearActive()
 // clear active flag from all patterns
 
 async function getRemotePatterns() {
-    const saves = await fetch(`http://localhost:3000/users/me/patterns`, {
+    const saves = await fetch(`/users/me/patterns`, {
         method: 'get',
         headers: {
             'Content-Type': 'application/json'

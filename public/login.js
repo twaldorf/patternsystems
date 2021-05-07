@@ -3,7 +3,7 @@ async function onSignIn(googleUser) {
     const id_token = googleUser.getAuthResponse().id_token
     const uid = googleUser.getId()
     console.log(id_token)
-    const resolution = await fetch('http://localhost:3000/login', {
+    const resolution = await fetch('login', {
         method: 'post',
         headers: {
             'Content-Type': 'application/json'
