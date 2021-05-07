@@ -7,11 +7,12 @@ const loginWithIdToken = async (req, res) => {
     const verity = await verifyTokenForId(req.body.idToken).catch(console.error)
     if (verity) {
         const user = await getUserById(db, verity)
+        console.log(user)
         if (!user) {
             const newUser = await addUserById(db, verity)
             res.status(200).send({response: newUser})
         } else {
-            res.cookie('session', verity, {signed: true, maxAge: 60000000})
+            res.cookie('session', verity, {signed: true, maxAge: 6 * 1000 * 1000})
             res.status(200).send({response: user})
         }
     } else {

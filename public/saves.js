@@ -91,11 +91,19 @@ const renderPattern = (pattern) => {
 const render = (patterns) => {
     const parent = document.getElementById('pattern-container')
 
+    let count = 0
     Object.keys(patterns).map((pattern) => {
+        count++
         let patternObj = patterns[pattern]
         try {
             let { patternLink } = renderPattern(patternObj)
             parent.append(patternLink)
+            setTimeout(() => {
+                patternLink.childNodes[1].classList.add('visible')
+            }, 50 * count)
+            setTimeout(() => {
+                patternLink.childNodes[1].classList.add('alive')
+            }, 75 * count)
             const rect = patternLink.getBoundingClientRect()
             if (patternObj.state.form.points.length > 0) {
                 const coordinates = utilities.distillCoordinates(patternObj.state.form.points)
