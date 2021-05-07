@@ -27,7 +27,7 @@ const limiter = rateLimit({
 })
 app.use(limiter)
 
-const origin = process.env.NODE_ENV === 'production' ? 'https://designpattern.systems' : '*'
+const origin = process.env.NODE_ENV === 'production' ? ['https://designpattern.systems','https://apis.google.com/js/platform.js','873248529781-m38sr7u8k8lq20cndsr4ptiv6k1u6ojl.apps.googleusercontent.com'] : '*'
 app.use(cors(origin))
 
 app.use(express.json({type:"application/json"}))
