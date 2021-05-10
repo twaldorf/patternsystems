@@ -1,4 +1,4 @@
-const { loginWithIdToken, getUserPatternsById, getUserPatterns, createUserFromId, addPatternToUserById, getUserInfo, getUserInfoById } = require('./apiRoutes.js')
+const { loginWithIdToken, getUserPatternsById, getUserPatterns, createUserFromId, addPatternToUserById, getUserInfo, getUserInfoById, logout } = require('./apiRoutes.js')
 const { index, patterns, editor, login } = require('./viewRoutes.js')
 
 const setup = (app) => {  
@@ -11,6 +11,7 @@ const setup = (app) => {
     app.route('/users/me/patterns').get(getUserPatterns).post(addPatternToUserById)
     app.route('/users/:uid/patterns').get(getUserPatternsById).post(addPatternToUserById)
     app.route('/users/:username').get(getUserInfo)
+    app.route('/logout').get(logout).get(index)
 }
 
 module.exports = { setup }

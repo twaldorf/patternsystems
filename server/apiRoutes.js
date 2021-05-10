@@ -131,4 +131,10 @@ const validate = (pattern) => {
     }
 }
 
-module.exports = { loginWithIdToken, getUserPatternsById, getUserPatterns, addPatternToUser, addPatternToUserById, getUserInfo, getUserInfoById, createUserFromId }
+const logout = async (req, res, next) => {
+    const { session } = req.signedCookies
+    res.clearCookie('session')
+    next()
+}
+
+module.exports = { loginWithIdToken, getUserPatternsById, getUserPatterns, addPatternToUser, addPatternToUserById, getUserInfo, getUserInfoById, createUserFromId, logout }
