@@ -13,7 +13,8 @@ if (process.env.NODE_ENV == 'production') {
         database: process.env.DATABASE_NAME,
         user: process.env.DATABASE_USER,
         password: process.env.DATABASE_PASSWORD,
-        max: 15
+        max: 15,
+        ssl: {rejectUnauthorized: false,},
     }
 } else {
     connection = {
