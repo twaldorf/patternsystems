@@ -164,7 +164,8 @@ async function syncPatterns () {
 const setUserState = async () => {
     const currentUser = await api.getCurrentUser()
     if (currentUser) {
-        document.getElementById('btnLogin').textContent = 'Logged in'
+        document.getElementById('btnLogin').textContent = 'Log Out'
+        document.getElementById('btnLogin').href = '/logout'
     }
 }
 

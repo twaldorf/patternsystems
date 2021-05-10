@@ -5,8 +5,9 @@ export async function setup (state, baseCanvas) {
     baseCanvas.parent('sketch-holder')
     const user = await api.getCurrentUser()
     if (user) {
-        document.getElementById('btnLogin').textContent = 'Logged in'
         document.getElementById('current-user').textContent = user.id
+        document.getElementById('btnLogin').textContent = 'Log Out'
+        document.getElementById('btnLogin').href = '/logout'
     }
     controller.setup(state)
 }
