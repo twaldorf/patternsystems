@@ -8,7 +8,7 @@ let connection
 if (process.env.NODE_ENV == 'production') {
     pgp.pg.defaults.ssl = true
     connection = {
-        host: process.env.DATABASE_URL,
+        host: process.env.DATABASE_HOST,
         port: process.env.DATABASE_PORT,
         database: process.env.DATABASE_NAME,
         user: process.env.DATABASE_USER,
