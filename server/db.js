@@ -103,6 +103,45 @@ const addPattern = async function (db, uid, pattern) {
     } catch(e) {return `Error: ${e}`}
 }
 
+const deletePattern = async function (db, uid, patternId) {
+    try {
+        const exists = await db.one(`
+            SELECT patterns ?| array[$2] FROM users
+            WHERE id = (
+                SELECT id FROM users
+                WHERE uid = $1
+            );`, [uid, patternId])
+        if (!exists) {
+            throw 'User does not have this pattern'
+        } else {
+            const deleted = await db.none(`
+                UPDATE users
+                    SET patterns = patterns - $1
+                WHERE id = (
+                    SELECT id FROM users
+                    WHERE uid = $2
+                );`, [patternId, uid])
+            .then(async () => {
+                const patterns = await getPatternsById(db, uid)
+                const removed = await db.one(`
+                    SELECT patterns FROM users 
+                    WHERE id = (
+                        SELECT id FROM users 
+                        WHERE uid = $1
+                    );`, uid)
+                    .then((results) => {
+                        if (results.patterns && !results.patterns.toString().includes(patternId.toString())) {
+                            return `Deleted, current patterns: ${JSON.stringify(patterns)}`
+                        } else {
+                            return `Failed to delete pattern ${patternId}`
+                        }
+                    })
+                return removed
+            })
+        }
+    } catch(e) {return `Error: ${e}`}
+}
+
 const getPatternsById = async function (db, uid) {
     try {
         return await db.one(`
@@ -117,4 +156,4 @@ const getPatternsById = async function (db, uid) {
     } catch (e) {return `Error: ${e}`}
 }
 
-module.exports = { getUser,getUserById,getPatternsById,addPattern,addUser,addUserById }
+module.exports = { getUser,getUserById,getPatternsById,addPattern,addUser,addUserById,deletePattern }

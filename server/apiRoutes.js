@@ -1,6 +1,6 @@
 require('dotenv').config()
 const { db } = require('./config.js')
-const { getUserById,addPattern,addUser,addUserById, getPatternsById } = require('./db.js')
+const { getUserById, addPattern, addUserById, getPatternsById, deletePattern } = require('./db.js')
 const { verifyTokenForId } = require('./verify.js')
 
 const loginWithIdToken = async (req, res) => {
@@ -71,23 +71,6 @@ const getUserInfoById = async (req, res) => {
     }
 }
 
-const addPatternToUser = async (req, res) => {
-    const {session} = req.signedCookies
-    if (session) {
-        let { pattern } = req.body
-        pattern = validate(pattern)
-        console.log(`pattern: ${pattern}`)
-        if (!pattern) {
-            res.status(200).send('Missing uid or pattern')
-        } else {
-            let patterns = await addPattern(db, session, pattern)
-            res.status(200).send({patterns})
-        }
-    } else {
-        res.status(401).send({response:'Invalid session'})
-    }
-}
-
 const addPatternToUserById = async (req, res) => {
     const { session } = req.signedCookies
     if (session) {
@@ -131,10 +114,22 @@ const validate = (pattern) => {
     }
 }
 
+const deletePatternFromUserById = async (req, res) => {
+    const { session } = req.signedCookies
+    let { patternId } = req.body
+    console.log(patternId)
+    if (!session || !patternId) {
+        res.status(200).send('Missing uid or pattern')
+    } else {
+        const patternDeleted = await deletePattern(db, session, patternId)
+        res.status(200).send({patternDeleted})
+    }
+}
+
 const logout = async (req, res, next) => {
     const { session } = req.signedCookies
     res.clearCookie('session')
     next()
 }
 
-module.exports = { loginWithIdToken, getUserPatternsById, getUserPatterns, addPatternToUser, addPatternToUserById, getUserInfo, getUserInfoById, createUserFromId, logout }
+module.exports = { loginWithIdToken, getUserPatternsById, getUserPatterns, addPatternToUserById, getUserInfo, getUserInfoById, createUserFromId, deletePatternFromUserById, logout }

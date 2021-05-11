@@ -88,7 +88,7 @@ const renderPattern = (pattern) => {
     return { patternLink: divParent }
 }
 
-const render = (patterns) => {
+const render = async (patterns) => {
     const parent = document.getElementById('pattern-container')
 
     let count = 0
@@ -117,13 +117,14 @@ const render = (patterns) => {
         }
     })
 
-    document.addEventListener( 'click', (event) => {
+    document.addEventListener( 'click', async (event) => {
         if (event.target.matches('.delete')) {
             const id = event.target.classList[1]
             const patternIdToDelete = Object.keys(patterns).filter((key) => {
                 return hash.hashCode(patterns[key].state.dateCreated) == id
             })
             store.deletePatternById(patternIdToDelete)
+            console.log(await api.deletePattern(patternIdToDelete))
             document.getElementById(id).remove()
         } else if (event.target.matches('.pattern-link')) {
             const id = event.target.classList[1]
