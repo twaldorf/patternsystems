@@ -4,7 +4,7 @@
   "description": "pattern system designer",
   "main": "server/server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "start": "node server/server.js"
   },
   "repository": {
@@ -31,5 +31,8 @@
     "md5": "^2.3.0",
     "pg": "^8.5.1",
     "pg-promise": "^10.8.6"
+  },
+  "devDependencies": {
+    "jest": "^27.0.3"
   }
 }

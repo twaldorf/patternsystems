@@ -2,7 +2,6 @@ require('dotenv').config()
 
 const pgp = require('pg-promise')()
 
-
 let connection
 
 if (process.env.NODE_ENV == 'production') {

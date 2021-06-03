@@ -28,7 +28,6 @@ const getUserById = async function (db, userId) {
         return user
     } 
     catch(e) {
-        console.error(e)
         return false
     }
 }
