@@ -28,4 +28,6 @@ const savesBanner = `
 </section>
 `
 
-module.exports = { header, btnLogin, editorBanner, savesBanner }
+module.exports = {
+  header, btnLogin, editorBanner, savesBanner,
+}
