@@ -89,6 +89,14 @@
                                 <button id="scaleUp">1.5x</button>
                             </div>
                         </li>
+                        <li class="rotate">
+                            <label for="rotate">
+                                Rotate:
+                            </label>
+                            <div>
+                                <button id="rotateCw">45 deg clockwise</button>
+                            </div>
+                        </li>
                         <li>
                             <div id="fill" class="button toggle">
                             </div>
