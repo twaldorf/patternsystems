@@ -12,10 +12,11 @@ export class Shape {
     this.parameters = state.parameters
   }
 
-  offset(xoffset, yoffset) {
-    for (let i = 0; i < this.points.length; i++) {
-      this.points[i].transform(xoffset, yoffset);
-    }
+  offsetPoints(xoffset, yoffset, points=this.points) {
+    return points.map((point) => {
+      let newPoint = new Vertex(point.x + xoffset, point.y + yoffset, this.pointRadius)
+      return newPoint
+    })
   }
 
   scale(scale, points = this.points) {
@@ -31,7 +32,39 @@ export class Shape {
     return this.points
   }
 
+  centroid(points=this.points) {
+    let xVals = 0
+    let yVals = 0
+
+    points.map((point) => {
+      xVals += point.x
+      yVals += point.y
+    })
+
+    xVals = xVals / points.length
+    yVals = yVals / points.length
+    
+    return new Vertex(xVals, yVals, this.pointRadius)
+  }
+
   rotate(degrees) {
+    // move centroid to 0,0
+    let points = this.points
+    let centroid = this.centroid()
+    points = this.offsetPoints(-centroid.x, -centroid.y, points)
+    
+    // rotate around 0,0
+    points = points.map((point) => {
+      let newX = point.x * Math.cos(degrees) - point.y * Math.sin(degrees)
+      let newY = point.x * Math.sin(degrees) + point.y * Math.cos(degrees)
+      return new Vertex(newX, newY, this.pointRadius)
+    })
+    
+    // move centroid to original centroid
+    points = this.offsetPoints(centroid.x, centroid.y, points)
+
+    this.points = points
+    return true
   }
 
   draw(buffer, colorInput = this.color) {

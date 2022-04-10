@@ -81,6 +81,8 @@ export const setup = (state) => {
     scaleDown: 'scaleDown',
     scaleUp: 'scaleUp',
     save: 'save',
+    rotateCw: 'rotateCw',
+    rotateCcw: 'rotateCcw'
   }
 
   const domElements = Object.keys(domElementNames).map((e) => document.getElementById(domElementNames[e]))
@@ -100,6 +102,9 @@ const actionSetups = (state) => {
   state.domElements.clearShape.addEventListener('click', () => { erase.action(state) })
   state.domElements.button_export.addEventListener('click', () => {
     exportCanvas.exportPattern(state)
+  })
+  state.domElements.rotateCw.addEventListener('click', () => {
+    state.form.rotate(Math.PI/8)
   })
   state.domElements.header.addEventListener('input', (e) => {
     state.setName(e.target.value)
